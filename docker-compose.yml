@@ -11,7 +11,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./App:/app
+      - ./App:/App
     depends_on:
       - database
 
@@ -34,7 +34,7 @@ services:
     env_file: *envfile
     command: ["celery", "--app=worker.worker.app", "worker", "--concurrency=1", "--hostname=worker@%h", "--loglevel=INFO"]
     volumes:
-      - ./App:/app
+      - ./App:/App
     depends_on:
       - broker
     
@@ -44,7 +44,7 @@ services:
     env_file: *envfile
     command: python3 -m celery --app=worker.worker.app beat -l debug -f /var/log/App-celery-beat.log  --pidfile=/tmp/celery-beat.pid
     volumes:
-      - ./App:/app
+      - ./App:/App
     depends_on:
       - worker
     
