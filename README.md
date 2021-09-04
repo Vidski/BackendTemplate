@@ -21,3 +21,10 @@ You can change user and password on env.env
 
 4. Monitor tasks in flower:
 [http://localhost:5555](http://localhost:5555)
+
+In order to actual interact with django admin, you will need to migrate tables and create a super user.
+To achieve this, you will need to access the app container shell and run:
+
+```python3 manage.py migrate```
+
+```python3 manage.py createsuperuser```
