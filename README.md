@@ -52,6 +52,11 @@ To actual interact with django admin for the first time, you will need to run:
      
 And create your super user.
 
+You can create and app ([app vs project](https://docs.djangoproject.com/en/3.2/intro/tutorial01/#creating-the-polls-app)) running:
+
+    python3 manage.py startapp app-name
+        
+
 ## Interaction
 You can see docker logs just running ```docker-compose up```, but this will attach the console directly to the container process so if you close it, you will set down the docker container too. To avoid this you can run the container detached to console running:
   
@@ -80,7 +85,7 @@ It's highly recommended doing this reinterpretation of Use model at the very beg
 ## Step-by-step
 This example will be for an User model with email (as identifier) and name as parameters.
 
-1. Create the user app ([app vs project](https://docs.djangoproject.com/en/3.2/intro/tutorial01/#creating-the-polls-app)) running:
+1. Create the users app running:
 
         python3 manage.py startapp users
 
