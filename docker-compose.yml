@@ -20,12 +20,12 @@ services:
     image: mysql:5.6
     restart: always
     env_file: *envfile
+    volumes:
+      - ~/.mdbdata/App:/var/lib/mysql
     ports:
       - '3306:3306'
     expose:
       - '3306'
-    volumes:
-      - ~/.mdbdata/App:/var/lib/mysql
 
   worker:
     build: .

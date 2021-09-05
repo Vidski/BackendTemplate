@@ -99,8 +99,12 @@ CELERY = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'database',
+        'USER': 'user',
+        'PASSWORD': 'password',       
+        'HOST': 'database', # <-- docker host name for db
+        'PORT': '3306', # <-- docker port for db
     }
 }
 
