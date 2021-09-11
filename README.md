@@ -1,4 +1,11 @@
-# Dockerized App: Django + MySQL + Celery + RabbitMQ + Flower
+<h1 align="center">
+  <b>Dockerized App</b>
+</h1>
+
+<h3 align="center">
+  <b><i> Django + MySQL + Celery + RabbitMQ + Flower </i></b>
+</h3>
+
 * * *
 The goal of this project is to enable an easy-to-use and implement template in order to start developing a web app as quickly and conveniently as possible.
 
@@ -6,13 +13,31 @@ The environment we are looking to build is one that uses Django as a python fram
 
 All we be in one Docker container that will be already setted up to just start coding the project.
 
+## Table of Contents  
+1. [Requirements](#requirements)  
+2. [Nice to have](#nicetohave)  
+3. [Before starting](#beforestarting)  
+4. [Instructions](#instructions)   
+5. [Observations](#observations)    
+6. [Interaction](#interaction)
+7. [Versions used](#versions)
+8. [Useful guides](#usefullguides)
+      
+      8.1. [Custum user model](#customusermodel)   
+
+<a name="requirements"/>
+
 ## Requirements
   - Docker
   - Docker-Compose
 
+<a name="nicetohave"/>
+
 ## Nice to have
   - Python3
   - Django
+
+<a name="nicetohave"/>
 
 ## Nice to take a look to
 - [Docker documentation.](https://docs.celeryproject.org/en/stable/index.html#)
@@ -22,12 +47,16 @@ All we be in one Docker container that will be already setted up to just start c
 - [RabbitMQ documentation.](https://www.rabbitmq.com/)
 - [Flower documentation.](https://flower.readthedocs.io/en/latest/)
 
+<a name="beforestarting"/>
+
 ## Before starting
 Feel free to set your environment variables as you want on ```env.env``` file.
 
 You can change the container name by changing the main folder name.
 
 You can change project name to your actual app name, just take in mind that you will need to change folders name, docker-compose.yml content, Dockerfile content and some django settings in order to the container work correctly.
+
+<a name="instructions"/>
 
 ## Instructions
 
@@ -43,6 +72,8 @@ You can change project name to your actual app name, just take in mind that you 
 
     Flower task monitor will be available on: [http://localhost:5555](http://localhost:5555)
 
+<a name="observations"/>
+
 ## Observations
 
 To actual interact with django admin for the first time, you will need to run:
@@ -52,10 +83,12 @@ To actual interact with django admin for the first time, you will need to run:
      
 And create your super user.
 
-You can create and app ([app vs project](https://docs.djangoproject.com/en/3.2/intro/tutorial01/#creating-the-polls-app)) running:
+Then you can create and app ([app vs project](https://docs.djangoproject.com/en/3.2/intro/tutorial01/#creating-the-polls-app)) running:
 
     python3 manage.py startapp app-name
         
+
+<a name="interaction"/>
 
 ## Interaction
 You can see docker logs just running ```docker-compose up```, but this will attach the console directly to the container process so if you close it, you will set down the docker container too. To avoid this you can run the container detached to console running:
@@ -72,15 +105,43 @@ To access container shell to interact directly with django run:
 
 To access MySQL database run:
 
-    docker-compose exec database -uuser -ppassword```
+    docker-compose exec database -uuser -ppassword
 
+<a name="versions"/>
+
+## Versions used
+* * *
+Versions that will use the project. Take in mind that python sub versions may change because it will depend on the one used on [python dockerhub image.](https://hub.docker.com/_/python), it will be the same with [RabbitMQ](https://hub.docker.com/_/rabbitmq), and [MySQL](https://hub.docker.com/_/mysql). Even so, the python version in docker container (reviewed on 2021/09/05) is ```3.9.7```.
+
+* Docker compose schema version:  3.8
+* Python image:  3
+* RabbitMQ image: 3
+* MySQL image:  5.6
+* Django version:  3.2.6
+* DjangoRESTFramework version:  3.12.4
+* Celery version:  5.1.2
+
+
+<a name="usefullguides"/>
+
+<h1 align="center">
+  <b>Useful guides</b>
+</h1>
+
+These are useful guides to customize our django apps, modifying the default User model and specifying a more secure authentication for REST apis.
+
+<a name="customusermodel"/>
 
 # Use custom django user model
 * * *
 Following steps from [Django documentation to use custom user.](https://docs.djangoproject.com/en/3.2/topics/auth/customizing/#substituting-a-custom-user-model) 
 
+<a name="beforestartingcustomuser"/>
+
 ## Before starting
 It's highly recommended doing this reinterpretation of Use model at the very beginning of the project. Take in mind this requires a reinterpretation of the User model, so if you already have run migrations, you will need to make an empty apply of the migration; this means that you will lose the database data, so it's recommendable to make a backup before do that if there are valuable data on databases.
+
+<a name="stepbystepcustomuser"/>
 
 ## Step-by-step
 This example will be for an User model with email (as identifier) and name as parameters.
@@ -185,14 +246,4 @@ This example will be for an User model with email (as identifier) and name as pa
 
 6. And a custom user model is done!
 
-# Versions
-* * *
-Versions that will use the project. Take in mind that python sub versions may change because it will depend on the one used on [python dockerhub image.](https://hub.docker.com/_/python), it will be the same with [RabbitMQ](https://hub.docker.com/_/rabbitmq), and [MySQL](https://hub.docker.com/_/mysql). Even so, the python version in docker container (reviewed on 2021/09/05) is ```3.9.7```.
 
-* Docker compose schema version:  3.8
-* Python image:  3
-* RabbitMQ image: 3
-* MySQL image:  5.6
-* Django version:  3.2.6
-* DjangoRESTFramework version:  3.12.4
-* Celery version:  5.1.2
