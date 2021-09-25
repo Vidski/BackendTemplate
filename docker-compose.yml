@@ -5,7 +5,7 @@ services:
     build: .
     image: &app app
     restart: "no"
-    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+    command: python3 start.py --service-name database --ip database --port 3306
     env_file: &envfile
       - env.env
     ports:
@@ -32,7 +32,7 @@ services:
     image: *app
     restart: "no"
     env_file: *envfile
-    command: ["celery", "--app=worker.worker.app", "worker", "--concurrency=1", "--hostname=worker@%h", "--loglevel=INFO"]
+    command: celery --app=worker.worker.app worker --concurrency=1 --hostname=worker@%h --loglevel=INFO
     volumes:
       - ./App:/App
     depends_on:
