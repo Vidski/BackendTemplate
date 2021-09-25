@@ -9,8 +9,8 @@ from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.validators import UniqueValidator
 
-from users.models import User
-from users.utils import send_verification_email
+from Users.models import User
+from Users.utils import send_verification_email
 
 logger = logging.getLogger(__name__)
 

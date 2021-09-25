@@ -46,12 +46,12 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    'users'
+    'Users'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'Users.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -145,7 +145,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'databasename',
-        'USER': 'user',
+        'USER': 'root',
         'PASSWORD': 'password',       
         'HOST': 'database', # <-- docker host name for db
         'PORT': '3306', # <-- docker port for db
