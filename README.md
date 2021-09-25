@@ -86,7 +86,23 @@ And create your super user.
 Then you can create and app ([app vs project](https://docs.djangoproject.com/en/3.2/intro/tutorial01/#creating-the-polls-app)) running:
 
     python3 manage.py startapp app-name
-        
+
+To test your django applications you must run:
+  
+    python3 manage.py test
+    
+The first time you run a test, you probably will get an error message saying that your user does not have permissions to interact with the database.
+To fix that, you must enter you database mysql container as a root running something like this:
+ 
+    docker-compose exec database mysql -uroot -ppassword
+
+Then you must grant your user the privileges making the following query:
+
+    GRANT ALL PRIVILEGES ON *.* TO 'user'@'%' WITH GRANT OPTION;
+    FLUSH PRIVILEGES;
+
+Now you will be able to run your tests.
+
 
 <a name="interaction"/>
 
