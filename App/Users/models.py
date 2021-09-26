@@ -5,6 +5,8 @@ import logging
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
+from django.dispatch import receiver
+from django_rest_passwordreset.signals import reset_password_token_created
 from django.utils.translation import ugettext_lazy as _
 
 from django.conf import settings
@@ -94,8 +96,17 @@ class User(AbstractBaseUser, PermissionsMixin):
         decoded = base64.b64encode(hashed.digest()).decode('utf-8')
         token = decoded.replace("\+", "-").replace("/", "_").replace("=", "").replace("+","")
         return token
+        
+    @property
+    def name(self):
+        return self.first_name + " " + self.last_name
 
     @property
     def is_staff(self):
         return self.is_admin
 
+
+@receiver(reset_password_token_created)
+def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
+    from Users.utils import send_reset_password_email
+    send_reset_password_email(reset_password_token)

@@ -30,6 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
         self.comprove_email(email, user)
         phone_number = data.get('phone_number', None)
         self.comprove_phone_number(phone_number, user)
+        self.comprove_password(data, user)
         return data
 
     def create(self, validated_data):
@@ -61,6 +62,17 @@ class UserSerializer(serializers.ModelSerializer):
             phone_number_taken_by_other_user = users_with_phone_number[0].id != user.id
             if phone_number_taken_by_other_user:
                 raise serializers.ValidationError('Phone number is taked')
+
+    def comprove_password(self, data, user):
+        password = data.get('password', None)
+        if password:
+            old_password = data.get('old_password', None)
+            if not old_password:
+                raise serializers.ValidationError('Old password is required to set a new one')
+            old_password_is_valid = user.check_password(old_password) == True
+            if not old_password_is_valid:
+                raise serializers.ValidationError('Wrong password')
+            password_validation.validate_password(password)
 
     class Meta:
         model = User

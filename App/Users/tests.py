@@ -1,6 +1,7 @@
 import json
 
 from django.contrib.auth import get_user_model
+from django_rest_passwordreset.models import ResetPasswordToken
 from django.test import TestCase
 from rest_framework.test import APIClient
 
@@ -214,10 +215,12 @@ class UserTests(UsersAbstractUtils):
     def test_update_user(self):
         # Set data test for update
         data = {
-            "first_name":"Test",
-            "last_name":"Tested",
-            "email":"edituser2@appname.me",
-            "password":"password"
+            "first_name":"Test edited",
+            "last_name":"Tested Edit",
+            "email":"emailedited@appname.me",
+            "phone_number": "+32987654321",
+            "old_password": "password",
+            "password":"NewPassword95"
         }
         # Test that an unauthenthicate user can't update users data
         response = self.client.put(f'/api/v1/users/{self.normal_user.id}/', data)
@@ -240,6 +243,11 @@ class UserTests(UsersAbstractUtils):
         self.assertEqual(response.status_code, 202)
         self.normal_user = User.objects.get(id=self.normal_user.id)
         self.assertEqual(self.normal_user.email, data["email"])
+        self.assertEqual(self.normal_user.phone_number, data["phone_number"])
+        self.assertEqual(self.normal_user.first_name, data["first_name"])
+        self.assertEqual(self.normal_user.last_name, data["last_name"])
+        self.assertTrue(self.normal_user.check_password(data["password"]))
+        self.client.force_authenticate(user=self.normal_user)
 
         # Test that an user verified can't update its email to one already used
         self._create_user(**{'email': 'emailused@appname.me'})
@@ -265,6 +273,68 @@ class UserTests(UsersAbstractUtils):
         response = self.client.put(f'/api/v1/users/{self.normal_user.id}/', data)
         self.assertEqual(response.status_code, 400)
         self.assertTrue("Phone number is taked" in response.data)
+        
+        # Test a user can't update its password with a wrong old password
+        data = {
+            "first_name":"Test",
+            "last_name":"Tested",
+            "email":"finalemail@appname.me",
+            "phone_number": "+32987654321",
+            "old_password": "NewPassword95 wrong",
+            "password":"This is a password"
+        }
+        response = self.client.put(f'/api/v1/users/{self.normal_user.id}/', data)
+        message = "Wrong password"
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(message in response.data)
+        
+        # Test a user can't update its password without the old one
+        data = {
+            "first_name":"Test",
+            "last_name":"Tested",
+            "email":"finalemail@appname.me",
+            "phone_number": "+32987654321",
+            "password":"This is a password"
+        }
+        response = self.client.put(f'/api/v1/users/{self.normal_user.id}/', data)
+        message = 'Old password is required to set a new one'
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(message in response.data)
+
+        # Test a user can't update special fields on a valid request
+        data = {
+            "first_name":"Test",
+            "last_name":"Tested",
+            "email":"emailemail@appname.me",
+            "phone_number": "+32987654321",
+            "old_password":"NewPassword95",
+            "password":"This is a password",
+            "is_verified": False,
+            "is_admin": True,
+            "is_premium": True
+        }
+        response = self.client.put(f'/api/v1/users/{self.normal_user.id}/', data)
+        self.assertEqual(response.status_code, 202)
+        self.normal_user = User.objects.get(id=self.normal_user.id)
+        self.assertEqual(self.normal_user.email, data["email"])
+        self.assertEqual(self.normal_user.phone_number, data["phone_number"])
+        self.assertEqual(self.normal_user.first_name, data["first_name"])
+        self.assertEqual(self.normal_user.last_name, data["last_name"])
+        self.assertTrue(self.normal_user.check_password(data["password"]))
+        self.assertEqual(self.normal_user.is_verified, True)
+        self.assertEqual(self.normal_user.is_admin, False)
+        self.assertEqual(self.normal_user.is_premium, False)
+        self.client.force_authenticate(user=self.normal_user)
+
+        # Test a user can update only the password with the old one
+        data = {
+            "old_password":"This is a password",
+            "password":"Password 123456789"
+        }
+        response = self.client.put(f'/api/v1/users/{self.normal_user.id}/', data)
+        self.assertEqual(response.status_code, 202)
+        self.normal_user = User.objects.get(id=self.normal_user.id)
+        self.assertTrue(self.normal_user.check_password(data["password"]))
         
     def test_delete_user(self):
         # Test that an unauthenthicate user can't delete users data
@@ -352,3 +422,16 @@ class UserTests(UsersAbstractUtils):
         self.assertEqual(response.status_code, 202)
         normal_user_updated = User.objects.get(id=self.normal_user.id)
         self.assertEqual(normal_user_updated.is_verified, True)
+
+    def test_reset_password(self):
+        # Test that any user can reset its password via API
+        self.assertTrue(self.normal_user.check_password('password'))
+        response = self.client.post(f'/api/v1/password_reset/', {'email': self.normal_user.email})
+        self.assertEqual(response.status_code, 200)
+        tokens = ResetPasswordToken.objects.all()
+        self.assertEqual(len(tokens), 1)
+        token = tokens[0].key
+        self.client.post(f'/api/v1/password_reset/confirm/', {'token': token, 'password': 'NewPassword95'})
+        self.assertEqual(response.status_code, 200)
+        self.normal_user = User.objects.get(id=self.normal_user.id)
+        self.assertTrue(self.normal_user.check_password('NewPassword95'))

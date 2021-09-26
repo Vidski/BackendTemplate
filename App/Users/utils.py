@@ -1,4 +1,3 @@
-
 import datetime
 import logging
 
@@ -30,6 +29,21 @@ def send_verification_email(user):
     email.send()
     logger.warning(f'Users App | New user, verification email sent to {user.email} at {datetime.datetime.now()}')
 
+def send_reset_password_email(reset_password_token):
+    # TODO: change email to actually send a front url with token generated to reset password
+    token = f"{reset_password_token.key}"
+    name = reset_password_token.user.first_name
+    email_data = {'name': name,
+                    'token': token}
+    template = render_to_string('reset_password.html', email_data)
+    email = EmailMultiAlternatives('Verify your email',
+                                    '',
+                                    settings.EMAIL_HOST_USER,
+                                    [reset_password_token.user.email])
+    email.attach_alternative(template, "text/html")
+    email.fail_silently = False
+    email.send()
+    logger.warning(f'Users App | Password restore, email sent to {reset_password_token.user.email} at {datetime.datetime.now()}')
 
 def get_user_or_error(request_user, pk):
     """
