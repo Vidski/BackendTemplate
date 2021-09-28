@@ -90,7 +90,7 @@ class UserTests(UsersAbstractUtils):
 
     def test_list_users(self):
         # Test that an unauthenthicate user can't list users data
-        response = self.client.put(f'/api/v1/users/')
+        response = self.client.get(f'/api/v1/users/')
         self.assertEqual(response.status_code, 401)
 
         # Test that the petition with admin user is valid and returns the 2 users from setup
@@ -112,7 +112,7 @@ class UserTests(UsersAbstractUtils):
 
     def test_get_user(self):
         # Test that an unauthenthicate user can't get users data
-        response = self.client.put(f'/api/v1/users/{self.normal_user.id}/')
+        response = self.client.get(f'/api/v1/users/{self.normal_user.id}/')
         self.assertEqual(response.status_code, 401)
 
         # Test a petition with normal user not verified to its user is denied
