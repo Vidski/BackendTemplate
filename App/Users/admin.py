@@ -3,6 +3,11 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from Users.models import User
 
+# remove these lines if you want these models on admin
+admin.site.unregister(Group)
+admin.site.unregister(ResetPasswordToken)
+
+
 class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
