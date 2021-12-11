@@ -26,6 +26,6 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api-token-auth/', obtain_jwt_token),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('api/docs/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('api/docs/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    path('doc/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('doc/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
