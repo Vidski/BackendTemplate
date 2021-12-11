@@ -15,7 +15,7 @@ services:
     depends_on:
       - database
 
-  database:    
+  database:
     platform: linux/x86_64
     image: mysql:5.6
     restart: always
@@ -37,7 +37,7 @@ services:
       - ./App:/App
     depends_on:
       - broker
-    
+
   celery-beat:
     build: .
     image: *app
@@ -47,7 +47,7 @@ services:
       - ./App:/App
     depends_on:
       - worker
-    
+
   flower:
     image: zoomeranalytics/flower:0.9.2-4.0.2-2
     restart: "no"

@@ -23,7 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
     def is_valid(self, data, user):
         """
         Main validation method overwritted to check user data when update method
-        is called. This is because the creation of an user as well is validated on sigunp 
+        is called. This is because the creation of an user as well is validated on sigunp
         method and the main validation method is executed befor "validate" one
         """
         email = data.get('email', None)
@@ -50,7 +50,7 @@ class UserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
-    
+
     def comprove_email(self, email, user):
         users_with_email = User.objects.filter(email=email)
         if len(users_with_email) > 0:
@@ -102,15 +102,15 @@ class UserLoginSerializer(UserAuthSerializer):
     """
     User login serializer
     """
-    
+
     def validate(self, data):
         """
         Validate user login data
         """
         email, password = self.check_email_and_password(data)
-        user = authenticate(email=email, password=password)        
+        user = authenticate(email=email, password=password)
         if not user:
-            raise serializers.ValidationError('Invalid credentials')        
+            raise serializers.ValidationError('Invalid credentials')
         if not user.is_verified:
             raise serializers.ValidationError('User is not verified')
         self.context['user'] = user
@@ -163,7 +163,7 @@ class UserSignUpSerializer(UserAuthSerializer):
             raise serializers.ValidationError('Password confirmation does not match')
         password_validation.validate_password(password)
         return data
-    
+
     def create(self, data):
         """
         Create a new user

@@ -27,7 +27,8 @@ def send_verification_email(user):
     email.attach_alternative(template, "text/html")
     email.fail_silently = False
     email.send()
-    logger.warning(f'Users App | New user, verification email sent to {user.email} at {datetime.datetime.now()}')
+    logger.warning(f'Users App | New user, verification email sent to' \
+                    '{user.email} at {datetime.datetime.now()}')
 
 def send_reset_password_email(reset_password_token):
     # TODO: change email to actually send a front url with token generated to reset password
@@ -43,7 +44,8 @@ def send_reset_password_email(reset_password_token):
     email.attach_alternative(template, "text/html")
     email.fail_silently = False
     email.send()
-    logger.warning(f'Users App | Password restore, email sent to {reset_password_token.user.email} at {datetime.datetime.now()}')
+    logger.warning(f'Users App | Password restore, email sent to' \
+                     '{reset_password_token.user.email} at {datetime.datetime.now()}')
 
 def get_user_or_error(request_user, pk):
     """

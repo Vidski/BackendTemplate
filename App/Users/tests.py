@@ -99,7 +99,7 @@ class UserTests(UsersAbstractUtils):
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.get(f'{ENDPOINT}/', format='json')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 2) 
+        self.assertEqual(len(response.data), 2)
 
         # Test that the petition with normal user is denied
         self.client.force_authenticate(user=self.normal_user)
@@ -155,7 +155,6 @@ class UserTests(UsersAbstractUtils):
         self.assertEqual(response.status_code, 400)
         self.assertTrue(message_one in response.data)
         self.assertTrue(message_two in response.data['email'][0])
-        
 
         # Test that cant sign up with a common password
         data = {
@@ -190,7 +189,7 @@ class UserTests(UsersAbstractUtils):
         self.assertEqual(response.data['is_admin'], False)
         self.assertEqual(response.data['is_premium'], False)
 
-        # Test taht special fields cant be setted up in sign up accepted request
+        # Test that special fields cant be setted up in sign up accepted request
         data = {
             "first_name":"Test",
             "last_name":"Tested",
@@ -289,7 +288,7 @@ class UserTests(UsersAbstractUtils):
         message = "Wrong password"
         self.assertEqual(response.status_code, 400)
         self.assertTrue(message in response.data)
-        
+
         # Test a user can't update its password without the old one
         data = {
             "first_name":"Test",
@@ -344,13 +343,13 @@ class UserTests(UsersAbstractUtils):
         response = self.client.delete(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
         self.assertEqual(response.status_code, 401)
         self.assertEqual(User.objects.count(), 2)
-        
+
         # Test that an unverified user can't delete its data
         self.client.force_authenticate(user=self.normal_user)
         response = self.client.delete(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
         self.assertEqual(response.status_code, 403)
         self.assertEqual(User.objects.count(), 2)
-        
+
         # Test that a verified user can't delete other's data
         self.normal_user.is_verified = True
         self.normal_user.save()
@@ -424,7 +423,7 @@ class UserTests(UsersAbstractUtils):
         self.assertEqual(response.status_code, 202)
         normal_user_updated = User.objects.get(id=self.normal_user.id)
         self.assertEqual(normal_user_updated.is_verified, True)
-    
+
     def test_reset_password(self):
         # Test that any user can reset its password via API
         self.assertTrue(self.normal_user.check_password('password'))

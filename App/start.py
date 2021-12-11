@@ -4,10 +4,10 @@ import time
 import argparse
 from datetime import datetime
 
-""" 
+"""
 This is a workaround python script in order to check if
 database port is open, avoiding this way docker-compose
-race condition that makes django mysql connection fail. 
+race condition that makes django mysql connection fail.
 """
 
 # Configuration to get arguments by command
@@ -29,10 +29,12 @@ while True:
     service_result = database_socket.connect_ex((ip, port))
     if service_result == 0:
         now = datetime.now()
-        os.system(f'echo "{now}" [info] The service {service_name} is now running and the port is open. Now Django will start!')
+        os.system(f'echo "{now}" [info] The service {service_name} is now'\
+                   ' running and the port is open. Now Django will start!')
         os.system('python3 manage.py runserver 0.0.0.0:8000')
         break
     else:
         now = datetime.now()
-        os.system(f'echo "{now}" [info] The port of "{service_name}" is not open yet. It will be checked again soon!')
+        os.system(f'echo "{now}" [info] The port of "{service_name}" is not'\
+                   ' open yet. It will be checked again soon!')
         time.sleep(1)

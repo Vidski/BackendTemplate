@@ -96,7 +96,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         decoded = base64.b64encode(hashed.digest()).decode('utf-8')
         token = decoded.replace("\+", "-").replace("/", "_").replace("=", "").replace("+","")
         return token
-        
+
     @property
     def name(self):
         return self.first_name + " " + self.last_name

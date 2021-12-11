@@ -45,7 +45,7 @@ class UserViewSet(viewsets.GenericViewSet):
         """
         API endpoint that allow to get information of one user
         """
-        request_user = request.user  
+        request_user = request.user
         instance, error = get_user_or_error(request_user, pk)
         if error:
             return error
