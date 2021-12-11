@@ -72,6 +72,10 @@ You can change project name to your actual app name, just take in mind that you 
 
     Flower task monitor will be available on: [http://localhost:5555](http://localhost:5555)
 
+    Documentation served by Openapi (Swagger) will be available on: [http://localhost:8000/doc/swagger-ui](http://localhost:8000/doc/swagger-ui/)
+
+    You can also check the documentation server by Redoc on: [http://localhost:8000/doc/redoc](http://localhost:8000/doc/redoc/)
+
 <a name="observations"/>
 
 ## Observations
