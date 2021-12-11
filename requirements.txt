@@ -5,9 +5,9 @@ markdown==3.3.4
 django-filter==2.4.0
 requests==2.26.0
 django-extensions==3.1.3
-djangorestframework-jwt
-django-rest-passwordreset
-drf-spectacular
-drf-spectacular[sidecar]
-psycopg2
-pymysql
+djangorestframework-jwt==1.11.0
+django-rest-passwordreset==1.2.1
+drf-spectacular==0.21.0
+drf-spectacular[sidecar]==0.21.0
+psycopg2==2.9.2
+pymysql==1.0.2
