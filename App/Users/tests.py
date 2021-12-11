@@ -15,17 +15,17 @@ class UsersAbstractUtils(TestCase):
     def setUp(self):
         self._clean()
         self.admin_user = self._create_user(is_admin=True, **{
-            'email': 'adminuser@notalone.me',
+            'email': 'adminuser@appname.me',
             'phone_number': '+34123456789'})
         self.normal_user = self._create_user(**{
-            'email': 'normaluser@notalone.me',
+            'email': 'normaluser@appname.me',
             'phone_number': '+032923093'})
         self.client = APIClient()
 
     def _create_user(self, is_admin=False, **kwargs):
         first_name = kwargs.get('name', 'Name')
         last_name = kwargs.get('last_name', 'Last Name')
-        email = kwargs.get('email', 'user@notalone.me')
+        email = kwargs.get('email', 'user@appname.me')
         password = kwargs.get('password', 'password')
         is_admin = kwargs.get('is_admin', is_admin)
         phone_number = kwargs.get('phone_number', '+1234567890')
@@ -141,11 +141,11 @@ class UserTests(UsersAbstractUtils):
 
     def test_sign_up(self):
         # Test that cannot signup with an used email
-        self._create_user(**{'email': 'emailused@notalone.me'})
+        self._create_user(**{'email': 'emailused@appname.me'})
         data = {
             "first_name":"Test",
             "last_name":"Tested",
-            "email":"emailused@notalone.me",
+            "email":"emailused@appname.me",
             "password":"password",
             "password_confirmation":"password"
         }
@@ -161,7 +161,7 @@ class UserTests(UsersAbstractUtils):
         data = {
             "first_name":"Test",
             "last_name":"Tested",
-            "email":"unusedemail@notalone.me",
+            "email":"unusedemail@appname.me",
             "password":"password",
             "password_confirmation":"password"
         }
@@ -174,7 +174,7 @@ class UserTests(UsersAbstractUtils):
         data = {
             "first_name":"Test",
             "last_name":"Tested",
-            "email":"unusedemail@notalone.me",
+            "email":"unusedemail@appname.me",
             "password":"strongpassword",
             "password_confirmation":"strongpassword"
         }
@@ -194,7 +194,7 @@ class UserTests(UsersAbstractUtils):
         data = {
             "first_name":"Test",
             "last_name":"Tested",
-            "email":"unusedemail2@notalone.me",
+            "email":"unusedemail2@appname.me",
             "password":"strongpassword",
             "password_confirmation":"strongpassword",
             "phone_number": "+03999999999",
@@ -219,7 +219,7 @@ class UserTests(UsersAbstractUtils):
         data = {
             "first_name":"Test edited",
             "last_name":"Tested Edit",
-            "email":"edituser2@notalone.me",
+            "email":"edituser2@appname.me",
             "phone_number": "+32987654321",
             "old_password": "password",
             "password":"NewPassword95"
@@ -252,11 +252,11 @@ class UserTests(UsersAbstractUtils):
         self.client.force_authenticate(user=self.normal_user)
 
         # Test that an user verified can't update its email to one already used
-        self._create_user(**{'email': 'emailused@notalone.me'})
+        self._create_user(**{'email': 'emailused@appname.me'})
         data = {
             "first_name":"Test",
             "last_name":"Tested",
-            "email":"emailused@notalone.me",
+            "email":"emailused@appname.me",
             "password":"password"
         }
         response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
@@ -268,7 +268,7 @@ class UserTests(UsersAbstractUtils):
         data = {
             "first_name":"Test",
             "last_name":"Tested",
-            "email":"edituser3@notalone.me",
+            "email":"edituser3@appname.me",
             "password":"password",
             "phone_number": "+03999999999"
         }
@@ -280,7 +280,7 @@ class UserTests(UsersAbstractUtils):
         data = {
             "first_name":"Test",
             "last_name":"Tested",
-            "email":"finalemail@notalone.me",
+            "email":"finalemail@appname.me",
             "phone_number": "+32987654321",
             "old_password": "NewPassword95 wrong",
             "password":"This is a password"
@@ -294,7 +294,7 @@ class UserTests(UsersAbstractUtils):
         data = {
             "first_name":"Test",
             "last_name":"Tested",
-            "email":"finalemail@notalone.me",
+            "email":"finalemail@appname.me",
             "phone_number": "+32987654321",
             "password":"This is a password"
         }
@@ -307,7 +307,7 @@ class UserTests(UsersAbstractUtils):
         data = {
             "first_name":"Test",
             "last_name":"Tested",
-            "email":"emailemail@notalone.me",
+            "email":"emailemail@appname.me",
             "phone_number": "+32987654321",
             "old_password":"NewPassword95",
             "password":"This is a password",
@@ -365,13 +365,13 @@ class UserTests(UsersAbstractUtils):
 
     def test_log_in(self):
         testing_user = self._create_user(**{
-            'email': 'rightemail@notalone.me',
+            'email': 'rightemail@appname.me',
             'password': 'RightPassword'
         })
 
         # Test that cannot log in with an invalid email
         data = {
-            'email': 'wroongemail@notalone.me',
+            'email': 'wroongemail@appname.me',
             'password': 'RightPassword'
         }
         response = self.client.post(f'{ENDPOINT}/login/', data, format='json')
@@ -381,7 +381,7 @@ class UserTests(UsersAbstractUtils):
 
         # Test that cannot log in with an invalid password
         data = {
-            'email': 'rightemail@notalone.me',
+            'email': 'rightemail@appname.me',
             'password': 'WrongPassword'
         }
         response = self.client.post(f'{ENDPOINT}/login/', data, format='json')
@@ -391,7 +391,7 @@ class UserTests(UsersAbstractUtils):
 
         # Test that user not verified cannot log in
         data = {
-            'email': 'rightemail@notalone.me',
+            'email': 'rightemail@appname.me',
             'password': 'RightPassword'
         }
         response = self.client.post(f'{ENDPOINT}/login/', data, format='json')
@@ -403,7 +403,7 @@ class UserTests(UsersAbstractUtils):
         testing_user.is_verified = True
         testing_user.save()
         data = {
-            'email': 'rightemail@notalone.me',
+            'email': 'rightemail@appname.me',
             'password': 'RightPassword'
         }
         response = self.client.post(f'{ENDPOINT}/login/', data, format='json')
@@ -434,7 +434,7 @@ class UserTests(UsersAbstractUtils):
         self.assertEqual(len(tokens), 1)
         token = tokens[0].key
         data = {
-            'token': token, 
+            'token': token,
             'password': 'NewPassword95'
         }
         self.client.post(f'/api/v1/password_reset/confirm/', data, format='json')
