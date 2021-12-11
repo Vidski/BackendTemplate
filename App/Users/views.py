@@ -35,7 +35,7 @@ class UserViewSet(viewsets.GenericViewSet):
         """
         request_user = request.user
         if not request_user.is_admin:
-            return Response("You dont have permission", status=FORBIDDEN)
+            return Response("You don't have permission", status=FORBIDDEN)
         users = User.objects.all().order_by('-created_at')
         serializer = UserSerializer(users, many=True)
         data = serializer.data
@@ -103,15 +103,15 @@ class UserViewSet(viewsets.GenericViewSet):
         return JsonResponse(data, status=SUCCESS)
 
     @action(detail=True, methods=['get'], permission_classes=[AllowAny])
-    def verificate(self, request, pk=None):
+    def verify(self, request, pk=None):
         """
-        API endpoint that allows to verificate user
+        API endpoint that allows to verify user
         """
         query_token = request.query_params.get('token')
         user = User.objects.all().get(id=pk)
         token = user.generate_verification_token()
         if token != query_token:
-            return Response("You dont have permission", status=FORBIDDEN)
+            return Response("You don't have permission", status=FORBIDDEN)
         user.is_verified = True
         user.save()
         data = {"user": UserLoginSerializer(user).data}

@@ -23,8 +23,8 @@ class UserSerializer(serializers.ModelSerializer):
     def is_valid(self, data, user):
         """
         Main validation method overwritted to check user data when update method
-        is called. This is because the creation of an user as well is validated on sigunp
-        method and the main validation method is executed befor "validate" one
+        is called. This is because the creation of an user as well is validated on signup
+        method and the main validation method is executed before "validate" one
         """
         email = data.get('email', None)
         self.comprove_email(email, user)
@@ -56,14 +56,14 @@ class UserSerializer(serializers.ModelSerializer):
         if len(users_with_email) > 0:
             email_taken_by_other_user = users_with_email[0].id != user.id
             if email_taken_by_other_user:
-                raise serializers.ValidationError('Email is taked')
+                raise serializers.ValidationError('Email is taken')
 
     def comprove_phone_number(self, phone_number, user):
         users_with_phone_number = User.objects.filter(phone_number=phone_number)
         if len(users_with_phone_number) > 0:
             phone_number_taken_by_other_user = users_with_phone_number[0].id != user.id
             if phone_number_taken_by_other_user:
-                raise serializers.ValidationError('Phone number is taked')
+                raise serializers.ValidationError('Phone number is taken')
 
     def comprove_password(self, data, user):
         password = data.get('password', None)

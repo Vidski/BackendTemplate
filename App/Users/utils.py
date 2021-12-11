@@ -57,7 +57,7 @@ def get_user_or_error(request_user, pk):
     except User.DoesNotExist:
         error = Response("User not found", status=NOT_FOUND)
     if not request_user.is_admin and request_user.id != instance.id:
-        error = Response("You dont have permission", status=FORBIDDEN)
+        error = Response("You don't have permission", status=FORBIDDEN)
     if not request_user.is_verified:
         error = Response("You have to verify your account first", status=FORBIDDEN)
     return instance, error

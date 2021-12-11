@@ -91,7 +91,7 @@ class UsersManagersTests(TestCase):
 class UserTests(UsersAbstractUtils):
 
     def test_list_users(self):
-        # Test that an unauthenthicate user can't list users data
+        # Test that an unauthenticated user can't list users data
         response = self.client.get(f'{ENDPOINT}/', format='json')
         self.assertEqual(response.status_code, 401)
 
@@ -113,7 +113,7 @@ class UserTests(UsersAbstractUtils):
         self.assertEqual(response.status_code, 403)
 
     def test_get_user(self):
-        # Test that an unauthenthicate user can't get users data
+        # Test that an unauthenticated user can't get users data
         response = self.client.get(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
         self.assertEqual(response.status_code, 401)
 
@@ -223,7 +223,7 @@ class UserTests(UsersAbstractUtils):
             "old_password": "password",
             "password":"NewPassword95"
         }
-        # Test that an unauthenthicate user can't update users data
+        # Test that an unauthenticated user can't update users data
         response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
         self.assertEqual(response.status_code, 401)
 
@@ -260,7 +260,7 @@ class UserTests(UsersAbstractUtils):
         }
         response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
         self.assertEqual(response.status_code, 400)
-        self.assertTrue("Email is taked" in response.data)
+        self.assertTrue("Email is taken" in response.data)
 
         # Test that an user verified can't update its phone to one already used
         self._create_user(**{'phone_number': '+03999999999'})
@@ -273,7 +273,7 @@ class UserTests(UsersAbstractUtils):
         }
         response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
         self.assertEqual(response.status_code, 400)
-        self.assertTrue("Phone number is taked" in response.data)
+        self.assertTrue("Phone number is taken" in response.data)
 
         # Test a user can't update its password with a wrong old password
         data = {
@@ -338,7 +338,7 @@ class UserTests(UsersAbstractUtils):
         self.assertTrue(self.normal_user.check_password(data["password"]))
 
     def test_delete_user(self):
-        # Test that an unauthenthicate user can't delete users data
+        # Test that an unauthenticated user can't delete users data
         self.assertEqual(User.objects.count(), 2)
         response = self.client.delete(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
         self.assertEqual(response.status_code, 401)
@@ -414,12 +414,12 @@ class UserTests(UsersAbstractUtils):
         self.assertEqual(data['user']['last_name'], testing_user.last_name)
         self.assertEqual(data['user']['email'], testing_user.email)
 
-    def test_verificate_user(self):
-        # Test that any user can verificate its user with a get
+    def test_verify_user(self):
+        # Test that any user can verify its user with a get
         # request with it id and token
         token = self.normal_user.generate_verification_token()
         self.assertEqual(self.normal_user.is_verified, False)
-        response = self.client.get(f'{ENDPOINT}/{self.normal_user.id}/verificate/?token={token}')
+        response = self.client.get(f'{ENDPOINT}/{self.normal_user.id}/verify/?token={token}')
         self.assertEqual(response.status_code, 202)
         normal_user_updated = User.objects.get(id=self.normal_user.id)
         self.assertEqual(normal_user_updated.is_verified, True)
