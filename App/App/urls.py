@@ -15,17 +15,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework_jwt.views import obtain_jwt_token
-from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from drf_spectacular.views import SpectacularAPIView
+from drf_spectacular.views import SpectacularRedocView
+from drf_spectacular.views import SpectacularSwaggerView
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenRefreshView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(('Users.urls', 'users'), namespace='users')),
     path('api/v1/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('api-token-auth/', obtain_jwt_token),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('doc/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('doc/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('doc/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]

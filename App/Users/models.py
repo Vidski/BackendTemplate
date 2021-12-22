@@ -7,7 +7,7 @@ from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.dispatch import receiver
 from django_rest_passwordreset.signals import reset_password_token_created
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from django.conf import settings
 
@@ -94,7 +94,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         string_user = self.email + settings.EMAIL_VERIFICATION_TOKEN_SECRET
         hashed = hashlib.md5(string_user.encode())
         decoded = base64.b64encode(hashed.digest()).decode('utf-8')
-        token = decoded.replace("\+", "-").replace("/", "_").replace("=", "").replace("+","")
+        token = decoded.replace("\+", "-").replace("/", "_")\
+                       .replace("=", "").replace("+","")
         return token
 
     @property
