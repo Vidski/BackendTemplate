@@ -13,6 +13,8 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+from App.jazzmin_settings import *
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -29,7 +31,11 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-# Application definition
+# Applications definition
+
+SPECIAL_APPS = [
+    'jazzmin',
+] # Jazzmin needs to charge before the admin app
 
 DJANGO_APPS = [
     'django.contrib.admin',
@@ -53,7 +59,7 @@ LOCAL_APPS = [
     'Users'
 ]
 
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+INSTALLED_APPS = SPECIAL_APPS + DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 AUTH_USER_MODEL = 'Users.User'
 
@@ -227,6 +233,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
