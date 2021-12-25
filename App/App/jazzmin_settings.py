@@ -2,6 +2,7 @@
 JAZZMIN_SETTINGS = {
     # Documentation: https://django-jazzmin.readthedocs.io/
     # Demo/builder: https://django-jazzmin.herokuapp.com/en/admin/auth/user/
+    # Icons: https://fontawesome.com/v5.9/icons?d=gallery&p=2
 
     # title of the window (Will default to current_admin_site.site_title if absent or None)
     "site_title": "App Name Admin",
