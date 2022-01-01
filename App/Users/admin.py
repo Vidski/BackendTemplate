@@ -1,6 +1,9 @@
 from django.contrib import admin
+from django.contrib.admin.models import LogEntry
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
+from django.utils.html import format_html
+from django.utils.timesince import timesince
 from django_rest_passwordreset.models import ResetPasswordToken
 
 from Users.models import User
@@ -55,4 +58,29 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = ()
 
 
+class LogEntryAdmin(admin.ModelAdmin):
+    list_display = ('user', 'object', 'action_flag', 'change_message', 'modified')
+    readonly_fields = ['object', 'modified']
+    search_fields = ('user__email',)
+    date_hierarchy = 'action_time'
+    list_filter = ('action_flag', 'content_type__model')
+    list_per_page = 20
+
+    def object(self, obj):
+        url = obj.get_admin_url()
+        object_repr = obj.object_repr
+        model = obj.content_type.model
+        return format_html(
+            f'<a href="{url}">{object_repr} [{model}]</a>'
+        )
+
+    def modified(self, obj):
+        if not obj.action_time:
+            return 'Never'
+        return f'{timesince(obj.action_time)} ago'
+
+    modified.admin_order_field = 'action_time'
+
+
 admin.site.register(User, UserAdmin)
+admin.site.register(LogEntry, LogEntryAdmin)
