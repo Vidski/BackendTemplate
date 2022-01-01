@@ -1,11 +1,19 @@
 removeRedundantProfileButton();
+removeElements();
 removeUnnecessaryButton();
 addEyeToSeeProfile();
 changeHeaders();
 
 function removeRedundantProfileButton() {
   $('.user-panel.mt-3.pb-3.mb-3.d-flex').remove();
+  $('.time').remove();
 }
+
+function removeElements() {
+  // Removes time from logs elements
+  $('.time').remove();
+}
+
 
 function changeHeaders() {
   $search_form = $('#changelist-search');
