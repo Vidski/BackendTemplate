@@ -45,3 +45,7 @@
 .btn.btn-sm.btn-outline-info.btn-flat.changelink{
   visibility: hidden;
 }
+
+.fas.fa-edit.bg-blue {
+  padding-left: 3px !important;
+}
