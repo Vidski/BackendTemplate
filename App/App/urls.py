@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.admin import AdminSite
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView
 from drf_spectacular.views import SpectacularRedocView
@@ -21,9 +22,11 @@ from drf_spectacular.views import SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.views import TokenRefreshView
 
+from App.views import CustomView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('home/admin/', admin.site.admin_view(CustomView.as_view())),
     path('api/v1/', include(('Users.urls', 'users'), namespace='users')),
     path('api/v1/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
