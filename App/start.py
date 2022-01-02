@@ -13,15 +13,19 @@ race condition that makes django mysql connection fail.
 # Configuration to get arguments by command
 parser = argparse.ArgumentParser(description='Check if port is open, avoid\
                                  docker-compose race condition')
-parser.add_argument('--service-name', required=True)
+parser.add_argument('--waiting-service-name', required=True)
 parser.add_argument('--ip', required=True)
 parser.add_argument('--port', required=True)
+parser.add_argument('--raising-service-name', required=True)
+parser.add_argument('--command', required=True)
 
 # Set the arguments
 arguments_passed_by_command = parser.parse_args()
-service_name = str(arguments_passed_by_command.service_name)
+waiting_service_name = str(arguments_passed_by_command.waiting_service_name)
 port = int(arguments_passed_by_command.port)
 ip = str(arguments_passed_by_command.ip)
+raising_service_name = str(arguments_passed_by_command.raising_service_name)
+command = str(arguments_passed_by_command.command)
 
 # Infinite loop to iterate over the database service dockerized
 while True:
@@ -29,12 +33,12 @@ while True:
     service_result = database_socket.connect_ex((ip, port))
     if service_result == 0:
         now = datetime.now()
-        os.system(f'echo "{now}" [info] The service {service_name} is now'\
-                   ' running and the port is open. Now Django will start!')
-        os.system('python3 manage.py runserver 0.0.0.0:8000')
+        os.system(f'echo "{now}" [info] The service {waiting_service_name} is now'\
+                  f' running and the port is open. Now {raising_service_name} will start!')
+        os.system(command)
         break
     else:
         now = datetime.now()
-        os.system(f'echo "{now}" [info] The port of "{service_name}" is not'\
+        os.system(f'echo "{now}" [info] The port of "{waiting_service_name}" is not'\
                    ' open yet. It will be checked again soon!')
         time.sleep(1)

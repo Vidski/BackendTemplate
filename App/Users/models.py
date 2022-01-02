@@ -6,6 +6,7 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.dispatch import receiver
+from django_prometheus.models import ExportModelOperationsMixin
 from django_rest_passwordreset.signals import reset_password_token_created
 from django.utils.translation import gettext_lazy as _
 
@@ -48,7 +49,7 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(ExportModelOperationsMixin("dataset"), AbstractBaseUser, PermissionsMixin):
     username = None
     is_superuser = None
 
