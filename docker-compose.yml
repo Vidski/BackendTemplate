@@ -43,7 +43,7 @@ services:
     image: *app
     restart: "no"
     env_file: *envfile
-    command: celery --app=worker.worker.app worker --concurrency=1 --hostname=worker@%h --loglevel=INFO
+    command: celery --app=Worker.worker.app worker --concurrency=1 --hostname=worker@%h --loglevel=INFO
     volumes:
       - ./App:/App
     depends_on:
@@ -54,7 +54,7 @@ services:
     build: .
     image: *app
     env_file: *envfile
-    command: python3 -m celery --app=worker.worker.app beat -l debug -f /var/log/App-celery-beat.log --pidfile=/tmp/celery-beat.pid
+    command: python3 -m celery --app=Worker.worker.app beat -l debug -f /var/log/App-celery-beat.log --pidfile=/tmp/celery-beat.pid
     volumes:
       - ./App:/App
     depends_on:

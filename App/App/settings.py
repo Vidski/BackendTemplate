@@ -153,7 +153,7 @@ WSGI_APPLICATION = 'App.wsgi.application'
 # Celery params
 CELERY = {
     'BROKER_URL': os.environ.get('CELERY_BROKER'),
-    'CELERY_IMPORTS': ('worker.tasks', ),
+    'CELERY_IMPORTS': ('Worker.tasks', ),
     'CELERY_TASK_SERIALIZER': 'json',
     'CELERY_RESULT_SERIALIZER': 'json',
     'CELERY_ACCEPT_CONTENT': ['json'],
