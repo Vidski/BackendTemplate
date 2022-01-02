@@ -1,8 +1,21 @@
+addHomeButton();
 removeRedundantProfileButton();
 removeElements();
 removeUnnecessaryButton();
 addEyeToSeeProfile();
 changeHeaders();
+
+function addHomeButton() {
+  $('.nav.nav-pills.nav-sidebar.flex-column.nav-flat.nav-compact').prepend('<li class="nav-item">' +
+  '<a href="/home/admin/" class="nav-link">' +
+  '<i class="nav-icon fas fa-home">' +
+  '</i>' +
+  '<p>Home</p>' +
+  '</a></li>');
+  $('#home-button').click(function () {
+    window.location.href = '/admin/';
+  });
+}
 
 function removeRedundantProfileButton() {
   $('.user-panel.mt-3.pb-3.mb-3.d-flex').remove();
@@ -13,7 +26,6 @@ function removeElements() {
   // Removes time from logs elements
   $('.time').remove();
 }
-
 
 function changeHeaders() {
   $search_form = $('#changelist-search');
