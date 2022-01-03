@@ -95,9 +95,13 @@ services:
 
   grafana:
     container_name: grafana
-    image: grafana/grafana:8.2.0
+    image: grafana/grafana:8.3.3
+    environment:
+      - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-user}
+      - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-password}
+      - GF_USERS_ALLOW_SIGN_UP=false
     ports:
-      - "3000:3000"
+      - 3000:3000
     volumes:
       - ~/.mdbdata/App/grafana_data:/var/lib/grafana
       - ~/.mdbdata/App/grafana/provisioning/:/etc/grafana/provisioning/
