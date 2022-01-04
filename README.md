@@ -124,21 +124,31 @@ Notice that Django admin is customizable due the use of [Django-Jazzmin](https:/
 <a name="interaction"/>
 
 ## Interaction
+All the interaction goes through ```makefile```, but you can interact with the containers runing the commands as usual, for example, running manually the comands in the ```makefile```.
+
 You can see docker logs just running ```docker-compose up```, but this will attach the console directly to the container process so if you close it, you will set down the docker container too. To avoid this you can run the container detached to console running:
   
-    docker-compose up -d
+    make up -d
 
 To see container logs run:
   
-    docker-compose logs -f
+    make logs
+
+To access container bash to interact directly with the container run:
+
+    make bash
 
 To access container shell to interact directly with django run:
 
-    docker-compose exec app /bin/bash
+    make shell
+
+To run the tests run:
+
+    make test
 
 To access MySQL database run:
 
-    docker-compose exec database -uuser -ppassword
+    make database USER=user PASSWORD=password
 
 <a name="versions"/>
 
