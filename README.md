@@ -1,9 +1,9 @@
 <h1 align="center">
-  <b>Dockerized App</b>
+  <b>Backend App Template</b>
 </h1>
 
 <h3 align="center">
-  <b><i> Django + MySQL + Celery + RabbitMQ + Flower </i></b>
+  <b><i> Django + Docker + MySQL + Celery + RabbitMQ + Flower + Grafana + Prometheus </i></b>
 </h3>
 
 * * *
@@ -46,6 +46,10 @@ All we be in one Docker container that will be already setted up to just start c
 - [Celery documentation.](https://docs.celeryproject.org/)
 - [RabbitMQ documentation.](https://www.rabbitmq.com/)
 - [Flower documentation.](https://flower.readthedocs.io/en/latest/)
+- [Grafana documentation.](https://grafana.com/docs/)
+- [Prometheus documentation.](https://prometheus.io/docs/introduction/overview/)
+- [OpenApi (swagger) documentation.](https://swagger.io/specification/) 
+- [ReDoc documentation.](https://redoc.ly/docs) 
 
 <a name="beforestarting"/>
 
@@ -62,7 +66,7 @@ You can change project name to your actual app name, just take in mind that you 
 
 1. Go to root content folder.
 2. Bring up the docker container running:  
-    ```docker-compose up```
+    ```make up```
      
 4. That's all!
 
@@ -71,6 +75,10 @@ You can change project name to your actual app name, just take in mind that you 
     Django app will be available on: [http://localhost:8000/](http://localhost:8000/)
 
     Flower task monitor will be available on: [http://localhost:5555](http://localhost:5555)
+    
+    Grafana monitor will be available on: [http://localhost:5555](http://localhost:3000)
+    
+    Prometheus dashboard will be available on: [http://localhost:9090](http://localhost:9090)
 
     Documentation served by Openapi (Swagger) will be available on: [http://localhost:8000/doc/swagger-ui](http://localhost:8000/doc/swagger-ui/)
 
@@ -108,6 +116,11 @@ Then you must grant your user the privileges making the following query:
 Now you will be able to run your tests.
 
 
+Grafana Credentials will be user: ```admin``` and password: ```admin```. You will be able to change them once you get logged in.
+
+Notice that Django admin is customizable due the use of [Django-Jazzmin](https://django-jazzmin.readthedocs.io/) that implements [Adminlte](https://adminlte.io/) + [Bootstrap](https://getbootstrap.com/).
+
+
 <a name="interaction"/>
 
 ## Interaction
@@ -131,13 +144,13 @@ To access MySQL database run:
 
 ## Versions used
 * * *
-Versions that will use the project. Take in mind that python sub versions may change because it will depend on the one used on [python dockerhub image.](https://hub.docker.com/_/python), it will be the same with [RabbitMQ](https://hub.docker.com/_/rabbitmq), and [MySQL](https://hub.docker.com/_/mysql). Even so, the python version in docker container (reviewed on 2021/09/05) is ```3.9.7```.
+Versions that will use the project. Take in mind that python sub versions may change because it will depend on the one used on [python dockerhub image.](https://hub.docker.com/_/python), it will be the same with [RabbitMQ](https://hub.docker.com/_/rabbitmq), and [MySQL](https://hub.docker.com/_/mysql). Even so, the python version in docker container (reviewed on 2022/01/04) is ```3.9.7```.
 
 * Docker compose schema version:  3.8
 * Python image:  3
 * RabbitMQ image: 3
 * MySQL image:  5.6
-* Django version:  3.2.6
+* Django version:  4.0.0
 * DjangoRESTFramework version:  3.12.4
 * Celery version:  5.1.2
 
