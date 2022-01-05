@@ -8,10 +8,10 @@ bash:
 	docker-compose exec app /bin/bash
 
 shell:
-	docker exec -it django-app bash -c "python manage.py shell_plus"
+	docker exec -it django-app bash -c "python manage.py shell_plus ${SETTINGS}"
 
 test:
-	docker exec -it django-app bash -c "python manage.py test"
+	docker exec -it django-app bash -c "python manage.py test ${APP}"
 
 freeze:
 	# docker exec -it django-app bash -c "pip freeze > requirements.txt"
