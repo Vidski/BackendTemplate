@@ -4,6 +4,9 @@ up:
 stop:
 	docker-compose stop
 
+ps:
+	docker-compose ps
+
 bash:
 	docker-compose exec app /bin/bash
 
