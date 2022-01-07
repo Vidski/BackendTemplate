@@ -6,6 +6,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 
 from Users.models import User
+from Users.fakers.user_fakers import AdminFaker, UserFaker
 
 ENDPOINT = '/api/v1/users'
 
@@ -14,31 +15,9 @@ class UsersAbstractUtils(TestCase):
 
     def setUp(self):
         self._clean()
-        self.admin_user = self._create_user(is_admin=True, **{
-            'email': 'adminuser@appname.me',
-            'phone_number': '+34123456789'})
-        self.normal_user = self._create_user(**{
-            'email': 'normaluser@appname.me',
-            'phone_number': '+032923093'})
+        self.admin_user = AdminFaker()
+        self.normal_user = UserFaker()
         self.client = APIClient()
-
-    def _create_user(self, is_admin=False, **kwargs):
-        first_name = kwargs.get('name', 'Name')
-        last_name = kwargs.get('last_name', 'Last Name')
-        email = kwargs.get('email', 'user@appname.me')
-        password = kwargs.get('password', 'password')
-        is_admin = kwargs.get('is_admin', is_admin)
-        phone_number = kwargs.get('phone_number', '+1234567890')
-        user =  User.objects.create_user(first_name = first_name,
-                                        last_name = last_name,
-                                        email = email,
-                                        password ='',
-                                        is_admin = is_admin,
-                                        is_verified = is_admin,
-                                        phone_number = phone_number)
-        user.set_password(password)
-        user.save()
-        return user
 
     def _clean(self):
         User.objects.all().delete()
@@ -141,7 +120,7 @@ class UserTests(UsersAbstractUtils):
 
     def test_sign_up(self):
         # Test that cannot signup with an used email
-        self._create_user(**{'email': 'emailused@appname.me'})
+        UserFaker(email="emailused@appname.me")
         data = {
             "first_name":"Test",
             "last_name":"Tested",
@@ -251,7 +230,7 @@ class UserTests(UsersAbstractUtils):
         self.client.force_authenticate(user=self.normal_user)
 
         # Test that an user verified can't update its email to one already used
-        self._create_user(**{'email': 'emailused@appname.me'})
+        UserFaker(email='emailused@appname.me')
         data = {
             "first_name":"Test",
             "last_name":"Tested",
@@ -263,7 +242,7 @@ class UserTests(UsersAbstractUtils):
         self.assertTrue("Email is taken" in response.data)
 
         # Test that an user verified can't update its phone to one already used
-        self._create_user(**{'phone_number': '+03999999999'})
+        UserFaker(phone_number='+03999999999')
         data = {
             "first_name":"Test",
             "last_name":"Tested",
@@ -363,10 +342,10 @@ class UserTests(UsersAbstractUtils):
         self.assertEqual(User.objects.count(), 1)
 
     def test_log_in(self):
-        testing_user = self._create_user(**{
-            'email': 'rightemail@appname.me',
-            'password': 'RightPassword'
-        })
+        testing_user = UserFaker(
+            email='rightemail@appname.me',
+            password='RightPassword'
+        )
 
         # Test that cannot log in with an invalid email
         data = {
