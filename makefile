@@ -14,13 +14,22 @@ shell:
 	docker exec -it django-app bash -c "python manage.py shell_plus ${SETTINGS}"
 
 migrate:
-	docker exec -it django-app bash -c "python manage.py makemigrations && python manage.py migrate ${SETTINGS}"
+	docker exec -it django-app bash -c "python manage.py makemigrations ${SETTINGS}"
+	docker exec -it django-app bash -c "python manage.py migrate ${SETTINGS}"
 
 populate:
 	docker exec -it django-app bash -c "python manage.py populate_db ${SETTINGS}"
 
 flush:
 	docker exec -it django-app bash -c "python manage.py flush ${SETTINGS}"
+
+recreate:
+	make flush
+	make migrate
+	make populate
+
+create_test_db:
+	docker exec -it django-app bash -c "python manage.py create_test_db"
 
 test:
 	docker exec -it django-app bash -c "python manage.py test ${APP} --keepdb"
@@ -33,6 +42,12 @@ test-populate:
 
 test-flush:
 	SETTINGS=--settings=Settings.test_settings make flush
+
+test-recreate:
+	make test-flush
+	make create_test_db
+	make test-migrate
+	make test-populate
 
 freeze:
 	# docker exec -it django-app bash -c "pip freeze > requirements.txt"
