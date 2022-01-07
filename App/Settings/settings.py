@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-8)2_6df)vsc=0pn)hu712dkej_803h7719)a4n-5!5n0cr((2l
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+ENVIRONMENT_NAME = 'dev'
 ALLOWED_HOSTS = []
 
 
@@ -57,7 +57,8 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    'Users'
+    'Users',
+    'Settings'
 ]
 
 INSTALLED_APPS = SPECIAL_APPS + DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -174,6 +175,7 @@ DATABASES = {
         'HOST': 'database', # <-- docker host name for db
         'PORT': '3306', # <-- docker port for db
         'TEST': {
+            # https://docs.djangoproject.com/en/4.0/topics/testing/overview/#the-test-database
             'NAME': 'test_database'
         }
     }
