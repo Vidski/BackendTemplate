@@ -82,58 +82,6 @@ class UsersManagersTests(TestCase):
 
 class UserTests(UsersAbstractUtils):
 
-    def test_log_in(self):
-        testing_user = UserFaker(
-            email='rightemail@appname.me',
-            password='RightPassword'
-        )
-
-        # Test that cannot log in with an invalid email
-        data = {
-            'email': 'wroongemail@appname.me',
-            'password': 'RightPassword'
-        }
-        response = self.client.post(f'{ENDPOINT}/login/', data, format='json')
-        message = 'Invalid credentials'
-        self.assertEqual(response.status_code, 400)
-        self.assertTrue(message in response.data['non_field_errors'][0])
-
-        # Test that cannot log in with an invalid password
-        data = {
-            'email': 'rightemail@appname.me',
-            'password': 'WrongPassword'
-        }
-        response = self.client.post(f'{ENDPOINT}/login/', data, format='json')
-        message = 'Invalid credentials'
-        self.assertEqual(response.status_code, 400)
-        self.assertTrue(message in response.data['non_field_errors'][0])
-
-        # Test that user not verified cannot log in
-        data = {
-            'email': 'rightemail@appname.me',
-            'password': 'RightPassword'
-        }
-        response = self.client.post(f'{ENDPOINT}/login/', data, format='json')
-        message = 'User is not verified'
-        self.assertEqual(response.status_code, 400)
-        self.assertTrue(message in response.data['non_field_errors'][0])
-
-        # Test that user verified can log in
-        testing_user.is_verified = True
-        testing_user.save()
-        data = {
-            'email': 'rightemail@appname.me',
-            'password': 'RightPassword'
-        }
-        response = self.client.post(f'{ENDPOINT}/login/', data, format='json')
-        self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content)
-        self.assertTrue('token' in data)
-        self.assertTrue('user' in data)
-        self.assertEqual(data['user']['first_name'], testing_user.first_name)
-        self.assertEqual(data['user']['last_name'], testing_user.last_name)
-        self.assertEqual(data['user']['email'], testing_user.email)
-
     def test_verify_user(self):
         # Test that any user can verify its user with a get
         # request with it id and token
@@ -238,6 +186,67 @@ class UserCreateTest(UsersAbstractUtils):
         self.assertEqual(response.data['is_verified'], False)
         self.assertEqual(response.data['is_admin'], False)
         self.assertEqual(response.data['is_premium'], False)
+
+
+class UserLogInTest(UsersAbstractUtils):
+
+    def test_login_fails_with_wrong_email(self):
+        data = {
+            'email': 'wroongemail@appname.me',
+            'password': 'RightPassword'
+        }
+        response = self.client.post(f'{ENDPOINT}/login/', data, format='json')
+        message = 'Invalid credentials'
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(message in response.data['non_field_errors'][0])
+
+    def test_login_fails_with_wrong_password(self):
+        UserFaker(
+            email='rightemail@appname.me',
+            password='RightPassword'
+        )
+        data = {
+            'email': 'rightemail@appname.me',
+            'password': 'WrongPassword'
+        }
+        response = self.client.post(f'{ENDPOINT}/login/', data, format='json')
+        message = 'Invalid credentials'
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(message in response.data['non_field_errors'][0])
+
+    def test_login_fails_with_user_not_verified(self):
+        UserFaker(
+            email='rightemail@appname.me',
+            password='RightPassword'
+        )
+        data = {
+            'email': 'rightemail@appname.me',
+            'password': 'RightPassword'
+        }
+        response = self.client.post(f'{ENDPOINT}/login/', data, format='json')
+        message = 'User is not verified'
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(message in response.data['non_field_errors'][0])
+
+    def test_log_in_is_successful_with_a_verified_user(self):
+        testing_user = UserFaker(
+            email='rightemail@appname.me',
+            password='RightPassword'
+        )
+        testing_user.is_verified = True
+        testing_user.save()
+        data = {
+            'email': 'rightemail@appname.me',
+            'password': 'RightPassword'
+        }
+        response = self.client.post(f'{ENDPOINT}/login/', data, format='json')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertTrue('token' in data)
+        self.assertTrue('user' in data)
+        self.assertEqual(data['user']['first_name'], testing_user.first_name)
+        self.assertEqual(data['user']['last_name'], testing_user.last_name)
+        self.assertEqual(data['user']['email'], testing_user.email)
 
 
 class UserListTests(UsersAbstractUtils):
