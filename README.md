@@ -105,7 +105,7 @@ Then you can create and app ([app vs project](https://docs.djangoproject.com/en/
 
 Or in the container bash:
 
-    python manage.py migrate <app-name>
+    python manage.py create-app <app-name>
 
 
 To test your django applications you must run:
