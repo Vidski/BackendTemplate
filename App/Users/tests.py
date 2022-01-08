@@ -82,80 +82,6 @@ class UsersManagersTests(TestCase):
 
 class UserTests(UsersAbstractUtils):
 
-    def test_sign_up(self):
-        # Test that cannot signup with an used email
-        UserFaker(email="emailused@appname.me")
-        data = {
-            "first_name":"Test",
-            "last_name":"Tested",
-            "email":"emailused@appname.me",
-            "password":"password",
-            "password_confirmation":"password"
-        }
-        response = self.client.post(f'{ENDPOINT}/signup/', data, format='json')
-        message_one = 'email'
-        message_two = 'This field must be unique'
-        self.assertEqual(response.status_code, 400)
-        self.assertTrue(message_one in response.data)
-        self.assertTrue(message_two in response.data['email'][0])
-
-        # Test that cant sign up with a common password
-        data = {
-            "first_name":"Test",
-            "last_name":"Tested",
-            "email":"unusedemail@appname.me",
-            "password":"password",
-            "password_confirmation":"password"
-        }
-        response = self.client.post(f'{ENDPOINT}/signup/', data, format='json')
-        message = 'This password is too common.'
-        self.assertEqual(response.status_code, 400)
-        self.assertTrue(message in response.data['non_field_errors'][0])
-
-        # Test that cant sign up
-        data = {
-            "first_name":"Test",
-            "last_name":"Tested",
-            "email":"unusedemail@appname.me",
-            "password":"strongpassword",
-            "password_confirmation":"strongpassword"
-        }
-        self.assertEqual(User.objects.count(), 3)
-        response = self.client.post(f'{ENDPOINT}/signup/', data, format='json')
-        self.assertEqual(User.objects.count(), 4)
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data['first_name'], data['first_name'])
-        self.assertEqual(response.data['last_name'], data['last_name'])
-        self.assertEqual(response.data['email'], data['email'])
-        self.assertEqual(response.data['phone_number'], '')
-        self.assertEqual(response.data['is_verified'], False)
-        self.assertEqual(response.data['is_admin'], False)
-        self.assertEqual(response.data['is_premium'], False)
-
-        # Test that special fields cant be setted up in sign up accepted request
-        data = {
-            "first_name":"Test",
-            "last_name":"Tested",
-            "email":"unusedemail2@appname.me",
-            "password":"strongpassword",
-            "password_confirmation":"strongpassword",
-            "phone_number": "+03999999999",
-            "is_verified": True,
-            "is_admin": True,
-            "is_premium": True
-        }
-        self.assertEqual(User.objects.count(), 4)
-        response = self.client.post(f'{ENDPOINT}/signup/', data, format='json')
-        self.assertEqual(User.objects.count(), 5)
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data['first_name'], data['first_name'])
-        self.assertEqual(response.data['last_name'], data['last_name'])
-        self.assertEqual(response.data['email'], data['email'])
-        self.assertEqual(response.data['phone_number'], '')
-        self.assertEqual(response.data['is_verified'], False)
-        self.assertEqual(response.data['is_admin'], False)
-        self.assertEqual(response.data['is_premium'], False)
-
     def test_log_in(self):
         testing_user = UserFaker(
             email='rightemail@appname.me',
@@ -234,6 +160,84 @@ class UserTests(UsersAbstractUtils):
         self.assertEqual(response.status_code, 200)
         self.normal_user = User.objects.get(id=self.normal_user.id)
         self.assertTrue(self.normal_user.check_password('NewPassword95'))
+
+
+class UserCreateTest(UsersAbstractUtils):
+
+    def test_create_user_fails_with_an_used_email(self):
+        UserFaker(email="emailused@appname.me")
+        data = {
+            "first_name":"Test",
+            "last_name":"Tested",
+            "email":"emailused@appname.me",
+            "password":"password",
+            "password_confirmation":"password"
+        }
+        response = self.client.post(f'{ENDPOINT}/signup/', data, format='json')
+        message_one = 'email'
+        message_two = 'This field must be unique'
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(message_one in response.data)
+        self.assertTrue(message_two in response.data['email'][0])
+
+    def test_create_user_fails_with_a_common_password(self):
+        data = {
+            "first_name":"Test",
+            "last_name":"Tested",
+            "email":"unusedemail@appname.me",
+            "password":"password",
+            "password_confirmation":"password"
+        }
+        response = self.client.post(f'{ENDPOINT}/signup/', data, format='json')
+        message = 'This password is too common.'
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(message in response.data['non_field_errors'][0])
+
+    def test_create_user_is_successfull(self):
+        data = {
+            "first_name":"Test",
+            "last_name":"Tested",
+            "email":"unusedemail@appname.me",
+            "password":"strongpassword",
+            "password_confirmation":"strongpassword"
+        }
+        # Normal and admin user already in database
+        self.assertEqual(User.objects.count(), 2)
+        response = self.client.post(f'{ENDPOINT}/signup/', data, format='json')
+        self.assertEqual(User.objects.count(), 3)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data['first_name'], data['first_name'])
+        self.assertEqual(response.data['last_name'], data['last_name'])
+        self.assertEqual(response.data['email'], data['email'])
+        self.assertEqual(response.data['phone_number'], '')
+        self.assertEqual(response.data['is_verified'], False)
+        self.assertEqual(response.data['is_admin'], False)
+        self.assertEqual(response.data['is_premium'], False)
+
+    def test_sign_up_is_successfull_but_do_not_create_an_user_with_special_fields_modified(self):
+        data = {
+            "first_name":"Test",
+            "last_name":"Tested",
+            "email":"unusedemail2@appname.me",
+            "password":"strongpassword",
+            "password_confirmation":"strongpassword",
+            "phone_number": "+03999999999",
+            "is_verified": True,
+            "is_admin": True,
+            "is_premium": True
+        }
+        # Normal and admin user already in database
+        self.assertEqual(User.objects.count(), 2)
+        response = self.client.post(f'{ENDPOINT}/signup/', data, format='json')
+        self.assertEqual(User.objects.count(), 3)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data['first_name'], data['first_name'])
+        self.assertEqual(response.data['last_name'], data['last_name'])
+        self.assertEqual(response.data['email'], data['email'])
+        self.assertEqual(response.data['phone_number'], '')
+        self.assertEqual(response.data['is_verified'], False)
+        self.assertEqual(response.data['is_admin'], False)
+        self.assertEqual(response.data['is_premium'], False)
 
 
 class UserListTests(UsersAbstractUtils):
