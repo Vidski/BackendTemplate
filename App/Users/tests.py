@@ -80,36 +80,6 @@ class UsersManagersTests(TestCase):
             User.objects.create_superuser(email='', password="foo")
 
 
-class UserTests(UsersAbstractUtils):
-
-    def test_verify_user(self):
-        # Test that any user can verify its user with a get
-        # request with it id and token
-        token = self.normal_user.generate_verification_token()
-        self.assertEqual(self.normal_user.is_verified, False)
-        response = self.client.get(f'{ENDPOINT}/{self.normal_user.id}/verify/?token={token}')
-        self.assertEqual(response.status_code, 202)
-        normal_user_updated = User.objects.get(id=self.normal_user.id)
-        self.assertEqual(normal_user_updated.is_verified, True)
-
-    def test_reset_password(self):
-        # Test that any user can reset its password via API
-        self.assertTrue(self.normal_user.check_password('password'))
-        response = self.client.post(f'/api/v1/password_reset/', {'email': self.normal_user.email})
-        self.assertEqual(response.status_code, 200)
-        tokens = ResetPasswordToken.objects.all()
-        self.assertEqual(len(tokens), 1)
-        token = tokens[0].key
-        data = {
-            'token': token,
-            'password': 'NewPassword95'
-        }
-        self.client.post(f'/api/v1/password_reset/confirm/', data, format='json')
-        self.assertEqual(response.status_code, 200)
-        self.normal_user = User.objects.get(id=self.normal_user.id)
-        self.assertTrue(self.normal_user.check_password('NewPassword95'))
-
-
 class UserCreateTest(UsersAbstractUtils):
 
     def test_create_user_fails_with_an_used_email(self):
@@ -539,3 +509,35 @@ class UserDeleteTests(UsersAbstractUtils):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(User.objects.count(), 1)
 
+
+class UserVerifyTests(UsersAbstractUtils):
+
+    def test_verify_user(self):
+        # Test that any user can verify its user with a get
+        # request with it id and token
+        token = self.normal_user.generate_verification_token()
+        self.assertEqual(self.normal_user.is_verified, False)
+        response = self.client.get(f'{ENDPOINT}/{self.normal_user.id}/verify/?token={token}')
+        self.assertEqual(response.status_code, 202)
+        normal_user_updated = User.objects.get(id=self.normal_user.id)
+        self.assertEqual(normal_user_updated.is_verified, True)
+
+
+class UserPasswordResetTests(UsersAbstractUtils):
+
+    def test_reset_password(self):
+        # Test that any user can reset its password via API
+        self.assertTrue(self.normal_user.check_password('password'))
+        response = self.client.post(f'/api/v1/password_reset/', {'email': self.normal_user.email})
+        self.assertEqual(response.status_code, 200)
+        tokens = ResetPasswordToken.objects.all()
+        self.assertEqual(len(tokens), 1)
+        token = tokens[0].key
+        data = {
+            'token': token,
+            'password': 'NewPassword95'
+        }
+        self.client.post(f'/api/v1/password_reset/confirm/', data, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.normal_user = User.objects.get(id=self.normal_user.id)
+        self.assertTrue(self.normal_user.check_password('NewPassword95'))
