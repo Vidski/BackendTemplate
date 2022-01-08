@@ -5,8 +5,8 @@ from django_rest_passwordreset.models import ResetPasswordToken
 from django.test import TestCase
 from rest_framework.test import APIClient
 
-from Users.models import User
 from Users.fakers.user_fakers import AdminFaker, UserFaker
+from Users.models import User
 
 ENDPOINT = '/api/v1/users'
 
