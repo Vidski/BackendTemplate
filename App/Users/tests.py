@@ -267,7 +267,7 @@ class UserGetTests(UsersAbstractUtils):
         response = self.client.get(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
         self.assertEqual(response.status_code, 401)
 
-    def testget_user_fails_as_an_authenticated_unverified_user(self):
+    def test_get_user_fails_as_an_authenticated_unverified_user(self):
         self.client.force_authenticate(user=self.normal_user)
         response = self.client.get(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
         self.assertEqual(response.status_code, 403)
