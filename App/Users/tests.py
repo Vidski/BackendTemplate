@@ -280,31 +280,6 @@ class UserTests(UsersAbstractUtils):
         self.normal_user = User.objects.get(id=self.normal_user.id)
         self.assertTrue(self.normal_user.check_password(data["password"]))
 
-    def test_delete_user(self):
-        # Test that an unauthenticated user can't delete users data
-        self.assertEqual(User.objects.count(), 2)
-        response = self.client.delete(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
-        self.assertEqual(response.status_code, 401)
-        self.assertEqual(User.objects.count(), 2)
-
-        # Test that an unverified user can't delete its data
-        self.client.force_authenticate(user=self.normal_user)
-        response = self.client.delete(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(User.objects.count(), 2)
-
-        # Test that a verified user can't delete other's data
-        self.normal_user.is_verified = True
-        self.normal_user.save()
-        response = self.client.delete(f'{ENDPOINT}/{self.admin_user.id}/', format='json')
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(User.objects.count(), 2)
-
-        # Test that a verified user can delete its data
-        response = self.client.delete(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
-        self.assertEqual(response.status_code, 204)
-        self.assertEqual(User.objects.count(), 1)
-
     def test_log_in(self):
         testing_user = UserFaker(
             email='rightemail@appname.me',
@@ -441,3 +416,41 @@ class UserGetTests(UsersAbstractUtils):
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.get(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
         self.assertEqual(response.status_code, 200)
+
+
+class UserDeleteTests(UsersAbstractUtils):
+
+    def test_delete_user_fails_as_an_unauthenticated_user(self):
+        self.assertEqual(User.objects.count(), 2)
+        response = self.client.delete(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(User.objects.count(), 2)
+
+    def test_delete_user_fails_as_an_authenticated_unverified_user_to_its_data(self):
+        self.client.force_authenticate(user=self.normal_user)
+        response = self.client.delete(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(User.objects.count(), 2)
+
+    def test_delete_user_fails_as_an_authenticated_verified_user_to_to_other_users_data(self):
+        self.normal_user.is_verified = True
+        self.normal_user.save()
+        self.client.force_authenticate(user=self.normal_user)
+        response = self.client.delete(f'{ENDPOINT}/{self.admin_user.id}/', format='json')
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(User.objects.count(), 2)
+
+    def test_delete_user_is_successful_as_an_authenticated_verified_user_to_its_data(self):
+        self.normal_user.is_verified = True
+        self.normal_user.save()
+        self.client.force_authenticate(user=self.normal_user)
+        response = self.client.delete(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(User.objects.count(), 1)
+
+    def test_delete_user_is_successful_as_admin_to_other_users_data(self):
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.delete(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(User.objects.count(), 1)
+
