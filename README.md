@@ -90,22 +90,39 @@ You can change project name to your actual app name, just take in mind that you 
 
 To actual interact with django admin for the first time, you will need to run:
 
+    make migrate
+    make createsuperuser
+
+Or acces into the bash (you can do it running ```make bash```) and run:
+
     python3 manage.py migrate
     python3 manage.py createsuperuser
-     
-And create your super user.
+    
 
 Then you can create and app ([app vs project](https://docs.djangoproject.com/en/3.2/intro/tutorial01/#creating-the-polls-app)) running:
 
-    python3 manage.py startapp app-name
+    APP=<app-name> make create-app
+
+Or in the container bash:
+
+    python manage.py migrate <app-name>
+
 
 To test your django applications you must run:
-  
+
+    make test
+
+Or in the conteiner bash:
+
     python3 manage.py test
     
 The first time you run a test, you probably will get an error message saying that your user does not have permissions to interact with the database.
 To fix that, you must enter you database mysql container as a root running something like this:
- 
+    
+    USER=root PASSWORD=password make database
+
+Or:
+
     docker-compose exec database mysql -uroot -ppassword
 
 Then you must grant your user the privileges making the following query:
