@@ -13,6 +13,12 @@ bash:
 shell:
 	docker exec -it django-app bash -c "python manage.py shell_plus ${SETTINGS}"
 
+create-app:
+	docker exec -it django-app bash -c "python manage.py create-app ${APP}"
+
+createsuperuser:
+	docker exec -it django-app bash -c "python manage.py createsuperuser"
+
 migrate:
 	docker exec -it django-app bash -c "python manage.py makemigrations ${SETTINGS}"
 	docker exec -it django-app bash -c "python manage.py migrate ${SETTINGS}"
@@ -28,7 +34,7 @@ recreate:
 	make migrate
 	make populate
 
-create_test_db:
+create-test-db:
 	docker exec -it django-app bash -c "python manage.py create_test_db"
 
 test:
