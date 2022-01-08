@@ -156,130 +156,6 @@ class UserTests(UsersAbstractUtils):
         self.assertEqual(response.data['is_admin'], False)
         self.assertEqual(response.data['is_premium'], False)
 
-    def test_update_user(self):
-        # Set data test for update
-        data = {
-            "first_name":"Test edited",
-            "last_name":"Tested Edit",
-            "email":"edituser2@appname.me",
-            "phone_number": "+32987654321",
-            "old_password": "password",
-            "password":"NewPassword95"
-        }
-        # Test that an unauthenticated user can't update users data
-        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
-        self.assertEqual(response.status_code, 401)
-
-        # Test that an unverified user can't update its data
-        self.client.force_authenticate(user=self.normal_user)
-        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
-        self.assertEqual(response.status_code, 403)
-        self.normal_user.is_verified = True
-        self.normal_user.save()
-
-        # Test that a verified user can't update other's data
-        response = self.client.put(f'{ENDPOINT}/{self.admin_user.id}/', data, format='json')
-        self.assertEqual(response.status_code, 403)
-        self.assertNotEqual(self.normal_user.email, data["email"])
-
-        # Test that a verified user can update its data
-        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
-        self.assertEqual(response.status_code, 202)
-        self.normal_user = User.objects.get(id=self.normal_user.id)
-        self.assertEqual(self.normal_user.email, data["email"])
-        self.assertEqual(self.normal_user.phone_number, data["phone_number"])
-        self.assertEqual(self.normal_user.first_name, data["first_name"])
-        self.assertEqual(self.normal_user.last_name, data["last_name"])
-        self.assertTrue(self.normal_user.check_password(data["password"]))
-        self.client.force_authenticate(user=self.normal_user)
-
-        # Test that an user verified can't update its email to one already used
-        UserFaker(email='emailused@appname.me')
-        data = {
-            "first_name":"Test",
-            "last_name":"Tested",
-            "email":"emailused@appname.me",
-            "password":"password"
-        }
-        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
-        self.assertEqual(response.status_code, 400)
-        self.assertTrue("Email is taken" in response.data)
-
-        # Test that an user verified can't update its phone to one already used
-        UserFaker(phone_number='+03999999999')
-        data = {
-            "first_name":"Test",
-            "last_name":"Tested",
-            "email":"edituser3@appname.me",
-            "password":"password",
-            "phone_number": "+03999999999"
-        }
-        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
-        self.assertEqual(response.status_code, 400)
-        self.assertTrue("Phone number is taken" in response.data)
-
-        # Test a user can't update its password with a wrong old password
-        data = {
-            "first_name":"Test",
-            "last_name":"Tested",
-            "email":"finalemail@appname.me",
-            "phone_number": "+32987654321",
-            "old_password": "NewPassword95 wrong",
-            "password":"This is a password"
-        }
-        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
-        message = "Wrong password"
-        self.assertEqual(response.status_code, 400)
-        self.assertTrue(message in response.data)
-
-        # Test a user can't update its password without the old one
-        data = {
-            "first_name":"Test",
-            "last_name":"Tested",
-            "email":"finalemail@appname.me",
-            "phone_number": "+32987654321",
-            "password":"This is a password"
-        }
-        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
-        message = 'Old password is required to set a new one'
-        self.assertEqual(response.status_code, 400)
-        self.assertTrue(message in response.data)
-
-        # Test a user can't update special fields on a valid request
-        data = {
-            "first_name":"Test",
-            "last_name":"Tested",
-            "email":"emailemail@appname.me",
-            "phone_number": "+32987654321",
-            "old_password":"NewPassword95",
-            "password":"This is a password",
-            "is_verified": False,
-            "is_admin": True,
-            "is_premium": True
-        }
-        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
-        self.assertEqual(response.status_code, 202)
-        self.normal_user = User.objects.get(id=self.normal_user.id)
-        self.assertEqual(self.normal_user.email, data["email"])
-        self.assertEqual(self.normal_user.phone_number, data["phone_number"])
-        self.assertEqual(self.normal_user.first_name, data["first_name"])
-        self.assertEqual(self.normal_user.last_name, data["last_name"])
-        self.assertTrue(self.normal_user.check_password(data["password"]))
-        self.assertEqual(self.normal_user.is_verified, True)
-        self.assertEqual(self.normal_user.is_admin, False)
-        self.assertEqual(self.normal_user.is_premium, False)
-        self.client.force_authenticate(user=self.normal_user)
-
-        # Test a user can update only the password with the old one
-        data = {
-            "old_password":"This is a password",
-            "password":"Password 123456789"
-        }
-        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
-        self.assertEqual(response.status_code, 202)
-        self.normal_user = User.objects.get(id=self.normal_user.id)
-        self.assertTrue(self.normal_user.check_password(data["password"]))
-
     def test_log_in(self):
         testing_user = UserFaker(
             email='rightemail@appname.me',
@@ -416,6 +292,202 @@ class UserGetTests(UsersAbstractUtils):
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.get(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
         self.assertEqual(response.status_code, 200)
+
+
+class UserUpdateTest(UsersAbstractUtils):
+
+    def test_update_user_fails_as_an_unauthenticated_user(self):
+        data = {
+            "first_name":"Test edited",
+            "last_name":"Tested Edit",
+            "email":"edituser2@appname.me",
+            "phone_number": "+32987654321",
+            "old_password": "password",
+            "password":"NewPassword95"
+        }
+        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        self.assertEqual(response.status_code, 401)
+
+    def test_update_user_fails_as_an_authenticated_unverified_user(self):
+        data = {
+            "first_name":"Test edited",
+            "last_name":"Tested Edit",
+            "email":"edituser2@appname.me",
+            "phone_number": "+32987654321",
+            "old_password": "password",
+            "password":"NewPassword95"
+        }
+        self.client.force_authenticate(user=self.normal_user)
+        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        self.assertEqual(response.status_code, 403)
+
+    def test_update_user_fails_as_an_authenticated_verified_user_to_other_users_data(self):
+        data = {
+            "first_name":"Test edited",
+            "last_name":"Tested Edit",
+            "email":"edituser2@appname.me",
+            "phone_number": "+32987654321",
+            "old_password": "password",
+            "password":"NewPassword95"
+        }
+        self.normal_user.is_verified = True
+        self.normal_user.save()
+        self.client.force_authenticate(user=self.normal_user)
+        response = self.client.put(f'{ENDPOINT}/{self.admin_user.id}/', data, format='json')
+        self.assertEqual(response.status_code, 403)
+        self.assertNotEqual(self.normal_user.email, data["email"])
+
+    def test_update_user_is_successful_as_an_authenticated_verified_user_to_its_data(self):
+        data = {
+            "first_name":"Test edited",
+            "last_name":"Tested Edit",
+            "email":"edituser2@appname.me",
+            "phone_number": "+32987654321",
+            "old_password": "password",
+            "password":"NewPassword95"
+        }
+        self.normal_user.is_verified = True
+        self.normal_user.save()
+        self.client.force_authenticate(user=self.normal_user)
+        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        self.assertEqual(response.status_code, 202)
+        self.normal_user = User.objects.get(id=self.normal_user.id)
+        self.assertEqual(self.normal_user.email, data["email"])
+        self.assertEqual(self.normal_user.phone_number, data["phone_number"])
+        self.assertEqual(self.normal_user.first_name, data["first_name"])
+        self.assertEqual(self.normal_user.last_name, data["last_name"])
+        self.assertTrue(self.normal_user.check_password(data["password"]))
+
+    def test_update_user_fails_as_an_authenticated_verified_user_with_an_used_email(self):
+        UserFaker(email='emailused@appname.me')
+        data = {
+            "first_name":"Test",
+            "last_name":"Tested",
+            "email":"emailused@appname.me",
+            "password":"password"
+        }
+        self.normal_user.is_verified = True
+        self.normal_user.save()
+        self.client.force_authenticate(user=self.normal_user)
+        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue("Email is taken" in response.data)
+
+    def test_update_user_fails_as_an_authenticated_verified_user_with_an_used_phone_number(self):
+        UserFaker(phone_number='+03999999999')
+        data = {
+            "first_name":"Test",
+            "last_name":"Tested",
+            "email":"edituser3@appname.me",
+            "password":"password",
+            "phone_number": "+03999999999"
+        }
+        self.normal_user.is_verified = True
+        self.normal_user.save()
+        self.client.force_authenticate(user=self.normal_user)
+        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue("Phone number is taken" in response.data)
+
+    def test_update_user_fails_as_an_authenticated_verified_user_with_a_wrong_old_password(self):
+        data = {
+            "first_name":"Test",
+            "last_name":"Tested",
+            "email":"finalemail@appname.me",
+            "phone_number": "+32987654321",
+            "old_password": "NewPassword95 wrong",
+            "password":"This is a password"
+        }
+        self.normal_user.is_verified = True
+        self.normal_user.save()
+        self.client.force_authenticate(user=self.normal_user)
+        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        message = "Wrong password"
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(message in response.data)
+
+    def test_update_user_fails_as_an_authenticated_verified_user_without_old_password(self):
+        self.normal_user.is_verified = True
+        self.normal_user.save()
+        self.client.force_authenticate(user=self.normal_user)
+        data = {
+            "first_name":"Test",
+            "last_name":"Tested",
+            "email":"finalemail@appname.me",
+            "phone_number": "+32987654321",
+            "password":"This is a password"
+        }
+        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        message = 'Old password is required to set a new one'
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(message in response.data)
+
+    def test_update_user_is_successful_as_an_authenticated_verified_user_with_just_a_new_password(self):
+        data = {
+            "old_password":"password",
+            "password":"New Password"
+        }
+        self.normal_user.is_verified = True
+        self.normal_user.save()
+        self.client.force_authenticate(user=self.normal_user)
+        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        self.assertEqual(response.status_code, 202)
+        self.normal_user = User.objects.get(id=self.normal_user.id)
+        self.assertTrue(self.normal_user.check_password(data["password"]))
+
+    def test_update_user_is_successful_as_an_authenticated_verified_user_but_do_not_change_special_fields(self):
+        data = {
+            "first_name":"Test",
+            "last_name":"Tested",
+            "email":"emailemail@appname.me",
+            "phone_number": "+32987654321",
+            "old_password":"password",
+            "password":"New password",
+            "is_verified": False,
+            "is_admin": True,
+            "is_premium": True
+        }
+        self.normal_user.is_verified = True
+        self.normal_user.save()
+        self.client.force_authenticate(user=self.normal_user)
+        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        self.assertEqual(response.status_code, 202)
+        self.normal_user = User.objects.get(id=self.normal_user.id)
+        self.assertEqual(self.normal_user.email, data["email"])
+        self.assertEqual(self.normal_user.phone_number, data["phone_number"])
+        self.assertEqual(self.normal_user.first_name, data["first_name"])
+        self.assertEqual(self.normal_user.last_name, data["last_name"])
+        self.assertTrue(self.normal_user.check_password(data["password"]))
+        self.assertEqual(self.normal_user.is_verified, True)
+        self.assertEqual(self.normal_user.is_admin, False)
+        self.assertEqual(self.normal_user.is_premium, False)
+
+    def test_update_user_is_successful_as_admin_to_other_user_data_but_do_not_change_special_fields(self):
+        data = {
+            "first_name":"Test",
+            "last_name":"Tested",
+            "email":"emailemail@appname.me",
+            "phone_number": "+32987654321",
+            "old_password":"password",
+            "password":"New password",
+            "is_verified": False,
+            "is_admin": True,
+            "is_premium": True
+        }
+        self.normal_user.is_verified = True
+        self.normal_user.save()
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        self.assertEqual(response.status_code, 202)
+        self.normal_user = User.objects.get(id=self.normal_user.id)
+        self.assertEqual(self.normal_user.email, data["email"])
+        self.assertEqual(self.normal_user.phone_number, data["phone_number"])
+        self.assertEqual(self.normal_user.first_name, data["first_name"])
+        self.assertEqual(self.normal_user.last_name, data["last_name"])
+        self.assertTrue(self.normal_user.check_password(data["password"]))
+        self.assertEqual(self.normal_user.is_verified, True)
+        self.assertEqual(self.normal_user.is_admin, False)
+        self.assertEqual(self.normal_user.is_premium, False)
 
 
 class UserDeleteTests(UsersAbstractUtils):
