@@ -82,28 +82,6 @@ class UsersManagersTests(TestCase):
 
 class UserTests(UsersAbstractUtils):
 
-    def test_list_users(self):
-        # Test that an unauthenticated user can't list users data
-        response = self.client.get(f'{ENDPOINT}/', format='json')
-        self.assertEqual(response.status_code, 401)
-
-        # Test that the petition with admin user is valid and returns the 2 users from setup
-        self.client.force_authenticate(user=self.admin_user)
-        response = self.client.get(f'{ENDPOINT}/', format='json')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 2)
-
-        # Test that the petition with normal user is denied
-        self.client.force_authenticate(user=self.normal_user)
-        response = self.client.get(f'{ENDPOINT}/', format='json')
-        self.assertEqual(response.status_code, 403)
-
-        # Test a petition with normal normal user verified is denied
-        self.normal_user.is_verified = True
-        self.normal_user.save()
-        response = self.client.get(f'{ENDPOINT}/', format='json')
-        self.assertEqual(response.status_code, 403)
-
     def test_get_user(self):
         # Test that an unauthenticated user can't get users data
         response = self.client.get(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
@@ -432,3 +410,28 @@ class UserTests(UsersAbstractUtils):
         self.assertEqual(response.status_code, 200)
         self.normal_user = User.objects.get(id=self.normal_user.id)
         self.assertTrue(self.normal_user.check_password('NewPassword95'))
+
+
+class UserListTests(UsersAbstractUtils):
+
+    def test_list_users_fails_as_an_unauthenticated_user(self):
+        response = self.client.get(f'{ENDPOINT}/', format='json')
+        self.assertEqual(response.status_code, 401)
+
+    def test_list_users_fails_as_an_authenticated_unverified_normal_user(self):
+        self.client.force_authenticate(user=self.normal_user)
+        response = self.client.get(f'{ENDPOINT}/', format='json')
+        self.assertEqual(response.status_code, 403)
+
+    def test_list_users_fails_as_an_authenticated_verified_normal_user(self):
+        self.normal_user.is_verified = True
+        self.normal_user.save()
+        self.client.force_authenticate(user=self.normal_user)
+        response = self.client.get(f'{ENDPOINT}/', format='json')
+        self.assertEqual(response.status_code, 403)
+
+    def test_list_users_is_successful_as_an_admin_user(self):
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.get(f'{ENDPOINT}/', format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 2)
