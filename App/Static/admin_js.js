@@ -1,9 +1,28 @@
+moveToHome();
+checkLogOut();
 addHomeButton();
 removeRedundantProfileButton();
 removeElements();
 removeUnnecessaryButton();
 addEyeToSeeProfile();
 changeHeaders();
+
+function checkLogOut() {
+  if (window.location.pathname == '/admin/logout/') {
+    localStorage.clear();
+  }
+}
+
+function moveToHome() {
+  var firstTime = localStorage.getItem('firstTime');
+  if (firstTime == null) {
+    localStorage.setItem('firstTime', true);
+  }
+  if (window.location.pathname === '/admin/' && firstTime == 'true') {
+    localStorage.setItem('firstTime', false);
+    window.location.href = '/home/admin/';
+  }
+}
 
 function addHomeButton() {
   $('.nav.nav-pills.nav-sidebar.flex-column.nav-flat.nav-compact').prepend('<li class="nav-item">' +
