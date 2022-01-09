@@ -154,14 +154,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'App.wsgi.application'
 
-# Celery params
-CELERY = {
-    'BROKER_URL': os.environ.get('CELERY_BROKER'),
-    'CELERY_IMPORTS': ('Worker.tasks', ),
-    'CELERY_TASK_SERIALIZER': 'json',
-    'CELERY_RESULT_SERIALIZER': 'json',
-    'CELERY_ACCEPT_CONTENT': ['json'],
-}
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -247,3 +239,8 @@ STATICFILES_DIRS = (
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Celery params
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
