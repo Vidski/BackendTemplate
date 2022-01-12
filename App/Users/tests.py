@@ -5,6 +5,7 @@ from django_rest_passwordreset.models import ResetPasswordToken
 from django.test import TestCase
 from rest_framework.test import APIClient
 
+from Users.factories.user_factories import UserFactory
 from Users.fakers.user_fakers import AdminFaker, UserFaker
 from Users.models import User
 
@@ -83,7 +84,7 @@ class UsersManagersTests(TestCase):
 class UserCreateTest(UsersAbstractUtils):
 
     def test_create_user_fails_with_an_used_email(self):
-        UserFaker(email="emailused@appname.me")
+        UserFactory(email="emailused@appname.me")
         data = {
             "first_name":"Test",
             "last_name":"Tested",
@@ -171,7 +172,7 @@ class UserLogInTest(UsersAbstractUtils):
         self.assertTrue(message in response.data['non_field_errors'][0])
 
     def test_login_fails_with_wrong_password(self):
-        UserFaker(
+        UserFactory(
             email='rightemail@appname.me',
             password='RightPassword'
         )
@@ -185,7 +186,7 @@ class UserLogInTest(UsersAbstractUtils):
         self.assertTrue(message in response.data['non_field_errors'][0])
 
     def test_login_fails_with_user_not_verified(self):
-        UserFaker(
+        UserFactory(
             email='rightemail@appname.me',
             password='RightPassword'
         )
@@ -199,7 +200,7 @@ class UserLogInTest(UsersAbstractUtils):
         self.assertTrue(message in response.data['non_field_errors'][0])
 
     def test_log_in_is_successful_with_a_verified_user(self):
-        testing_user = UserFaker(
+        testing_user = UserFactory(
             email='rightemail@appname.me',
             password='RightPassword'
         )
@@ -342,7 +343,7 @@ class UserUpdateTest(UsersAbstractUtils):
         self.assertTrue(self.normal_user.check_password(data["password"]))
 
     def test_update_user_fails_as_an_authenticated_verified_user_with_an_used_email(self):
-        UserFaker(email='emailused@appname.me')
+        UserFactory(email='emailused@appname.me')
         data = {
             "first_name":"Test",
             "last_name":"Tested",
@@ -357,7 +358,7 @@ class UserUpdateTest(UsersAbstractUtils):
         self.assertTrue("Email is taken" in response.data)
 
     def test_update_user_fails_as_an_authenticated_verified_user_with_an_used_phone_number(self):
-        UserFaker(phone_number='+03999999999')
+        UserFactory(phone_number='+03999999999')
         data = {
             "first_name":"Test",
             "last_name":"Tested",
