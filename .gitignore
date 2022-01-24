@@ -121,3 +121,8 @@ node_modules/
 
 # Bower
 bower_components/
+
+
+# Python Environment
+Pipfile
+Pipfile.lock
