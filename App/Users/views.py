@@ -64,7 +64,7 @@ class UserViewSet(viewsets.GenericViewSet):
         serializer.is_valid(request.data, request_user)
         user = serializer.update(instance, request.data)
         data = UserSerializer(user).data
-        logger.warning(f'Users App | User "{user.id}" updated at {datetime.datetime.now()}')
+        logger.info(f'Users App | User "{user.id}" updated at {datetime.datetime.now()}')
         return Response(data, status=UPDATED)
 
     def destroy(self, request, pk=None):
@@ -75,7 +75,7 @@ class UserViewSet(viewsets.GenericViewSet):
         instance, error = get_user_or_error(request_user, pk)
         if error:
             return error
-        logger.warning(f'Users App | User "{instance.id}" deleted at {datetime.datetime.now()}')
+        logger.info(f'Users App | User "{instance.id}" deleted at {datetime.datetime.now()}')
         instance.delete()
         return Response(status=DELETED)
 
