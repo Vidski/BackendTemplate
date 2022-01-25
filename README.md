@@ -81,7 +81,7 @@ You can change project name to your actual app name, just take in mind that you 
     
     Prometheus dashboard will be available on: [http://localhost:9090](http://localhost:9090)
 
-    Documentation served by Openapi (Swagger) will be available on: [http://localhost:8000/doc/swagger-ui](http://localhost:8000/doc/swagger/)
+    Documentation served by Openapi (Swagger) will be available on: [http://localhost:8000/doc/swagger](http://localhost:8000/doc/swagger/)
 
     You can also check the documentation server by Redoc on: [http://localhost:8000/doc/redoc](http://localhost:8000/doc/redoc/)
 
