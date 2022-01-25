@@ -10,5 +10,9 @@ DATABASES = {
         'PASSWORD': 'password',
         'HOST': 'database', # <-- docker host name for db
         'PORT': '3306', # <-- docker port for db
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'sql_mode': 'STRICT_TRANS_TABLES'
+        }
     }
 }
