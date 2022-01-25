@@ -1,5 +1,3 @@
-import factory
-
 from Users.factories.user_factories import UserFactory
 
 
