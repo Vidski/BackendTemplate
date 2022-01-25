@@ -49,16 +49,18 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
     def comprove_email(self, email, user):
-        users_with_email = User.objects.filter(email=email)
-        if len(users_with_email) > 0:
-            email_taken_by_other_user = users_with_email[0].id != user.id
+        users_with_same_email = User.objects.filter(email=email)
+        if users_with_same_email:
+            user_id = users_with_same_email.first().id
+            email_taken_by_other_user = user_id!= user.id
             if email_taken_by_other_user:
                 raise serializers.ValidationError('Email is taken')
 
     def comprove_phone_number(self, phone_number, user):
-        users_with_phone_number = User.objects.filter(phone_number=phone_number)
-        if len(users_with_phone_number) > 0:
-            phone_number_taken_by_other_user = users_with_phone_number[0].id != user.id
+        users_with_same_phone_number = User.objects.filter(phone_number=phone_number)
+        if users_with_same_phone_number:
+            user_id = users_with_same_phone_number.first().id
+            phone_number_taken_by_other_user = user_id != user.id
             if phone_number_taken_by_other_user:
                 raise serializers.ValidationError('Phone number is taken')
 
@@ -75,7 +77,11 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['first_name', 'phone_number', 'email', 'created_at', 'updated_at']
+        fields = ['first_name',
+                  'phone_number',
+                  'email',
+                  'created_at',
+                  'updated_at']
 
 
 class UserAuthSerializer(serializers.Serializer):
@@ -92,7 +98,10 @@ class UserAuthSerializer(serializers.Serializer):
     updated_at = serializers.DateTimeField(read_only=True)
     is_admin = serializers.BooleanField(read_only=True)
     email = serializers.EmailField(required=True)
-    password = serializers.CharField(write_only=True, min_length=8, max_length=64, required=True)
+    password = serializers.CharField(write_only=True,
+                                     min_length=8,
+                                     max_length=64,
+                                     required=True)
 
 
 class UserLoginSerializer(UserAuthSerializer):
@@ -128,7 +137,12 @@ class UserLoginSerializer(UserAuthSerializer):
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email','phone_number', 'email', 'created_at', 'updated_at']
+        fields = ['first_name',
+                  'last_name',
+                  'email','phone_number',
+                  'email',
+                  'created_at',
+                  'updated_at']
 
 
 class UserSignUpSerializer(UserAuthSerializer):
@@ -139,7 +153,10 @@ class UserSignUpSerializer(UserAuthSerializer):
     last_name = serializers.CharField(required=True, max_length=255)
     email = serializers.EmailField(required=True,
                                    validators=[UniqueValidator(queryset=User.objects.all())])
-    password_confirmation = serializers.CharField(write_only=True, min_length=8, max_length=64, required=False)
+    password_confirmation = serializers.CharField(write_only=True,
+                                                  min_length=8,
+                                                  max_length=64,
+                                                  required=False)
 
     def get_query_set(self):
         token = self.request.query_params.get('token', None)
