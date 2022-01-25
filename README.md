@@ -43,6 +43,7 @@ All we be in one Docker container that will be already setted up to just start c
 - [Docker documentation.](https://docs.celeryproject.org/en/stable/index.html#)
 - [Django documentation.](https://www.djangoproject.com/)
 - [DjangoREST documentation.](https://www.django-rest-framework.org/)
+- [Django Jazzmin documentation.](https://django-jazzmin.readthedocs.io/)
 - [Celery documentation.](https://docs.celeryproject.org/)
 - [RabbitMQ documentation.](https://www.rabbitmq.com/)
 - [Flower documentation.](https://flower.readthedocs.io/en/latest/)
@@ -80,7 +81,7 @@ You can change project name to your actual app name, just take in mind that you 
     
     Prometheus dashboard will be available on: [http://localhost:9090](http://localhost:9090)
 
-    Documentation served by Openapi (Swagger) will be available on: [http://localhost:8000/doc/swagger-ui](http://localhost:8000/doc/swagger-ui/)
+    Documentation served by Openapi (Swagger) will be available on: [http://localhost:8000/doc/swagger-ui](http://localhost:8000/doc/swagger/)
 
     You can also check the documentation server by Redoc on: [http://localhost:8000/doc/redoc](http://localhost:8000/doc/redoc/)
 
@@ -95,8 +96,8 @@ To actual interact with django admin for the first time, you will need to run:
 
 Or acces into the bash (you can do it running ```make bash```) and run:
 
-    python3 manage.py migrate
-    python3 manage.py createsuperuser
+    python manage.py migrate
+    python manage.py createsuperuser
     
 
 Then you can create and app ([app vs project](https://docs.djangoproject.com/en/3.2/intro/tutorial01/#creating-the-polls-app)) running:
@@ -114,7 +115,7 @@ To test your django applications you must run:
 
 Or in the conteiner bash:
 
-    python3 manage.py test
+    python manage.py test
     
 The first time you run a test, you probably will get an error message saying that your user does not have permissions to interact with the database.
 To fix that, you must enter you database mysql container as a root running something like this:
@@ -208,7 +209,7 @@ This example will be for an User model with email (as identifier) and name as pa
 
 1. Create the users app running:
 
-        python3 manage.py startapp users
+        python manage.py startapp users
 
 2. Add ```users``` to installed apps section in project settings (```App/settings.py```) file, and in the same file add: 
               
@@ -289,13 +290,13 @@ This example will be for an User model with email (as identifier) and name as pa
 4. Enter the container shell to interact directly with django and run:
 
     ``` 
-    python3 manage.py makemigrations
+    python manage.py makemigrations
     ```  
      
 5. Now you will now have to apply the migrations running:
 
     ``` 
-    python3 manage.py migrate
+    python manage.py migrate
     ``` 
     
     If you have had applied migrations before, you may get an error like this: 
