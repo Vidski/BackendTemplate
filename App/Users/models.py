@@ -110,5 +110,5 @@ class User(ExportModelOperationsMixin("dataset"), AbstractBaseUser, PermissionsM
 
 @receiver(reset_password_token_created)
 def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
-    from Users.utils import send_reset_password_email
-    send_reset_password_email(reset_password_token)
+    from Users.utils import send_email
+    send_email('reset_password', reset_password_token)

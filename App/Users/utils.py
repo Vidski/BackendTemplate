@@ -14,44 +14,43 @@ logger = logging.getLogger(__name__)
 FORBIDDEN = status.HTTP_403_FORBIDDEN
 NOT_FOUND = status.HTTP_404_NOT_FOUND
 
-def send_verification_email(user):
-    token = user.generate_verification_token()
-    email_data = {'name': user.first_name + ' ' + user.last_name,
-                    'id': user.id,
-                    'token': token}
-    template = render_to_string('verify_email.html', email_data)
-    email = EmailMultiAlternatives('Verify your email',
-                                    '',
-                                    settings.EMAIL_HOST_USER,
-                                    [user.email])
-    email.attach_alternative(template, "text/html")
-    email.fail_silently = False
-    email.send()
-    logger.info(f'Users App | New user, verification email sent to' \
-                    '{user.email} at {datetime.datetime.now()}')
+def get_email_data(email_type, instance):
+    data = {}
+    if email_type == 'verify_email':
+        data['id'] = instance.id
+        data['name'] = instance.first_name
+        data['token'] = instance.generate_verification_token()
+    elif email_type == 'reset_password':
+        data['name'] = instance.user.first_name
+        data['token'] = instance.key
+    return data
 
-def send_reset_password_email(reset_password_token):
-    # TODO: change email to actually send a front url with token generated to reset password
-    token = f"{reset_password_token.key}"
-    name = reset_password_token.user.first_name
-    email_data = {'name': name,
-                    'token': token}
-    template = render_to_string('reset_password.html', email_data)
-    email = EmailMultiAlternatives('Verify your email',
+def log_action(email_type, instance):
+    if email_type == 'verify_email':
+        logger.info('Users App | New us$$er, verification email sent to '\
+                    f'{instance.email} at {datetime.now()}')
+    else:
+        logger.info('Users App | Password restore, email sent to '\
+                    f'{instance.user.email} at {datetime.now()}')
+
+def send_email(email_type, instance):
+    email_data = get_email_data(email_type, instance)
+    template = render_to_string(f'{email_type}.html', email_data)
+    subject = email_type.split("_")[0].capitalize()
+    email = EmailMultiAlternatives(f'{subject} your email',
                                     '',
                                     settings.EMAIL_HOST_USER,
-                                    [reset_password_token.user.email])
+                                    [instance.email if isinstance(instance, User)
+                                     else instance.user.email])
     email.attach_alternative(template, "text/html")
     email.fail_silently = False
     email.send()
-    logger.info(f'Users App | Password restore, email sent to' \
-                     '{reset_password_token.user.email} at {datetime.datetime.now()}')
+    log_action(email_type, instance)
 
 def get_user_or_error(request_user, pk):
     """
     Get user or return error
     """
-    error, instance = None, None
     try:
         instance = User.objects.get(id=pk)
     except User.DoesNotExist:

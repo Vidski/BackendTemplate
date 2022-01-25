@@ -7,7 +7,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.validators import UniqueValidator
 
 from Users.models import User
-from Users.utils import send_verification_email
+from Users.utils import send_email
 
 logger = logging.getLogger(__name__)
 
@@ -184,5 +184,5 @@ class UserSignUpSerializer(UserAuthSerializer):
         if 'phone_number' in data:
             data.pop('phone_number')
         user = User.objects.create_user(**data, is_verified=False)
-        send_verification_email(user)
+        send_email('verify_email', user)
         return user
