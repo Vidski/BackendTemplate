@@ -33,12 +33,11 @@ while True:
     service_result = database_socket.connect_ex((ip, port))
     if service_result == 0:
         now = datetime.now()
-        os.system(f'echo "{now}" [info] The service {waiting_service_name} is now'\
-                  f' running and the port is open. Now {raising_service_name} will start!')
+        os.system(f'echo "{now}" [info] The service {waiting_service_name} is now' \
+                  f'running and the port is open. Now {raising_service_name} will start!')
         os.system(command)
         break
-    else:
-        now = datetime.now()
-        os.system(f'echo "{now}" [info] The port of "{waiting_service_name}" is not'\
-                   ' open yet. It will be checked again soon!')
-        time.sleep(1)
+    now = datetime.now()
+    os.system(f'echo "{now}" [info] The port of "{waiting_service_name}" is not'\
+                ' open yet. It will be checked again soon!')
+    time.sleep(1)
