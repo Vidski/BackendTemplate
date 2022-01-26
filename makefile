@@ -17,7 +17,7 @@ bash:
 	docker-compose -f ./Docker/${ENV}/docker-compose.yml exec app /bin/bash
 
 shell:
-	docker exec -it django-app bash -c "python manage.py shell_plus --settings=setings.${SETTINGS}_settings.py"
+	docker exec -it django-app bash -c "python manage.py shell_plus --settings=Settings.Django.${SETTINGS}_settings"
 
 create-app:
 	docker exec -it django-app bash -c "python manage.py create-app ${APP}"
@@ -26,14 +26,14 @@ createsuperuser:
 	docker exec -it django-app bash -c "python manage.py createsuperuser"
 
 migrate:
-	docker exec -it django-app bash -c "python manage.py makemigrations --settings=setings.${SETTINGS}_settings.py"
-	docker exec -it django-app bash -c "python manage.py migrate --settings=setings.${SETTINGS}_settings.py"
+	docker exec -it django-app bash -c "python manage.py makemigrations --settings=Settings.Django.${SETTINGS}_settings"
+	docker exec -it django-app bash -c "python manage.py migrate --settings=Settings.Django.${SETTINGS}_settings"
 
 populate:
-	docker exec -it django-app bash -c "python manage.py populate_db --settings=setings.${SETTINGS}_settings.py"
+	docker exec -it django-app bash -c "python manage.py populate_db --settings=Settings.Django.${SETTINGS}_settings"
 
 flush:
-	docker exec -it django-app bash -c "python manage.py flush --settings=setings.${SETTINGS}_settings.py"
+	docker exec -it django-app bash -c "python manage.py flush --settings=Settings.Django.${SETTINGS}_settings"
 
 recreate:
 	make flush
