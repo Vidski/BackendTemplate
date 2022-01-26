@@ -22,6 +22,7 @@ DELETED = status.HTTP_204_NO_CONTENT
 FORBIDDEN = status.HTTP_403_FORBIDDEN
 NOT_FOUND = status.HTTP_404_NOT_FOUND
 
+
 class UserViewSet(viewsets.GenericViewSet):
     """
     API endpoint that allows to interact with User model
