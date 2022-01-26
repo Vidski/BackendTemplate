@@ -187,6 +187,25 @@ CACHES = {
     }
 }
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/tmp/DjangoBackend.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
 # TOKEN TO VERIFY USER VIA EMAIL
 EMAIL_VERIFICATION_TOKEN_SECRET = 'hu712dkej_803h7719)a4n-5!5n0cr((2l'
 
