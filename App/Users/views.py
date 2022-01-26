@@ -11,9 +11,7 @@ from Users.models import User
 from Users.serializers import UserSerializer
 from Users.serializers import UserLoginSerializer
 from Users.serializers import UserSignUpSerializer
-
 from Users.utils import get_user_or_error
-
 
 logger = logging.getLogger(__name__)
 
