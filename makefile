@@ -1,17 +1,23 @@
+ENV ?= Local
+SETTINGS ?= local
+
 up:
-	docker-compose up
+	docker-compose -f ./Docker/${ENV}/docker-compose.yml up
+
+upd:
+	docker-compose -f ./Docker/${ENV}/docker-compose.yml up -d
 
 stop:
-	docker-compose stop
+	docker-compose -f ./Docker/${ENV}/docker-compose.yml stop
 
 ps:
-	docker-compose ps
+	docker-compose -f ./Docker/${ENV}/docker-compose.yml ps
 
 bash:
-	docker-compose exec app /bin/bash
+	docker-compose -f ./Docker/${ENV}/docker-compose.yml exec app /bin/bash
 
 shell:
-	docker exec -it django-app bash -c "python manage.py shell_plus ${SETTINGS}"
+	docker exec -it django-app bash -c "python manage.py shell_plus --settings=setings.${SETTINGS}_settings.py"
 
 create-app:
 	docker exec -it django-app bash -c "python manage.py create-app ${APP}"
@@ -20,14 +26,14 @@ createsuperuser:
 	docker exec -it django-app bash -c "python manage.py createsuperuser"
 
 migrate:
-	docker exec -it django-app bash -c "python manage.py makemigrations ${SETTINGS}"
-	docker exec -it django-app bash -c "python manage.py migrate ${SETTINGS}"
+	docker exec -it django-app bash -c "python manage.py makemigrations --settings=setings.${SETTINGS}_settings.py"
+	docker exec -it django-app bash -c "python manage.py migrate --settings=setings.${SETTINGS}_settings.py"
 
 populate:
-	docker exec -it django-app bash -c "python manage.py populate_db ${SETTINGS}"
+	docker exec -it django-app bash -c "python manage.py populate_db --settings=setings.${SETTINGS}_settings.py"
 
 flush:
-	docker exec -it django-app bash -c "python manage.py flush ${SETTINGS}"
+	docker exec -it django-app bash -c "python manage.py flush --settings=setings.${SETTINGS}_settings.py"
 
 recreate:
 	make flush
@@ -60,7 +66,7 @@ freeze:
 	docker exec -it django-app bash -c "pip freeze"
 
 logs:
-	docker-compose logs -f
+	docker-compose -f ./Docker/${ENV}/docker-compose.yml logs -f
 
 database:
-	docker-compose exec database mysql -u${USER} -p${PASSWORD}
+	docker-compose -f ./Docker/${ENV}/docker-compose.yml exec database mysql -u${USER} -p${PASSWORD}
