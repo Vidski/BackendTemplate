@@ -46,8 +46,7 @@ class UserViewSet(viewsets.GenericViewSet):
         """
         API endpoint that allow to get information of one user
         """
-        request_user = request.user
-        instance = get_user_or_error(request_user, pk)
+        instance = get_user_or_error(request.user, pk)
         data = UserLoginSerializer(instance).data
         return Response(data, status=SUCCESS)
 
@@ -55,10 +54,9 @@ class UserViewSet(viewsets.GenericViewSet):
         """
         API endpoint that allow to edit an user
         """
-        request_user = request.user
-        instance = get_user_or_error(request_user, pk)
+        instance = get_user_or_error(request.user, pk)
         serializer = UserSerializer(data=request.data)
-        serializer.is_valid(request.data, request_user)
+        serializer.is_valid(request.data, request.user)
         user = serializer.update(instance, request.data)
         data = UserSerializer(user).data
         logger.info(f'Users App | User "{user.id}" updated at {datetime.now()}')
@@ -68,8 +66,7 @@ class UserViewSet(viewsets.GenericViewSet):
         """
         API endpoint that allow to delete an user
         """
-        request_user = request.user
-        instance = get_user_or_error(request_user, pk)
+        instance = get_user_or_error(request.user, pk)
         logger.info(f'Users App | User "{instance.id}" deleted at {datetime.now()}')
         instance.delete()
         return Response(status=DELETED)
