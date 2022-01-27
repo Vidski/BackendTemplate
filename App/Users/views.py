@@ -4,6 +4,7 @@ import logging
 from django.http.response import JsonResponse
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 
@@ -34,8 +35,7 @@ class UserViewSet(viewsets.GenericViewSet):
         """
         API endpoint that allows to list all users
         """
-        request_user = request.user
-        if not request_user.is_admin:
+        if not request.user.is_admin:
             return Response("You don't have permission", status=FORBIDDEN)
         users = User.objects.all().order_by('-created_at')
         serializer = UserSerializer(users, many=True)
