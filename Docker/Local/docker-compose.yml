@@ -8,10 +8,7 @@ services:
       dockerfile: ./Docker/Local/Dockerfile
     image: &app app
     restart: "no"
-    command: >-
-      python3 start.py --waiting-service-name database --ip database
-      --port 3306 --raising-service-name Django-App
-      --command 'python3 manage.py runserver 0.0.0.0:8000'
+    command: python3 start.py --service Django-App
     env_file: &envfile
       - ../../Envs/local.env
     ports:
@@ -50,11 +47,7 @@ services:
     image: *app
     restart: "no"
     env_file: *envfile
-    command: >-
-      python3 start.py --waiting-service-name database
-      --ip database --port 3306 --raising-service-name Celery-Worker
-      --command 'celery --app=Worker.worker.app worker
-      --concurrency=1 --hostname=worker@%h --loglevel=INFO'
+    command: python3 start.py --service Celery-Worker
     volumes:
       - ../../App:/App
     depends_on:
@@ -65,11 +58,7 @@ services:
     build: .
     image: *app
     env_file: *envfile
-    command: >-
-      python3 start.py --waiting-service-name database --ip database
-      --port 3306 --raising-service-name Celery-Beat --command 'python3
-      -m celery --app=Worker.worker.app beat -l debug -f
-      /var/log/App-celery-beat.log --pidfile=/tmp/celery-beat.pid'
+    command: python3 start.py --service Celery-Beat
     volumes:
       - ../../App:/App
     depends_on:
