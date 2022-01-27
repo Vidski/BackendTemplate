@@ -4,6 +4,8 @@ import logging
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -54,9 +56,9 @@ def get_user_or_error(request_user, pk):
     try:
         instance = User.objects.get(id=pk)
     except User.DoesNotExist:
-        return Response("User not found", status=NOT_FOUND)
+        raise NotFound("User not found")
     if not request_user.is_admin and request_user.id != instance.id:
-        return Response("You don't have permission", status=FORBIDDEN)
+        raise PermissionDenied("You don't have permission")
     if not request_user.is_verified:
-        return Response("You have to verify your account first", status=FORBIDDEN)
+        raise PermissionDenied("You have to verify your account first")
     return instance

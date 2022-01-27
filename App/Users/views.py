@@ -48,9 +48,6 @@ class UserViewSet(viewsets.GenericViewSet):
         """
         request_user = request.user
         instance = get_user_or_error(request_user, pk)
-        if not isinstance(instance, User):
-            instance_error = instance
-            return instance_error
         data = UserLoginSerializer(instance).data
         return Response(data, status=SUCCESS)
 
@@ -60,9 +57,6 @@ class UserViewSet(viewsets.GenericViewSet):
         """
         request_user = request.user
         instance = get_user_or_error(request_user, pk)
-        if not isinstance(instance, User):
-            instance_error = instance
-            return instance_error
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(request.data, request_user)
         user = serializer.update(instance, request.data)
@@ -76,9 +70,6 @@ class UserViewSet(viewsets.GenericViewSet):
         """
         request_user = request.user
         instance = get_user_or_error(request_user, pk)
-        if not isinstance(instance, User):
-            instance_error = instance
-            return instance_error
         logger.info(f'Users App | User "{instance.id}" deleted at {datetime.now()}')
         instance.delete()
         return Response(status=DELETED)
