@@ -1,9 +1,13 @@
-moveToHome();
-checkLogOut();
-addHomeButton();
+manageHomePage();
 removeElements();
 addEyeToSeeProfile();
 changeHeaders();
+
+function manageHomePage(){
+  moveToHome();
+  checkLogOut();
+  addHomeButton();
+}
 
 function checkLogOut() {
   if (window.location.pathname == '/admin/logout/') {
