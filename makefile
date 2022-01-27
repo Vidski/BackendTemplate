@@ -1,5 +1,5 @@
 ENV ?= Local
-SETTINGS ?= local
+SETTINGS ?= $(shell echo $(ENV) | tr '[:upper:]' '[:lower:]')
 
 up:
 	docker-compose -f ./Docker/${ENV}/docker-compose.yml up
