@@ -1,9 +1,7 @@
 moveToHome();
 checkLogOut();
 addHomeButton();
-removeRedundantProfileButton();
 removeElements();
-removeUnnecessaryButton();
 addEyeToSeeProfile();
 changeHeaders();
 
@@ -25,7 +23,9 @@ function moveToHome() {
 }
 
 function addHomeButton() {
-  $('.nav.nav-pills.nav-sidebar.flex-column.nav-flat.nav-compact').prepend('<li class="nav-item">' +
+  const navbar = $('.nav.nav-pills.nav-sidebar'+
+  '.flex-column.nav-flat.nav-compact');
+  navbar.prepend('<li class="nav-item">' +
   '<a href="/home/admin/" class="nav-link">' +
   '<i class="nav-icon fas fa-home">' +
   '</i>' +
@@ -36,14 +36,13 @@ function addHomeButton() {
   });
 }
 
-function removeRedundantProfileButton() {
-  $('.user-panel.mt-3.pb-3.mb-3.d-flex').remove();
-  $('.time').remove();
-}
-
 function removeElements() {
-  // Removes time from logs elements
-  $('.time').remove();
+  const profileButton = $('.user-panel.mt-3.pb-3.mb-3.d-flex');
+  profileButton.remove();
+  const logTime = $('.logs-time');
+  logTime.remove();
+  const changeButton = $('.btn.btn-sm.btn-outline-info.btn-flat.changelink');
+  changeButton.remove();
 }
 
 function changeHeaders() {
@@ -59,10 +58,6 @@ function changeHeaders() {
 
 function addEyeToSeeProfile(){
   $('.dropdown-item.dropdown-footer').prepend('<i class="fas fa-eye"></i>');
-}
-
-function removeUnnecessaryButton() {
-  $('.btn.btn-sm.btn-outline-info.btn-flat.changelink').remove();
 }
 
 function customizeHeader(header){
