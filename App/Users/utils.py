@@ -23,10 +23,10 @@ def send_email(email_type, instance):
     template = render_to_string(f'{email_type}.html', email_data)
     subject = email_type.split("_")[0].capitalize()
     email = EmailMultiAlternatives(f'{subject} your email',
-                                    '',
-                                    settings.EMAIL_HOST_USER,
-                                    [instance.email if isinstance(instance, User)
-                                     else instance.user.email])
+                                   '',
+                                   settings.EMAIL_HOST_USER,
+                                   [instance.email if isinstance(instance, User)
+                                   else instance.user.email])
     email.attach_alternative(template, "text/html")
     email.fail_silently = False
     email.send()
