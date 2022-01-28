@@ -98,6 +98,10 @@ class User(ExportModelOperationsMixin("dataset"), AbstractBaseUser, PermissionsM
                        .replace("=", "").replace("+","")
         return token
 
+    def verify(self):
+        self.is_verified = True
+        self.save()
+
     @property
     def name(self):
         return self.first_name + " " + self.last_name
