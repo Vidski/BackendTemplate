@@ -1,19 +1,11 @@
-from datetime import datetime
-import logging
-
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.exceptions import NotFound
-from rest_framework.response import Response
-from rest_framework import status
 
 from App.utils import log_email_action
 from Users.models import User
-
-FORBIDDEN = status.HTTP_403_FORBIDDEN
-NOT_FOUND = status.HTTP_404_NOT_FOUND
 
 def get_email_data(email_type, instance):
     data = {}
@@ -42,7 +34,7 @@ def send_email(email_type, instance):
 
 def get_user_or_error(request_user, pk):
     """
-    Get user or return error
+    Get user or raise an error with a returning response
     """
     try:
         instance = User.objects.get(id=pk)
