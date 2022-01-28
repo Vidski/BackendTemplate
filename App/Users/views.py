@@ -12,6 +12,7 @@ from Users.serializers import UserSerializer
 from Users.serializers import UserLoginSerializer
 from Users.serializers import UserSignUpSerializer
 from Users.utils import get_user_or_error
+from Users.utils import verify_user_query_token
 
 SUCCESS = status.HTTP_200_OK
 CREATED = status.HTTP_201_CREATED
@@ -99,11 +100,8 @@ class UserViewSet(viewsets.GenericViewSet):
         """
         query_token = request.query_params.get('token')
         user = User.objects.get(id=pk)
-        token = user.generate_verification_token()
-        if token != query_token:
-            raise PermissionDenied("You don't have permission")
-        user.is_verified = True
-        user.save()
+        verify_user_query_token(user, query_token)
+        user.verify()
         data = {"user": UserLoginSerializer(user).data}
         log_information("verified", user)
         return JsonResponse(data, status=UPDATED)
