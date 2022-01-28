@@ -1,27 +1,12 @@
 import json
 
 from django_rest_passwordreset.models import ResetPasswordToken
-from django.test import TestCase
-from rest_framework.test import APIClient
 
 from Users.factories.user_factories import UserFactory
-from Users.fakers.user_fakers import AdminFaker
-from Users.fakers.user_fakers import UserFaker
+from Users.tests.abstract_test_classes import UsersAbstractUtils
 from Users.models import User
 
 ENDPOINT = '/api/v1/users'
-
-
-class UsersAbstractUtils(TestCase):
-
-    def setUp(self):
-        self._clean()
-        self.admin_user = AdminFaker()
-        self.normal_user = UserFaker()
-        self.client = APIClient()
-
-    def _clean(self):
-        User.objects.all().delete()
 
 
 class UserCreateTest(UsersAbstractUtils):
