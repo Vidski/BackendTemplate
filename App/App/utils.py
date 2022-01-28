@@ -15,7 +15,7 @@ def log_information(event, instance):
 
 def log_email_action(email_type, instance):
     if email_type == 'verify_email':
-        logger.info('Users App | New us$$er, verification email sent to '\
+        logger.info('Users App | New user, verification email sent to '\
                     f'{instance.email} at {datetime.now()}')
     else:
         logger.info('Users App | Password restore, email sent to '\
