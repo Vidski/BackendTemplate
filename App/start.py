@@ -18,53 +18,84 @@ python3 start.py --waiting-service-name database --ip database
 --command 'python3 manage.py runserver 0.0.0.0:8000'
 """
 
-def get_command(service):
-    if service == 'Django-App':
-        command = 'python3 manage.py runserver 0.0.0.0:8000'
-    elif service == 'Celery-Worker':
-        command = 'celery --app=Worker.worker.app worker --concurrency=1 --hostname=worker@%h --loglevel=INFO'
-    elif service == 'Celery-Beat':
-        command = 'python3 -m celery --app=Worker.worker.app beat -l debug -f /var/log/App-celery-beat.log --pidfile=/tmp/celery-beat.pid'
-    return command
+CELERY_WORKER = 'celery --app=Worker.worker.app worker ' +\
+                '--concurrency=1 --hostname=worker@%h --loglevel=INFO'
+CELERY_BEAT = 'python3 -m celery --app=Worker.worker.app beat -l debug -f' +\
+              ' /var/log/App-celery-beat.log --pidfile=/tmp/celery-beat.pid'
+DJANGO = 'python3 manage.py runserver 0.0.0.0:8000'
 
-# Configuration to get arguments by command
-parser = argparse.ArgumentParser(description='Check if port is open, avoid\
-                                 docker-compose race condition')
-parser.add_argument('--service', required=False)
-parser.add_argument('--waiting-service-name', required=False)
-parser.add_argument('--ip', required=False)
-parser.add_argument('--port', required=False)
-parser.add_argument('--raising-service-name', required=False)
-parser.add_argument('--command', required=False)
 
-# Set the arguments
-arguments_passed_by_command = parser.parse_args()
-service = str(arguments_passed_by_command.service)
+class Start:
 
-if service:
-    raising_service_name = service
-    waiting_service_name = 'database'
-    ip = waiting_service_name
-    port = 3306
-    command = get_command(service)
-else:
-    waiting_service_name = str(arguments_passed_by_command.waiting_service_name)
-    port = int(arguments_passed_by_command.port)
-    ip = str(arguments_passed_by_command.ip)
-    raising_service_name = str(arguments_passed_by_command.raising_service_name)
-    command = str(arguments_passed_by_command.command)
+    def __init__(self):
+        description = 'Check if port is open, avoid docker-compose race condition'
+        parser = argparse.ArgumentParser(description=description)
+        self.arguments = self.get_arguments(parser)
+        service = str(self.arguments.service)
+        self.set_service_data(service)
+        self.iterate_port()
 
-# Infinite loop to iterate over the database service dockerized
-while True:
-    database_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    service_result = database_socket.connect_ex((ip, port))
-    if service_result == 0:
+    def get_arguments(self, parser):
+        parser.add_argument('--service', required=False)
+        parser.add_argument('--waiting-service-name', required=False)
+        parser.add_argument('--ip', required=False)
+        parser.add_argument('--port', required=False)
+        parser.add_argument('--raising-service-name', required=False)
+        parser.add_argument('--command', required=False)
+        return parser.parse_args()
+
+    def set_service_data(self, service):
+        if service:
+            data = self.set_service_data(service)
+        else:
+            data = self.set_custom_data()
+        self.iterate_port(**data)
+
+    def set_service_data(self, service):
+        self.raising_service_name = service
+        self.waiting_service_name = 'database'
+        self.ip = 'database'
+        self.port = 3306
+        self.command = self.get_command(service)
+
+    def set_custom_data(self):
+        self.waiting_service_name = str(self.arguments.waiting_service_name)
+        self.port = int(self.arguments.port)
+        self.ip = str(self.arguments.ip)
+        self.raising_service_name = str(self.arguments.raising_service_name)
+        self.command = str(self.arguments.command)
+
+    def get_command(self, service):
+        if service == 'Django-App':
+            command = DJANGO
+        elif service == 'Celery-Worker':
+            command = CELERY_WORKER
+        elif service == 'Celery-Beat':
+            command = CELERY_BEAT
+        return command
+
+    def iterate_port(self):
+        while True:
+            database_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            service_result = database_socket.connect_ex((self.ip, self.port))
+            if service_result == 0:
+                self.run_service()
+                break
+            self.port_is_not_ready()
+
+    def run_service(self):
         now = datetime.now()
-        os.system(f'echo "{now}" [info] The service {waiting_service_name} is now' \
-                  f'running and the port is open. Now {raising_service_name} will start!')
-        os.system(command)
-        break
-    now = datetime.now()
-    os.system(f'echo "{now}" [info] The port of "{waiting_service_name}" is not'\
-                ' open yet. It will be checked again soon!')
-    time.sleep(1)
+        os.system(f'echo "{now}" [info] The service' \
+                  f'{self.waiting_service_name} is now' \
+                  f'running and the port is open. Now' \
+                  f'{self.raising_service_name} will start!')
+        os.system(self.command)
+
+    def port_is_not_ready(self):
+        now = datetime.now()
+        os.system(f'echo "{now}" [info] The port of '\
+                  f'{self.waiting_service_name} is not ' \
+                  'open yet. It will be checked again soon!')
+        time.sleep(1)
+
+Start()
