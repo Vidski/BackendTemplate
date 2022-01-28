@@ -10,7 +10,7 @@ from Users.utils import get_user_or_error
 from Users.utils import verify_user_query_token
 
 
-class TestUsertUtils(UsersAbstractUtils):
+class TestUserUtils(UsersAbstractUtils):
 
     def test_get_email_data_for_instance(self):
         instance = MagicMock()
