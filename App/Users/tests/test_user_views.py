@@ -5,7 +5,8 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 
 from Users.factories.user_factories import UserFactory
-from Users.fakers.user_fakers import AdminFaker, UserFaker
+from Users.fakers.user_fakers import AdminFaker
+from Users.fakers.user_fakers import UserFaker
 from Users.models import User
 
 ENDPOINT = '/api/v1/users'
