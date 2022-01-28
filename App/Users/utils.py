@@ -9,9 +9,8 @@ from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework import status
 
+from App.utils import log_email_action
 from Users.models import User
-
-logger = logging.getLogger(__name__)
 
 FORBIDDEN = status.HTTP_403_FORBIDDEN
 NOT_FOUND = status.HTTP_404_NOT_FOUND
@@ -27,14 +26,6 @@ def get_email_data(email_type, instance):
         data['token'] = instance.key
     return data
 
-def log_action(email_type, instance):
-    if email_type == 'verify_email':
-        logger.info('Users App | New us$$er, verification email sent to '\
-                    f'{instance.email} at {datetime.now()}')
-    else:
-        logger.info('Users App | Password restore, email sent to '\
-                    f'{instance.user.email} at {datetime.now()}')
-
 def send_email(email_type, instance):
     email_data = get_email_data(email_type, instance)
     template = render_to_string(f'{email_type}.html', email_data)
@@ -47,7 +38,7 @@ def send_email(email_type, instance):
     email.attach_alternative(template, "text/html")
     email.fail_silently = False
     email.send()
-    log_action(email_type, instance)
+    log_email_action(email_type, instance)
 
 def get_user_or_error(request_user, pk):
     """

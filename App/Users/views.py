@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 
+from App.utils import log_information
 from Users.models import User
 from Users.serializers import UserSerializer
 from Users.serializers import UserLoginSerializer
@@ -59,7 +60,7 @@ class UserViewSet(viewsets.GenericViewSet):
         serializer.is_valid(request.data, request.user)
         user = serializer.update(instance, request.data)
         data = UserSerializer(user).data
-        logger.info(f'Users App | User "{user.id}" updated at {datetime.now()}')
+        log_information("updated", user)
         return Response(data, status=UPDATED)
 
     def destroy(self, request, pk=None):
@@ -67,7 +68,7 @@ class UserViewSet(viewsets.GenericViewSet):
         API endpoint that allow to delete an user
         """
         instance = get_user_or_error(request.user, pk)
-        logger.info(f'Users App | User "{instance.id}" deleted at {datetime.now()}')
+        log_information("deleted", instance)
         instance.delete()
         return Response(status=DELETED)
 
@@ -80,6 +81,7 @@ class UserViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         data = UserSignUpSerializer(user).data
+        log_information("registered", user)
         return Response(data, status=CREATED)
 
     @action(detail=False, methods=['post'], permission_classes=[AllowAny])
@@ -92,6 +94,7 @@ class UserViewSet(viewsets.GenericViewSet):
         user, token = serializer.save()
         data = {"user": UserLoginSerializer(user).data,
                 "token": token}
+        log_information("logged in", user)
         return JsonResponse(data, status=SUCCESS)
 
     @action(detail=True, methods=['get'], permission_classes=[AllowAny])
@@ -107,4 +110,5 @@ class UserViewSet(viewsets.GenericViewSet):
         user.is_verified = True
         user.save()
         data = {"user": UserLoginSerializer(user).data}
+        log_information("verified", user)
         return JsonResponse(data, status=UPDATED)
