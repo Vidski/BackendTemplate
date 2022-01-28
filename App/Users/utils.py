@@ -1,8 +1,8 @@
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import PermissionDenied
 
 from App.utils import log_email_action
 from Users.models import User
