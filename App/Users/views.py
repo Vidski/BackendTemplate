@@ -1,12 +1,9 @@
-from datetime import datetime
-import logging
-
 from django.http.response import JsonResponse
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
-from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
-from rest_framework import status, viewsets
+from rest_framework import status
+from rest_framework import viewsets
 
 from App.utils import log_information
 from Users.models import User
@@ -14,8 +11,6 @@ from Users.serializers import UserSerializer
 from Users.serializers import UserLoginSerializer
 from Users.serializers import UserSignUpSerializer
 from Users.utils import get_user_or_error
-
-logger = logging.getLogger(__name__)
 
 SUCCESS = status.HTTP_200_OK
 CREATED = status.HTTP_201_CREATED
