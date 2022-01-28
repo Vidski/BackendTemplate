@@ -45,3 +45,11 @@ def get_user_or_error(request_user, pk):
     if not request_user.is_verified:
         raise PermissionDenied("You have to verify your account first")
     return instance
+
+def verify_user_query_token(user, query_token):
+    """
+    Verify user token to verification account
+    """
+    token = user.generate_verification_token()
+    if token != query_token:
+        raise PermissionDenied("You don't have permission")
