@@ -1,5 +1,6 @@
 from django.http.response import JsonResponse
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
@@ -16,7 +17,6 @@ SUCCESS = status.HTTP_200_OK
 CREATED = status.HTTP_201_CREATED
 UPDATED = status.HTTP_202_ACCEPTED
 DELETED = status.HTTP_204_NO_CONTENT
-FORBIDDEN = status.HTTP_403_FORBIDDEN
 NOT_FOUND = status.HTTP_404_NOT_FOUND
 
 
@@ -32,7 +32,7 @@ class UserViewSet(viewsets.GenericViewSet):
         API endpoint that allows to list all users
         """
         if not request.user.is_admin:
-            return Response("You don't have permission", status=FORBIDDEN)
+            raise PermissionDenied("You don't have permission")
         users = User.objects.all().order_by('-created_at')
         serializer = UserSerializer(users, many=True)
         data = serializer.data
@@ -98,10 +98,10 @@ class UserViewSet(viewsets.GenericViewSet):
         API endpoint that allows to verify user
         """
         query_token = request.query_params.get('token')
-        user = User.objects.all().get(id=pk)
+        user = User.objects.get(id=pk)
         token = user.generate_verification_token()
         if token != query_token:
-            return Response("You don't have permission", status=FORBIDDEN)
+            raise PermissionDenied("You don't have permission")
         user.is_verified = True
         user.save()
         data = {"user": UserLoginSerializer(user).data}
