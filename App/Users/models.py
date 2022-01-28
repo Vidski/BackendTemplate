@@ -51,6 +51,7 @@ class CustomUserManager(BaseUserManager):
 class User(ExportModelOperationsMixin("dataset"), AbstractBaseUser, PermissionsMixin):
     username = None
     is_superuser = None
+    last_login = None
 
     email = models.EmailField('Email address',
                                 unique = True,
