@@ -77,7 +77,7 @@ You can change project name to your actual app name, just take in mind that you 
 
     Flower task monitor will be available on: [http://localhost:5555](http://localhost:5555)
     
-    Grafana monitor will be available on: [http://localhost:5555](http://localhost:3000)
+    Grafana monitor will be available on: [http://localhost:3000](http://localhost:3000)
     
     Prometheus dashboard will be available on: [http://localhost:9090](http://localhost:9090)
 
