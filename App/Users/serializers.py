@@ -3,6 +3,7 @@ import logging
 from django.contrib.auth import authenticate, password_validation
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
+from rest_framework.serializers import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.validators import UniqueValidator
 
@@ -54,7 +55,7 @@ class UserSerializer(serializers.ModelSerializer):
             user_id = users_with_same_email.first().id
             email_taken_by_other_user = user_id!= user.id
             if email_taken_by_other_user:
-                raise serializers.ValidationError('Email is taken')
+                raise ValidationError('Email is taken')
 
     def comprove_phone_number(self, phone_number, user):
         users_with_same_phone_number = User.objects.filter(phone_number=phone_number)
@@ -62,17 +63,17 @@ class UserSerializer(serializers.ModelSerializer):
             user_id = users_with_same_phone_number.first().id
             phone_number_taken_by_other_user = user_id != user.id
             if phone_number_taken_by_other_user:
-                raise serializers.ValidationError('Phone number is taken')
+                raise ValidationError('Phone number is taken')
 
     def comprove_password(self, data, user):
         password = data.get('password', None)
         if password:
             old_password = data.get('old_password', None)
             if not old_password:
-                raise serializers.ValidationError('Old password is required to set a new one')
+                raise ValidationError('Old password is required to set a new one')
             old_password_is_valid = user.check_password(old_password) == True
             if not old_password_is_valid:
-                raise serializers.ValidationError('Wrong password')
+                raise ValidationError('Wrong password')
             password_validation.validate_password(password)
 
     class Meta:
@@ -116,9 +117,9 @@ class UserLoginSerializer(UserAuthSerializer):
         email, password = self.check_email_and_password(data)
         user = authenticate(email=email, password=password)
         if not user:
-            raise serializers.ValidationError('Invalid credentials')
+            raise ValidationError('Invalid credentials')
         if not user.is_verified:
-            raise serializers.ValidationError('User is not verified')
+            raise ValidationError('User is not verified')
         self.context['user'] = user
         return data
 
@@ -126,7 +127,7 @@ class UserLoginSerializer(UserAuthSerializer):
         email = data.get('email')
         password = data.get('password')
         if not email or not password:
-            raise serializers.ValidationError('Email and password are required')
+            raise ValidationError('Email and password are required')
         return email, password
 
     def create(self, data):
@@ -170,9 +171,9 @@ class UserSignUpSerializer(UserAuthSerializer):
         password = data.get('password')
         password_confirmation = data.get('password_confirmation', None)
         if not password_confirmation:
-            raise serializers.ValidationError('Password confirmation is required')
+            raise ValidationError('Password confirmation is required')
         if password != password_confirmation:
-            raise serializers.ValidationError('Password confirmation does not match')
+            raise ValidationError('Password confirmation does not match')
         password_validation.validate_password(password)
         return data
 
