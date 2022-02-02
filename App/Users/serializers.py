@@ -53,16 +53,16 @@ class UserSerializer(serializers.ModelSerializer):
         users_with_same_email = User.objects.filter(email=email)
         if users_with_same_email:
             user_id = users_with_same_email.first().id
-            email_taken_by_other_user = user_id!= user.id
-            if email_taken_by_other_user:
+            is_email_taken_by_other_user = user_id != user.id
+            if is_email_taken_by_other_user:
                 raise ValidationError('Email is taken')
 
     def comprove_phone_number(self, phone_number, user):
         users_with_same_phone_number = User.objects.filter(phone_number=phone_number)
         if users_with_same_phone_number:
             user_id = users_with_same_phone_number.first().id
-            phone_number_taken_by_other_user = user_id != user.id
-            if phone_number_taken_by_other_user:
+            is_phone_number_taken_by_other_user = user_id != user.id
+            if is_phone_number_taken_by_other_user:
                 raise ValidationError('Phone number is taken')
 
     def comprove_password(self, data, user):
