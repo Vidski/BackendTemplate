@@ -166,7 +166,7 @@ class UserSignUpSerializer(UserAuthSerializer):
 
     def validate(self, data):
         """
-        Create a new user
+        Validate to create a new user
         """
         password = data.get('password')
         password_confirmation = data.get('password_confirmation', None)
