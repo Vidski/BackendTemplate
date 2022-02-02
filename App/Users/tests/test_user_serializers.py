@@ -112,3 +112,19 @@ class TestUserSerializer(UsersAbstractUtils):
         self.assertEqual(user.phone_number, data['phone_number'])
         self.assertEqual(user.email, data['email'])
         self.assertTrue(user.check_password(data['password']))
+
+    def test_create(self):
+        serializer = UserSerializer()
+        data = {
+            'first_name': 'newfirstname',
+            'last_name': 'newlastname',
+            'phone_number': '123123124',
+            'email': 'newuser@appname.me',
+            'password': 'newpassword'
+        }
+        user = serializer.create(data)
+        self.assertEqual(user.first_name, data['first_name'])
+        self.assertEqual(user.last_name, data['last_name'])
+        self.assertEqual(user.phone_number, data['phone_number'])
+        self.assertEqual(user.email, data['email'])
+        self.assertTrue(user.check_password(data['password']))
