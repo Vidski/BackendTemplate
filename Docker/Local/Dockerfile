@@ -1,8 +1,10 @@
-FROM python:3
+FROM python:3.9.10
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
-ARG ENV
 WORKDIR /
 COPY . /
-RUN pip3 install --no-cache-dir -r ./Requirements/local.txt
+WORKDIR /Requirements
+RUN /usr/local/bin/python -m pip install --upgrade pip
+RUN /usr/local/bin/python -m pip install -r local.txt
+WORKDIR /
 WORKDIR /App

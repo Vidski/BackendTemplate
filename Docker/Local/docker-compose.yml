@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.9'
 
 services:
   app:
@@ -7,7 +7,7 @@ services:
       context: ../../
       dockerfile: ./Docker/Local/Dockerfile
     image: &app app
-    restart: "no"
+    restart: always
     command: python3 start.py --service Django-App
     env_file: &envfile
       - ../../Envs/local.env
@@ -15,6 +15,7 @@ services:
       - 8000:8000
     volumes:
       - ../../App:/App
+      - ../../Requirements:/Requirements
     depends_on:
       - database
 
@@ -43,9 +44,11 @@ services:
 
   celery-worker:
     container_name: celery-worker
-    build: .
+    build:
+      context: ../../
+      dockerfile: ./Docker/Local/Dockerfile
     image: *app
-    restart: "no"
+    restart: always
     env_file: *envfile
     command: python3 start.py --service Celery-Worker
     volumes:
@@ -55,7 +58,9 @@ services:
 
   celery-beat:
     container_name: celery-beat
-    build: .
+    build:
+      context: ../../
+      dockerfile: ./Docker/Local/Dockerfile
     image: *app
     env_file: *envfile
     command: python3 start.py --service Celery-Beat
@@ -80,7 +85,7 @@ services:
     env_file: *envfile
     ports:
       - 5672:5672
-      - "15672:15672"
+      - 15672:15672
     volumes:
       - ~/.mdbdata/App/rabbitmq_data:/data
     depends_on:
