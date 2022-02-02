@@ -81,3 +81,16 @@ class TestUserSerializer(UsersAbstractUtils):
         serializer = UserSerializer()
         phone_number = '123123124'
         serializer.comprove_phone_number(phone_number, user)
+
+    def test_comprove_email_fails_with_existing_email(self):
+        user = UserFactory()
+        serializer = UserSerializer()
+        email = 'normaluser@appname.me'
+        with self.assertRaises(serializers.ValidationError):
+            serializer.comprove_email(email, user)
+
+    def test_comprove_email_passes(self):
+        user = UserFactory()
+        serializer = UserSerializer()
+        email = 'normaluser2@appname.me'
+        serializer.comprove_email(email, user)
