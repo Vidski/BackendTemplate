@@ -1,11 +1,16 @@
+import mock
+from mock import patch
+
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
 from Users.tests.abstract_test_classes import UsersAbstractUtils
 from Users.factories.user_factories import UserFactory
+from Users.models import User
 from Users.serializers import UserLoginSerializer
 from Users.serializers import UserSerializer
 from Users.serializers import UserSignUpSerializer
+from Users.utils import send_email
 
 
 class TestUserSerializer(UsersAbstractUtils):
@@ -342,3 +347,18 @@ class TestUserSignUpSerializer(UsersAbstractUtils):
         }
         serializer.validate(data)
 
+    def test_create_function(self):
+        serializer = UserSignUpSerializer()
+        data = {
+            'first_name': 'Name',
+            'last_name': 'Lastname',
+            'email': 'email@appname.me',
+            'password': 'strong password 123',
+            'password_confirmation': 'strong password 123',
+        }
+        user = serializer.create(data)
+        assert isinstance(user, User)
+        self.assertEqual(user.email, data['email'])
+        self.assertEqual(user.first_name, data['first_name'])
+        self.assertEqual(user.last_name, data['last_name'])
+        self.assertEqual(user.is_verified, False)
