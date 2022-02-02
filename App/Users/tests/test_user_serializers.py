@@ -1,6 +1,3 @@
-import mock
-from mock import patch
-
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
@@ -10,7 +7,6 @@ from Users.models import User
 from Users.serializers import UserLoginSerializer
 from Users.serializers import UserSerializer
 from Users.serializers import UserSignUpSerializer
-from Users.utils import send_email
 
 
 class TestUserSerializer(UsersAbstractUtils):
@@ -362,3 +358,4 @@ class TestUserSignUpSerializer(UsersAbstractUtils):
         self.assertEqual(user.first_name, data['first_name'])
         self.assertEqual(user.last_name, data['last_name'])
         self.assertEqual(user.is_verified, False)
+
