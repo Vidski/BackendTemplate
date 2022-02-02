@@ -140,7 +140,7 @@ class UserLoginSerializer(UserAuthSerializer):
         model = User
         fields = ['first_name',
                   'last_name',
-                  'email','phone_number',
+                  'phone_number',
                   'email',
                   'created_at',
                   'updated_at']
