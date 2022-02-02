@@ -1,6 +1,15 @@
+from datetime import datetime
+
+from rest_framework import serializers
+from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import PermissionDenied
+
 from Users.tests.abstract_test_classes import UsersAbstractUtils
 from Users.factories.user_factories import UserFactory
+from Users.serializers import UserAuthSerializer
+from Users.serializers import UserLoginSerializer
 from Users.serializers import UserSerializer
+from Users.serializers import UserSignUpSerializer
 
 
 class TestUserSerializer(UsersAbstractUtils):
@@ -21,3 +30,41 @@ class TestUserSerializer(UsersAbstractUtils):
         }
         actual_data = UserSerializer(user).data
         self.assertEqual(actual_data, expected_data)
+
+    def test_comprove_password_fails_without_old_password(self):
+        user = UserFactory()
+        serializer = UserSerializer()
+        data = {
+            'password': 'newpassword'
+        }
+        with self.assertRaises(serializers.ValidationError):
+            serializer.comprove_password(data,user)
+
+    def test_comprove_password_fails_with_wrong_old_password(self):
+        user = UserFactory()
+        serializer = UserSerializer()
+        data = {
+            'password': 'newpassword',
+            'old_password': 'wrongpassword'
+        }
+        with self.assertRaises(serializers.ValidationError):
+            serializer.comprove_password(data,user)
+
+    def test_comprove_password_fails_with_common_password(self):
+        user = UserFactory()
+        serializer = UserSerializer()
+        data = {
+            'password': '123456',
+            'old_password': 'wrongpassword'
+        }
+        with self.assertRaises(serializers.ValidationError):
+            serializer.comprove_password(data,user)
+
+    def test_comprove_password_passes_with_right_old_password_and_no_common_new_password(self):
+        user = UserFactory()
+        serializer = UserSerializer()
+        data = {
+            'password': 'Strong Password 123',
+            'old_password': 'password'
+        }
+        serializer.comprove_password(data,user)
