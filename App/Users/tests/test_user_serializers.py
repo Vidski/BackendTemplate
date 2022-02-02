@@ -259,3 +259,15 @@ class TestUserLoginSerializer(UsersAbstractUtils):
             'password': 'password'
         }
         serializer.check_email_and_password(data)
+
+    def test_create_function(self):
+        self.normal_user.verify()
+        serializer = UserLoginSerializer()
+        data = {
+            'email': 'normaluser@appname.me',
+            'password': 'password'
+        }
+        serializer.validate(data)
+        user, token = serializer.create(data)
+        self.assertEqual(user, self.normal_user)
+        assert(token is not None)
