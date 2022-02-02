@@ -1,6 +1,7 @@
 import logging
 
-from django.contrib.auth import authenticate, password_validation
+from django.contrib.auth import authenticate
+from django.contrib.auth import password_validation
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.serializers import ValidationError
@@ -158,11 +159,6 @@ class UserSignUpSerializer(UserAuthSerializer):
                                                   min_length=8,
                                                   max_length=64,
                                                   required=False)
-
-    def get_query_set(self):
-        token = self.request.query_params.get('token', None)
-        if token:
-            return Token.objects.filter(key=token)
 
     def validate(self, data):
         """
