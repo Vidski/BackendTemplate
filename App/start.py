@@ -85,9 +85,9 @@ class Start:
 
     def run_service(self):
         now = datetime.now()
-        os.system(f'echo "{now}" [info] The service' \
-                  f'{self.waiting_service_name} is now' \
-                  f'running and the port is open. Now' \
+        os.system(f'echo "{now}" [info] The service ' \
+                  f'{self.waiting_service_name} is now ' \
+                  f'running and the port is open. Now ' \
                   f'{self.raising_service_name} will start!')
         os.system(self.command)
 
