@@ -1,12 +1,8 @@
-from datetime import datetime
-
+from django.core.exceptions import ValidationError
 from rest_framework import serializers
-from rest_framework.exceptions import NotFound
-from rest_framework.exceptions import PermissionDenied
 
 from Users.tests.abstract_test_classes import UsersAbstractUtils
 from Users.factories.user_factories import UserFactory
-from Users.serializers import UserAuthSerializer
 from Users.serializers import UserLoginSerializer
 from Users.serializers import UserSerializer
 from Users.serializers import UserSignUpSerializer
@@ -271,3 +267,78 @@ class TestUserLoginSerializer(UsersAbstractUtils):
         user, token = serializer.create(data)
         self.assertEqual(user, self.normal_user)
         assert(token is not None)
+
+
+class TestUserSignUpSerializer(UsersAbstractUtils):
+
+    def test_data_serialized_from_data(self):
+        data = {
+            'first_name': 'Name',
+            'last_name': 'Lastname',
+            'email': 'newuser@appname.me',
+            'password': 'password'
+        }
+        expected_data = {
+            'first_name': data['first_name'],
+            'last_name': data['last_name'],
+            'email': data['email']
+        }
+        actual_data = UserSignUpSerializer(data).data
+        self.assertEqual(actual_data, expected_data)
+
+    def test_validate_fails_with_wrong_email(self):
+        serializer = UserSignUpSerializer()
+        data = {
+            'first_name': 'Name',
+            'last_name': 'Lastname',
+            'email': 'wrong'
+        }
+        with self.assertRaises(serializers.ValidationError):
+            serializer.validate(data)
+
+    def test_validate_fails_with_wrong_password(self):
+        serializer = UserSignUpSerializer()
+        data = {
+            'first_name': 'Name',
+            'last_name': 'Lastname',
+            'email': 'email@appname.me',
+            'password': 'wrong',
+            'password_confirmation': 'Wrong'
+        }
+        with self.assertRaises(serializers.ValidationError):
+            serializer.validate(data)
+
+    def test_validate_fails_with_missing_password_confirmation(self):
+        serializer = UserSignUpSerializer()
+        data = {
+            'first_name': 'Name',
+            'last_name': 'Lastname',
+            'email': 'email@appname.me',
+            'password': 'wrong'
+        }
+        with self.assertRaises(serializers.ValidationError):
+            serializer.validate(data)
+
+    def test_validate_fails_with_common_password(self):
+        serializer = UserSignUpSerializer()
+        data = {
+            'first_name': 'Name',
+            'last_name': 'Lastname',
+            'email': 'email@appname.me',
+            'password': '123456',
+            'password_confirmation': '123456'
+        }
+        with self.assertRaises(ValidationError):
+            serializer.validate(data)
+
+    def test_validate_is_successful(self):
+        serializer = UserSignUpSerializer()
+        data = {
+            'first_name': 'Name',
+            'last_name': 'Lastname',
+            'email': 'email@appname.me',
+            'password': 'strong password 123',
+            'password_confirmation': 'strong password 123'
+        }
+        serializer.validate(data)
+
