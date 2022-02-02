@@ -94,3 +94,21 @@ class TestUserSerializer(UsersAbstractUtils):
         serializer = UserSerializer()
         email = 'normaluser2@appname.me'
         serializer.comprove_email(email, user)
+
+    def test_update(self):
+        user = UserFactory()
+        serializer = UserSerializer()
+        data = {
+            'first_name': 'newfirstname',
+            'last_name': 'newlastname',
+            'phone_number': '123123124',
+            'email': 'newemail@appname.me',
+            'password': 'newpassword'
+        }
+        serializer.update(user, data)
+        user.refresh_from_db()
+        self.assertEqual(user.first_name, data['first_name'])
+        self.assertEqual(user.last_name, data['last_name'])
+        self.assertEqual(user.phone_number, data['phone_number'])
+        self.assertEqual(user.email, data['email'])
+        self.assertTrue(user.check_password(data['password']))
