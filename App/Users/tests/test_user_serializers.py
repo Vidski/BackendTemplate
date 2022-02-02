@@ -128,3 +128,41 @@ class TestUserSerializer(UsersAbstractUtils):
         self.assertEqual(user.phone_number, data['phone_number'])
         self.assertEqual(user.email, data['email'])
         self.assertTrue(user.check_password(data['password']))
+
+    def test_is_valid_fails_with_email_taken(self):
+        user = UserFactory()
+        serializer = UserSerializer()
+        data = {
+            'email': 'normaluser@appname.me'
+        }
+        with self.assertRaises(serializers.ValidationError):
+            serializer.is_valid(data, user)
+
+    def test_is_valid_fails_with_phone_number_taken(self):
+        user = UserFactory()
+        serializer = UserSerializer()
+        data = {
+            'phone_number': user.phone_number
+        }
+        with self.assertRaises(serializers.ValidationError):
+            serializer.is_valid(data, user)
+
+    def test_is_valid_fails_with_wrong_password(self):
+        user = UserFactory()
+        serializer = UserSerializer()
+        data = {
+            'password': 'wrongpassword'
+        }
+        with self.assertRaises(serializers.ValidationError):
+            serializer.is_valid(data, user)
+
+    def test_is_valid_passes_with_valid_data(self):
+        user = UserFactory()
+        serializer = UserSerializer()
+        data = {
+            'first_name': 'newfirstname',
+            'last_name': 'newlastname',
+            'phone_number': '123123124',
+            'email': 'newemail@appname.me'
+        }
+        serializer.is_valid(data, user)
