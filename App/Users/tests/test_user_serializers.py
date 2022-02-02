@@ -68,3 +68,16 @@ class TestUserSerializer(UsersAbstractUtils):
             'old_password': 'password'
         }
         serializer.comprove_password(data,user)
+
+    def test_comprove_phone_number_fails_with_existing_phone_number(self):
+        user = UserFactory()
+        serializer = UserSerializer()
+        phone_number = '123123123'
+        with self.assertRaises(serializers.ValidationError):
+            serializer.comprove_phone_number(phone_number, user)
+
+    def test_comprove_phone_number_passes(self):
+        user = UserFactory()
+        serializer = UserSerializer()
+        phone_number = '123123124'
+        serializer.comprove_phone_number(phone_number, user)
