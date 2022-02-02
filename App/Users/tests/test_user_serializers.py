@@ -166,3 +166,58 @@ class TestUserSerializer(UsersAbstractUtils):
             'email': 'newemail@appname.me'
         }
         serializer.is_valid(data, user)
+
+
+class TestUserLoginSerializer(UsersAbstractUtils):
+
+    def test_validate_fails_with_wrong_email(self):
+        serializer = UserLoginSerializer()
+        data = {
+            'email': 'wrongemail@appname.me',
+            'password': 'password'
+        }
+        with self.assertRaises(serializers.ValidationError):
+            serializer.validate(data)
+
+    def test_validate_fails_with_wrong_password(self):
+        serializer = UserLoginSerializer()
+        data = {
+            'email': 'normaluser@appname.me',
+            'password': 'wrongpassword'
+        }
+        with self.assertRaises(serializers.ValidationError):
+            serializer.validate(data)
+
+    def test_validate_fails_without_email(self):
+        serializer = UserLoginSerializer()
+        data = {
+            'password': 'password'
+        }
+        with self.assertRaises(serializers.ValidationError):
+            serializer.validate(data)
+
+    def test_validate_fails_without_password(self):
+        serializer = UserLoginSerializer()
+        data = {
+            'email': 'normaluser@appname.me'
+        }
+        with self.assertRaises(serializers.ValidationError):
+            serializer.validate(data)
+
+    def test_validate_passes_fails_with_user_not_verified(self):
+        serializer = UserLoginSerializer()
+        data = {
+            'email': 'normaluser@appname.me',
+            'password': 'password'
+        }
+        with self.assertRaises(serializers.ValidationError):
+            serializer.validate(data)
+
+    def test_validate_passes_with_right_data(self):
+        self.normal_user.verify()
+        serializer = UserLoginSerializer()
+        data = {
+            'email': 'normaluser@appname.me',
+            'password': 'password'
+        }
+        serializer.validate(data)
