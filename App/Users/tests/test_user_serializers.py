@@ -170,6 +170,20 @@ class TestUserSerializer(UsersAbstractUtils):
 
 class TestUserLoginSerializer(UsersAbstractUtils):
 
+
+    def test_data_serialized_from_data(self):
+        user = UserFactory()
+        user.verify()
+        expected_data = {
+            'email': user.email
+        }
+        data = {
+            'email': user.email,
+            'password': 'password'
+        }
+        actual_data = UserLoginSerializer(data).data
+        self.assertEqual(actual_data, expected_data)
+
     def test_validate_fails_with_wrong_email(self):
         serializer = UserLoginSerializer()
         data = {
