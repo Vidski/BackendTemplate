@@ -3,15 +3,12 @@ import logging
 from django.contrib.auth import authenticate
 from django.contrib.auth import password_validation
 from rest_framework import serializers
-from rest_framework.authtoken.models import Token
 from rest_framework.serializers import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.validators import UniqueValidator
 
 from Users.models import User
 from Users.utils import send_email
-
-logger = logging.getLogger(__name__)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -183,3 +180,4 @@ class UserSignUpSerializer(UserAuthSerializer):
         user = User.objects.create_user(**data, is_verified=False)
         send_email('verify_email', user)
         return user
+
