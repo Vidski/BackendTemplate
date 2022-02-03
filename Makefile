@@ -70,3 +70,9 @@ logs:
 
 database:
 	docker-compose -f ./Docker/${ENV}/docker-compose.yml exec database mysql -u${USER} -p${PASSWORD}
+
+format:
+	docker exec -it django-app bash -c "oitnb . --exclude */migrations/* --icons"
+
+check-format:
+	docker exec -it django-app bash -c "oitnb --check . --exclude */migrations/* --icons"
