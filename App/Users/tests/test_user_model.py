@@ -4,7 +4,6 @@ from Users.models import User
 
 
 class UserModelTest(UsersAbstractUtils):
-
     def test_model_has_attributes(self):
         user = UserFactory()
         assert hasattr(user, 'email')
@@ -39,4 +38,3 @@ class UserModelTest(UsersAbstractUtils):
         token = user.generate_verification_token()
         assert type(token) == str
         assert len(token) > 10
-

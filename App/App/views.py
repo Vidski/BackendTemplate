@@ -10,7 +10,8 @@ class CustomView(TemplateView):
     function `manageHomePage` in the file `App/Static/admin_js.js`,
     and `CustomView` in the App/urls.py file.
     """
-    template_name = "../static/home.html"
+
+    template_name = '../static/home.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

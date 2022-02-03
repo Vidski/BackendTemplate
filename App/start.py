@@ -18,15 +18,18 @@ python3 start.py --waiting-service-name database --ip database
 --command 'python3 manage.py runserver 0.0.0.0:8000'
 """
 
-CELERY_WORKER = 'celery --app=Worker.worker.app worker ' +\
-                '--concurrency=1 --hostname=worker@%h --loglevel=INFO'
-CELERY_BEAT = 'python3 -m celery --app=Worker.worker.app beat -l debug -f' +\
-              ' /var/log/App-celery-beat.log --pidfile=/tmp/celery-beat.pid'
+CELERY_WORKER = (
+    'celery --app=Worker.worker.app worker '
+    + '--concurrency=1 --hostname=worker@%h --loglevel=INFO'
+)
+CELERY_BEAT = (
+    'python3 -m celery --app=Worker.worker.app beat -l debug -f'
+    + ' /var/log/App-celery-beat.log --pidfile=/tmp/celery-beat.pid'
+)
 DJANGO = 'python3 manage.py runserver 0.0.0.0:8000'
 
 
 class Start:
-
     def __init__(self):
         description = 'Check if port is open, avoid docker-compose race condition'
         parser = argparse.ArgumentParser(description=description)
@@ -85,17 +88,22 @@ class Start:
 
     def run_service(self):
         now = datetime.now()
-        os.system(f'echo "{now}" [info] The service ' \
-                  f'{self.waiting_service_name} is now ' \
-                  f'running and the port is open. Now ' \
-                  f'{self.raising_service_name} will start!')
+        os.system(
+            f'echo "{now}" [info] The service '
+            f'{self.waiting_service_name} is now '
+            f'running and the port is open. Now '
+            f'{self.raising_service_name} will start!'
+        )
         os.system(self.command)
 
     def port_is_not_ready(self):
         now = datetime.now()
-        os.system(f'echo "{now}" [info] The port of '\
-                  f'{self.waiting_service_name} is not ' \
-                  'open yet. It will be checked again soon!')
+        os.system(
+            f'echo "{now}" [info] The port of '
+            f'{self.waiting_service_name} is not '
+            'open yet. It will be checked again soon!'
+        )
         time.sleep(1)
+
 
 Start()

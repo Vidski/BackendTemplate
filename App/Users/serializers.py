@@ -76,17 +76,14 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['first_name',
-                  'phone_number',
-                  'email',
-                  'created_at',
-                  'updated_at']
+        fields = ['first_name', 'phone_number', 'email', 'created_at', 'updated_at']
 
 
 class UserAuthSerializer(serializers.Serializer):
     """
     User authentication serializer
     """
+
     id = serializers.IntegerField(read_only=True)
     first_name = serializers.CharField(required=False, max_length=255)
     last_name = serializers.CharField(required=False, max_length=255)
@@ -97,10 +94,9 @@ class UserAuthSerializer(serializers.Serializer):
     updated_at = serializers.DateTimeField(read_only=True)
     is_admin = serializers.BooleanField(read_only=True)
     email = serializers.EmailField(required=True)
-    password = serializers.CharField(write_only=True,
-                                     min_length=8,
-                                     max_length=64,
-                                     required=True)
+    password = serializers.CharField(
+        write_only=True, min_length=8, max_length=64, required=True
+    )
 
 
 class UserLoginSerializer(UserAuthSerializer):
@@ -136,26 +132,29 @@ class UserLoginSerializer(UserAuthSerializer):
 
     class Meta:
         model = User
-        fields = ['first_name',
-                  'last_name',
-                  'phone_number',
-                  'email',
-                  'created_at',
-                  'updated_at']
+        fields = [
+            'first_name',
+            'last_name',
+            'phone_number',
+            'email',
+            'created_at',
+            'updated_at',
+        ]
 
 
 class UserSignUpSerializer(UserAuthSerializer):
     """
     User sign up serializer
     """
+
     first_name = serializers.CharField(required=True, max_length=255)
     last_name = serializers.CharField(required=True, max_length=255)
-    email = serializers.EmailField(required=True,
-                                   validators=[UniqueValidator(queryset=User.objects.all())])
-    password_confirmation = serializers.CharField(write_only=True,
-                                                  min_length=8,
-                                                  max_length=64,
-                                                  required=False)
+    email = serializers.EmailField(
+        required=True, validators=[UniqueValidator(queryset=User.objects.all())]
+    )
+    password_confirmation = serializers.CharField(
+        write_only=True, min_length=8, max_length=64, required=False
+    )
 
     def validate(self, data):
         """
@@ -180,4 +179,3 @@ class UserSignUpSerializer(UserAuthSerializer):
         user = User.objects.create_user(**data, is_verified=False)
         send_email('verify_email', user)
         return user
-

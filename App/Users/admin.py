@@ -23,37 +23,39 @@ class UserAdmin(BaseUserAdmin):
         'id',
     )
 
-    list_filter = (
-        'is_admin',
-        'is_verified',
-        'is_premium'
-    )
+    list_filter = ('is_admin', 'is_verified', 'is_premium')
 
     fieldsets = (
         (None, {'fields': ('id', 'email', 'password')}),
-        ('Personal info', {'fields': ('first_name','last_name','phone_number')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'phone_number')}),
         ('Account status', {'fields': ('is_verified', 'is_premium')}),
         ('Permissions', {'fields': ('is_admin',)}),
         ('Dates', {'fields': ('created_at', 'updated_at')}),
     )
 
-    readonly_fields = (['created_at', 'updated_at', 'id'])
+    readonly_fields = ['created_at', 'updated_at', 'id']
 
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('email', 'first_name', 'last_name', 'phone_number', 'password1', 'password2'),
-        }),
+        (
+            None,
+            {
+                'classes': ('wide',),
+                'fields': (
+                    'email',
+                    'first_name',
+                    'last_name',
+                    'phone_number',
+                    'password1',
+                    'password2',
+                ),
+            },
+        ),
     )
-    search_fields = ('email','id')
+    search_fields = ('email', 'id')
 
-    ordering = (
-        'id',
-        'email',
-        'first_name'
-    )
+    ordering = ('id', 'email', 'first_name')
 
     filter_horizontal = ()
 
@@ -70,9 +72,7 @@ class LogEntryAdmin(admin.ModelAdmin):
         url = obj.get_admin_url()
         object_repr = obj.object_repr
         model = obj.content_type.model
-        return format_html(
-            f'<a href="{url}">{object_repr} [{model}]</a>'
-        )
+        return format_html(f'<a href="{url}">{object_repr} [{model}]</a>')
 
     def modified(self, obj):
         if not obj.action_time:

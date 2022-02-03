@@ -26,6 +26,7 @@ class UserViewSet(viewsets.GenericViewSet):
     """
     API endpoint that allows to interact with User model
     """
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permissions_classes = (IsAuthenticated,)
@@ -58,7 +59,7 @@ class UserViewSet(viewsets.GenericViewSet):
         serializer.is_valid(request.data, request.user)
         user = serializer.update(instance, request.data)
         data = UserSerializer(user).data
-        log_information("updated", user)
+        log_information('updated', user)
         return Response(data, status=UPDATED)
 
     def destroy(self, request, pk=None):
@@ -66,7 +67,7 @@ class UserViewSet(viewsets.GenericViewSet):
         API endpoint that allow to delete an user
         """
         instance = get_user_or_error(request.user, pk)
-        log_information("deleted", instance)
+        log_information('deleted', instance)
         instance.delete()
         return Response(status=DELETED)
 
@@ -79,7 +80,7 @@ class UserViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         data = UserSignUpSerializer(user).data
-        log_information("registered", user)
+        log_information('registered', user)
         return Response(data, status=CREATED)
 
     @action(detail=False, methods=['post'], permission_classes=[AllowAny])
@@ -90,9 +91,8 @@ class UserViewSet(viewsets.GenericViewSet):
         serializer = UserLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user, token = serializer.save()
-        data = {"user": UserLoginSerializer(user).data,
-                "token": token}
-        log_information("logged in", user)
+        data = {'user': UserLoginSerializer(user).data, 'token': token}
+        log_information('logged in', user)
         return JsonResponse(data, status=SUCCESS)
 
     @action(detail=True, methods=['get'], permission_classes=[AllowAny])
@@ -104,6 +104,6 @@ class UserViewSet(viewsets.GenericViewSet):
         user = User.objects.get(id=pk)
         verify_user_query_token(user, query_token)
         user.verify()
-        data = {"user": UserLoginSerializer(user).data}
-        log_information("verified", user)
+        data = {'user': UserLoginSerializer(user).data}
+        log_information('verified', user)
         return JsonResponse(data, status=UPDATED)

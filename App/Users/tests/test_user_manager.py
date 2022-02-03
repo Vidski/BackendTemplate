@@ -3,14 +3,13 @@ from django.test import TestCase
 
 
 class UsersManagersTests(TestCase):
-
     def test_create_user_successfully(self):
         User = get_user_model()
         user = User.objects.create_user(
             email='normaluser@test.com',
             first_name='test_name',
             last_name='test_last_name',
-            password='test_password'
+            password='test_password',
         )
         self.assertEqual(user.email, 'normaluser@test.com')
         self.assertTrue(user.is_active)
@@ -29,7 +28,7 @@ class UsersManagersTests(TestCase):
     def test_create_user_fails_with_email_without_password(self):
         User = get_user_model()
         with self.assertRaises(TypeError):
-            User.objects.create_user(email='', password="foo")
+            User.objects.create_user(email='', password='foo')
 
     def test_create_superuser(self):
         User = get_user_model()
@@ -56,4 +55,4 @@ class UsersManagersTests(TestCase):
     def test_create_superuser_fails_with_email_without_password(self):
         User = get_user_model()
         with self.assertRaises(TypeError):
-            User.objects.create_superuser(email='', password="foo")
+            User.objects.create_superuser(email='', password='foo')

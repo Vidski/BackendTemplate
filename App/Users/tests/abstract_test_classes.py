@@ -7,7 +7,6 @@ from Users.models import User
 
 
 class UsersAbstractUtils(TestCase):
-
     def setUp(self):
         self._clean()
         self.admin_user = AdminFaker()

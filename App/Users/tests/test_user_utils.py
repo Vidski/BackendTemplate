@@ -11,17 +11,13 @@ from Users.utils import verify_user_query_token
 
 
 class TestUserUtils(UsersAbstractUtils):
-
     def test_get_email_data_for_instance(self):
         instance = MagicMock()
         user = UserFactory()
         key = PropertyMock(return_value=10000)
         type(instance).key = key
         type(instance).user = user
-        expected_data = {
-            'name': user.first_name,
-            'token': 10000
-        }
+        expected_data = {'name': user.first_name, 'token': 10000}
         actual_data = get_email_data('reset_password', instance)
         self.assertEqual(actual_data, expected_data)
 
@@ -30,7 +26,7 @@ class TestUserUtils(UsersAbstractUtils):
         expected_data = {
             'id': user.id,
             'name': user.first_name,
-            'token': user.generate_verification_token()
+            'token': user.generate_verification_token(),
         }
         actual_data = get_email_data('verify_email', user)
         self.assertEqual(actual_data, expected_data)
@@ -58,11 +54,11 @@ class TestUserUtils(UsersAbstractUtils):
 
     def test_verify_user_query_token_raises_PermissionDenied(self):
         user = UserFactory()
-        token =  "Wrong token"
+        token = 'Wrong token'
         with self.assertRaises(PermissionDenied):
             verify_user_query_token(user, token)
 
     def test_verify_user_query_token_do_not_raise_anything(self):
         user = UserFactory()
-        token =  user.generate_verification_token()
+        token = user.generate_verification_token()
         verify_user_query_token(user, token)
