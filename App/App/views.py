@@ -11,7 +11,7 @@ class CustomView(TemplateView):
     and `CustomView` in the App/urls.py file.
     """
 
-    template_name = '../static/home.html'
+    template_name = '../static/admin/home.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
