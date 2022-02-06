@@ -1,6 +1,9 @@
-from .local_settings import *
+from Settings.Django.local_settings import *
 
 ENVIRONMENT_NAME = 'test'
+
+STATICFILES_DIRS = ()
+STATIC_ROOT = os.path.join(BASE_DIR, 'Static')
 
 DATABASES = {
     'default': {
