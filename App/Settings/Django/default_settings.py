@@ -45,6 +45,7 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'django_prometheus',
+    'inline_static',
 ]
 
 LOCAL_APPS = ['Users', 'Settings']
@@ -171,3 +172,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
+
+VERIFY_EMAIL_CONTENT = (
+    'First of all we want to thank you to give us a chance! '
+    + 'To fully start using the system and begin to be part '
+    + 'of the community, you must verify your email clicking'
+    + 'on the button below.'
+)
+
+RESET_PASSWORD_EMAIL_CONTENT = 'Click in the link below to change your password.'

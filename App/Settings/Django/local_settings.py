@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from Settings.Django.default_settings import *
 
+URL = 'http://localhost:8000'
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'default-secret-key'
@@ -10,6 +11,8 @@ SECRET_KEY = 'default-secret-key'
 DEBUG = True
 ENVIRONMENT_NAME = 'dev'
 ALLOWED_HOSTS = []
+
+DJANGO_CSS_INLINE_ENABLE = not DEBUG
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
