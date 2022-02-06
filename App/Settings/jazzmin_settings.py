@@ -92,8 +92,8 @@ JAZZMIN_SETTINGS = {
     # UI Tweaks #
     #############
     # Relative paths to custom CSS/JS scripts (must be present in static files)
-    'custom_css': '../static/admin/admin_css.css',
-    'custom_js': '../static/admin/admin_js.js',
+    'custom_css': '../static/admin/admin.css',
+    'custom_js': '../static/admin/admin.js',
     # Whether to show the UI customizer on the sidebar
     'show_ui_builder': False,
     ###############
