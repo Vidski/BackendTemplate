@@ -1,0 +1,77 @@
+
+.footer {
+  -ms-text-size-adjust: 100%;
+  border-collapse: collapse;
+  -webkit-text-size-adjust: 100%;
+}
+
+.footer-heading {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  background: url("https://gallery.mailchimp.com/bfdf3c6997809dba3c6682bcf/images/cabdbec1-8813-44da-b186-baec3b4f5bbd.png")
+    repeat-x top;
+  background-size: 20px;
+  padding-bottom: 25px;
+  vertical-align: top;
+  align-content: center;
+}
+
+.footer-title {
+  background: #ffffff;
+  color: #4a4a4a;
+  display: inline-block;
+  font-size: 16px;
+  letter-spacing: -0.53px;
+  line-height: 20px;
+  margin: 0;
+  padding: 0 10px;
+}
+
+.social-div {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  border-collapse: collapse;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.social-item {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+.social-logo-div {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  color: #4a4a4a !important;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: -0.5px;
+  line-height: 14px;
+  text-decoration: none;
+}
+
+.social-logo {
+  width: 36px;
+  height: 36px;
+  -ms-interpolation-mode: bicubic;
+  border: 0;
+  display: inline-block;
+  outline: none;
+  padding-right: 10px;
+  text-decoration: none;
+  vertical-align: middle;
+}
+
+.unsubscribe{
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  color: #4a4a4a !important;
+  margin-top: 3rem;
+  font-size: 0.8rem;
+  letter-spacing: -0.5px;
+  line-height: 14px;
+  text-decoration: none;
+  text-align: center;
+}
