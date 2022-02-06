@@ -189,7 +189,7 @@ Versions that will use the project. Take in mind that python sub versions may ch
   <b>Useful guides</b>
 </h1>
 
-These are useful guides to customize our django apps, modifying the default User model and specifying a more secure authentication for REST apis.
+These are useful guides to customize our django apps, modifying the default User model.
 
 <a name="customusermodel"/>
 
