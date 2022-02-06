@@ -8,7 +8,7 @@
 .footer-heading {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
-  background: url("https://gallery.mailchimp.com/bfdf3c6997809dba3c6682bcf/images/cabdbec1-8813-44da-b186-baec3b4f5bbd.png")
+  background: url("http://localhost:8000/static/email/images/separator.png")
     repeat-x top;
   background-size: 20px;
   padding-bottom: 25px;
