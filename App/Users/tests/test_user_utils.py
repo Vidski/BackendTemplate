@@ -1,5 +1,7 @@
 from mock import MagicMock
 from mock import PropertyMock
+
+from django.conf import settings
 from rest_framework.exceptions import NotFound
 from rest_framework.exceptions import PermissionDenied
 
@@ -17,16 +19,20 @@ class TestUserUtils(UsersAbstractUtils):
         key = PropertyMock(return_value=10000)
         type(instance).key = key
         type(instance).user = user
-        expected_data = {'name': user.first_name, 'token': 10000}
+        expected_data = {
+            'greeting': f'Hi, {user.first_name}!',
+            'link': 10000,
+            'content': settings.RESET_PASSWORD_EMAIL_CONTENT,
+        }
         actual_data = get_email_data('reset_password', instance)
         self.assertEqual(actual_data, expected_data)
 
     def test_get_email_data_for_user(self):
         user = UserFactory()
         expected_data = {
-            'id': user.id,
-            'name': user.first_name,
-            'token': user.generate_verification_token(),
+            'greeting': f'Hi, {user.first_name}!',
+            'link': f'{settings.URL}/api/v1/users/{user.id}/verify/?token={user.generate_verification_token()}',
+            'content': settings.VERIFY_EMAIL_CONTENT,
         }
         actual_data = get_email_data('verify_email', user)
         self.assertEqual(actual_data, expected_data)
