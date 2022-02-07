@@ -12,9 +12,9 @@ DEBUG = True
 ENVIRONMENT_NAME = 'dev'
 ALLOWED_HOSTS = []
 
-DJANGO_CSS_INLINE_ENABLE = not DEBUG
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'Static'),)
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
