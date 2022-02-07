@@ -44,16 +44,17 @@ create-test-db:
 	docker exec -it django-app bash -c "python manage.py create_test_db"
 
 test:
-	docker exec -it django-app bash -c "python manage.py test ${APP} --keepdb  --settings=Settings.Django.test_settings"
+	make create-test-db
+	docker exec -it django-app bash -c "python manage.py test ${APP} --keepdb --settings=Settings.Django.test_settings"
 
 test-migrate:
-	SETTINGS=--settings=Settings.test_settings make migrate
+	SETTINGS=--settings=Settings.Django.test_settings make migrate
 
 test-populate:
-	SETTINGS=--settings=Settings.test_settings make populate
+	SETTINGS=--settings=Settings.Django.test_settings make populate
 
 test-flush:
-	SETTINGS=--settings=Settings.test_settings make flush
+	SETTINGS=--settings=Settings.Django.test_settings make flush
 
 test-recreate:
 	make test-flush
