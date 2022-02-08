@@ -46,6 +46,7 @@ THIRD_PARTY_APPS = [
     'rest_framework_simplejwt',
     'django_prometheus',
     'inline_static',
+    'phonenumber_field',
 ]
 
 LOCAL_APPS = ['Users', 'Settings']
