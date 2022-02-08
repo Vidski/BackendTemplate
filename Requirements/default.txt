@@ -9,7 +9,6 @@ djangorestframework_simplejwt==5.0.0
 django-rest-passwordreset==1.2.1
 drf-spectacular==0.21.0
 drf-spectacular[sidecar]==0.21.0
-psycopg2==2.9.2
 pymysql==1.0.2
 django-redis-cache==3.0.0
 redis==3.5.3
@@ -21,3 +20,5 @@ freezegun==1.1.0
 mock==4.0.3
 oitnb==0.2.2
 django-inline-static==0.1.0
+phonenumbers
+django-phonenumber-field==6.0.0
