@@ -2,13 +2,15 @@ import base64
 import hashlib
 
 from django.conf import settings
-from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.base_user import AbstractBaseUser
+from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.dispatch import receiver
 from django_prometheus.models import ExportModelOperationsMixin
 from django_rest_passwordreset.signals import reset_password_token_created
 from django.utils.translation import gettext_lazy as _
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class CustomUserManager(BaseUserManager):
@@ -56,7 +58,7 @@ class User(ExportModelOperationsMixin('dataset'), AbstractBaseUser, PermissionsM
     )
     first_name = models.CharField('First name', blank=False, max_length=50)
     last_name = models.CharField('Last name', blank=False, max_length=50)
-    phone_number = models.CharField('User number', blank=True, max_length=15)
+    phone_number = PhoneNumberField('User number', blank=True, max_length=22)
     is_verified = models.BooleanField('Verification status', default=False)
     is_premium = models.BooleanField('Premium status', default=False)
     is_admin = models.BooleanField('Admin status', default=False)
