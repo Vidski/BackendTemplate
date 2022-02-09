@@ -1,9 +1,10 @@
 import logging
+from tqdm import trange as progress
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from Users.fakers.user_fakers import UserFaker
+from Users.factories.user_factories import UserFactory
 
 logger = logging.getLogger(__name__)
 
@@ -22,5 +23,6 @@ class Command(BaseCommand):
 
     def populate_users(self):
         self.stdout.write('Creating fake users')
-        UserFaker.create_batch(50)
+        for _ in progress(50):
+            UserFactory()
         self.stdout.write('Fake users created')
