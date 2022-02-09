@@ -23,10 +23,10 @@ class UserSerializer(serializers.ModelSerializer):
         method and the main validation method is executed before "validate" one
         """
         email = data.get('email', None)
-        self.comprove_email(email, user)
+        self.check_email(email, user)
         phone_number = data.get('phone_number', None)
-        self.comprove_phone_number(phone_number, user)
-        self.comprove_password(data, user)
+        self.check_phone_number(phone_number, user)
+        self.check_password(data, user)
         return data
 
     def create(self, validated_data):
@@ -47,18 +47,18 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-    def comprove_email(self, email, user):
+    def check_email(self, email, user):
         user_with_email = User.objects.filter(email=email).first()
         if user_with_email and not user.has_permission(user_with_email):
             raise ValidationError('Email is taken')
 
-    def comprove_phone_number(self, phone_number, user):
+    def check_phone_number(self, phone_number, user):
         check_e164_format(phone_number)
         user_with_phone_number = User.objects.filter(phone_number=phone_number).first()
         if user_with_phone_number and not user.has_permission(user_with_phone_number):
             raise ValidationError('Phone number is taken')
 
-    def comprove_password(self, data, user):
+    def check_password(self, data, user):
         password = data.get('password', None)
         if password:
             old_password = data.get('old_password', None)

@@ -27,58 +27,58 @@ class TestUserSerializer(UsersAbstractUtils):
         actual_data = UserSerializer(user).data
         self.assertEqual(actual_data, expected_data)
 
-    def test_comprove_password_fails_without_old_password(self):
+    def test_check_password_fails_without_old_password(self):
         user = UserFactory()
         serializer = UserSerializer()
         data = {'password': 'newpassword'}
         with self.assertRaises(serializers.ValidationError):
-            serializer.comprove_password(data, user)
+            serializer.check_password(data, user)
 
-    def test_comprove_password_fails_with_wrong_old_password(self):
+    def test_check_password_fails_with_wrong_old_password(self):
         user = UserFactory()
         serializer = UserSerializer()
         data = {'password': 'newpassword', 'old_password': 'wrongpassword'}
         with self.assertRaises(serializers.ValidationError):
-            serializer.comprove_password(data, user)
+            serializer.check_password(data, user)
 
-    def test_comprove_password_fails_with_common_password(self):
+    def test_check_password_fails_with_common_password(self):
         user = UserFactory()
         serializer = UserSerializer()
         data = {'password': '123456', 'old_password': 'wrongpassword'}
         with self.assertRaises(serializers.ValidationError):
-            serializer.comprove_password(data, user)
+            serializer.check_password(data, user)
 
-    def test_comprove_password_passes_with_right_old_password_and_no_common_new_password(self):
+    def test_check_password_passes_with_right_old_password_and_no_common_new_password(self):
         user = UserFactory()
         serializer = UserSerializer()
         data = {'password': 'Strong Password 123', 'old_password': 'password'}
-        serializer.comprove_password(data, user)
+        serializer.check_password(data, user)
 
-    def test_comprove_phone_number_fails_with_existing_phone_number(self):
+    def test_check_phone_number_fails_with_existing_phone_number(self):
         user = UserFactory()
         serializer = UserSerializer()
         phone_number = '+1123123123'
         with self.assertRaises(serializers.ValidationError):
-            serializer.comprove_phone_number(phone_number, user)
+            serializer.check_phone_number(phone_number, user)
 
-    def test_comprove_phone_number_passes(self):
+    def test_check_phone_number_passes(self):
         user = UserFactory()
         serializer = UserSerializer()
         phone_number = '+123123124'
-        serializer.comprove_phone_number(phone_number, user)
+        serializer.check_phone_number(phone_number, user)
 
-    def test_comprove_email_fails_with_existing_email(self):
+    def test_check_email_fails_with_existing_email(self):
         user = UserFactory()
         serializer = UserSerializer()
         email = 'normaluser@appname.me'
         with self.assertRaises(serializers.ValidationError):
-            serializer.comprove_email(email, user)
+            serializer.check_email(email, user)
 
-    def test_comprove_email_passes(self):
+    def test_check_email_passes(self):
         user = UserFactory()
         serializer = UserSerializer()
         email = 'normaluser2@appname.me'
-        serializer.comprove_email(email, user)
+        serializer.check_email(email, user)
 
     def test_update(self):
         user = UserFactory()
