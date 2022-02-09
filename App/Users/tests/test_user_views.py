@@ -402,6 +402,7 @@ class UserUpdateTest(UsersAbstractUtils):
         response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
         self.assertEqual(response.status_code, 400)
 
+
 class UserDeleteTests(UsersAbstractUtils):
     def test_delete_user_fails_as_an_unauthenticated_user(self):
         self.assertEqual(User.objects.count(), 2)
