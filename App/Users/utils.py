@@ -67,6 +67,7 @@ def verify_user_query_token(user, query_token):
     if token != query_token:
         raise PermissionDenied("You don't have permission")
 
+
 def check_e164_format(phone_number):
     regex_format = r'^\+[0-9]\d{1,20}$'
     if phone_number and not regex.match(regex_format, phone_number):
