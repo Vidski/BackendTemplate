@@ -1,8 +1,11 @@
+import re as regex
+
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from rest_framework.exceptions import NotFound
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.serializers import ValidationError
 
 from App.utils import log_email_action
 from Users.models import User
@@ -63,3 +66,8 @@ def verify_user_query_token(user, query_token):
     token = user.generate_verification_token()
     if token != query_token:
         raise PermissionDenied("You don't have permission")
+
+def check_e164_format(phone_number):
+    regex_format = r'^\+[0-9]\d{1,20}$'
+    if phone_number and not regex.match(regex_format, phone_number):
+        raise ValidationError('Phone number is not valid')
