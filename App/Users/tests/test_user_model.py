@@ -38,3 +38,14 @@ class UserModelTest(UsersAbstractUtils):
         token = user.generate_verification_token()
         assert type(token) == str
         assert len(token) > 10
+
+    def test_has_permission_returns_true(self):
+        user = UserFactory()
+        user2 = UserFactory()
+        has_permission = user.has_permission(user2)
+        assert has_permission == False
+
+    def test_has_permission_returns_true(self):
+        user = UserFactory()
+        has_permission = user.has_permission(user)
+        assert has_permission == True

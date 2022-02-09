@@ -72,8 +72,11 @@ class User(ExportModelOperationsMixin('dataset'), AbstractBaseUser, PermissionsM
     def __str__(self):
         return self.email
 
-    def has_perm(self, perm, obj=None):
-        return self.is_admin
+    def has_permission(self, object=None):
+        if isinstance(object, User):
+            return object.id == self.id
+        else:
+            return object.user.id == self.id
 
     def has_module_perms(self, app_label):
         return True
