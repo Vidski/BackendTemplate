@@ -124,7 +124,14 @@ class TestUserSerializer(UsersAbstractUtils):
     def test_is_valid_fails_with_phone_number_taken(self):
         user = UserFactory(phone_number='+1123123123')
         serializer = UserSerializer()
-        data = {'phone_number': user.phone_number}
+        data = {'phone_number': '+1123123123'}
+        with self.assertRaises(serializers.ValidationError):
+            serializer.is_valid(data, user)
+
+    def test_is_valid_fails_with_phone_number_with_bad_format(self):
+        user = UserFactory(phone_number='+1123123123')
+        serializer = UserSerializer()
+        data = {'phone_number': '123123123'}
         with self.assertRaises(serializers.ValidationError):
             serializer.is_valid(data, user)
 

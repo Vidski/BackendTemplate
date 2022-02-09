@@ -69,7 +69,7 @@ class UserCreateTest(UsersAbstractUtils):
             'email': 'unusedemail2@appname.me',
             'password': 'strongpassword',
             'password_confirmation': 'strongpassword',
-            'phone_number': '+03999999999',
+            'phone_number': '+34612123123',
             'is_verified': True,
             'is_admin': True,
             'is_premium': True,
@@ -384,6 +384,23 @@ class UserUpdateTest(UsersAbstractUtils):
         self.assertEqual(self.normal_user.is_admin, False)
         self.assertEqual(self.normal_user.is_premium, False)
 
+    def test_update_user_fails_with_wrong_phone_format(self):
+        data = {
+            'first_name': 'Test',
+            'last_name': 'Tested',
+            'email': 'emailemail@appname.me',
+            'phone_number': '32987654321',
+            'old_password': 'password',
+            'password': 'New password',
+            'is_verified': False,
+            'is_admin': True,
+            'is_premium': True,
+        }
+        self.normal_user.is_verified = True
+        self.normal_user.save()
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        self.assertEqual(response.status_code, 400)
 
 class UserDeleteTests(UsersAbstractUtils):
     def test_delete_user_fails_as_an_unauthenticated_user(self):

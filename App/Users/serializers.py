@@ -1,13 +1,13 @@
-import logging
-
 from django.contrib.auth import authenticate
 from django.contrib.auth import password_validation
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.validators import UniqueValidator
+from phonenumber_field.serializerfields import PhoneNumberField
 
 from Users.models import User
+from Users.utils import check_e164_format
 from Users.utils import send_email
 
 
@@ -56,6 +56,7 @@ class UserSerializer(serializers.ModelSerializer):
                 raise ValidationError('Email is taken')
 
     def comprove_phone_number(self, phone_number, user):
+        check_e164_format(phone_number)
         users_with_same_phone_number = User.objects.filter(phone_number=phone_number)
         if users_with_same_phone_number:
             user_id = users_with_same_phone_number.first().id
@@ -87,7 +88,7 @@ class UserAuthSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     first_name = serializers.CharField(required=False, max_length=255)
     last_name = serializers.CharField(required=False, max_length=255)
-    phone_number = serializers.CharField(required=False, max_length=255)
+    phone_number = PhoneNumberField(required=False, max_length=22)
     is_verified = serializers.BooleanField(read_only=True)
     is_premium = serializers.BooleanField(read_only=True)
     created_at = serializers.DateTimeField(read_only=True)
