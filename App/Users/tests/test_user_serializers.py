@@ -57,14 +57,14 @@ class TestUserSerializer(UsersAbstractUtils):
     def test_comprove_phone_number_fails_with_existing_phone_number(self):
         user = UserFactory()
         serializer = UserSerializer()
-        phone_number = '123123123'
+        phone_number = '+1123123123'
         with self.assertRaises(serializers.ValidationError):
             serializer.comprove_phone_number(phone_number, user)
 
     def test_comprove_phone_number_passes(self):
         user = UserFactory()
         serializer = UserSerializer()
-        phone_number = '123123124'
+        phone_number = '+123123124'
         serializer.comprove_phone_number(phone_number, user)
 
     def test_comprove_email_fails_with_existing_email(self):
@@ -86,7 +86,7 @@ class TestUserSerializer(UsersAbstractUtils):
         data = {
             'first_name': 'newfirstname',
             'last_name': 'newlastname',
-            'phone_number': '123123124',
+            'phone_number': '+123123124',
             'email': 'newemail@appname.me',
             'password': 'newpassword',
         }
@@ -103,7 +103,7 @@ class TestUserSerializer(UsersAbstractUtils):
         data = {
             'first_name': 'newfirstname',
             'last_name': 'newlastname',
-            'phone_number': '123123124',
+            'phone_number': '+123123124',
             'email': 'newuser@appname.me',
             'password': 'newpassword',
         }
@@ -122,7 +122,7 @@ class TestUserSerializer(UsersAbstractUtils):
             serializer.is_valid(data, user)
 
     def test_is_valid_fails_with_phone_number_taken(self):
-        user = UserFactory()
+        user = UserFactory(phone_number='+1123123123')
         serializer = UserSerializer()
         data = {'phone_number': user.phone_number}
         with self.assertRaises(serializers.ValidationError):
@@ -141,7 +141,7 @@ class TestUserSerializer(UsersAbstractUtils):
         data = {
             'first_name': 'newfirstname',
             'last_name': 'newlastname',
-            'phone_number': '123123124',
+            'phone_number': '+123123124',
             'email': 'newemail@appname.me',
         }
         serializer.is_valid(data, user)

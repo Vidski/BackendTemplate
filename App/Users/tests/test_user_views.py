@@ -264,13 +264,13 @@ class UserUpdateTest(UsersAbstractUtils):
     def test_update_user_fails_as_an_authenticated_verified_user_with_an_used_phone_number(
         self,
     ):
-        UserFactory(phone_number='+03999999999')
+        UserFactory(phone_number='+13999999999')
         data = {
             'first_name': 'Test',
             'last_name': 'Tested',
             'email': 'edituser3@appname.me',
             'password': 'password',
-            'phone_number': '+03999999999',
+            'phone_number': '+13999999999',
         }
         self.normal_user.is_verified = True
         self.normal_user.save()
