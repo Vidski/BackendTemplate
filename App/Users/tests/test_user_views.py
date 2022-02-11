@@ -26,6 +26,7 @@ class UserCreateTest(UsersAbstractUtils):
         self.assertEqual(response.status_code, 400)
         self.assertTrue(message_one in response.data)
         self.assertTrue(message_two in response.data['email'][0])
+        self.assertEqual(len(mail.outbox), 0)
 
     def test_create_user_fails_with_a_common_password(self):
         data = {
@@ -39,6 +40,7 @@ class UserCreateTest(UsersAbstractUtils):
         message = 'This password is too common.'
         self.assertEqual(response.status_code, 400)
         self.assertTrue(message in response.data['non_field_errors'][0])
+        self.assertEqual(len(mail.outbox), 0)
 
     def test_create_user_is_successfull(self):
         data = {
@@ -88,6 +90,7 @@ class UserCreateTest(UsersAbstractUtils):
         self.assertEqual(response.data['is_verified'], False)
         self.assertEqual(response.data['is_admin'], False)
         self.assertEqual(response.data['is_premium'], False)
+        self.assertEqual(len(mail.outbox), 1)
 
 
 class UserLogInTest(UsersAbstractUtils):
