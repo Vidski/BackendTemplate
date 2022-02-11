@@ -6,6 +6,7 @@ DOCKER_FILE = docker-compose -f ./Docker/${ENV}/docker-compose.yml
 DOCKER_FILE_TEXT = docker-compose -f ./Docker/<ENV>/docker-compose.yml
 EQUALS = is equivalent to
 SETTINGS_FLAG = --settings=Settings.django.${SETTINGS}_settings
+TEST_SETTINGS = SETTINGS=--settings=Settings.django.test_settings
 SETTINGS_FLAG_TEXT = --settings=Settings.django.<SETTINGS>_settings
 
 up:
@@ -55,13 +56,13 @@ test:
 	${COMMAND} "${MANAGE} test ${APP} --keepdb --settings=Settings.django.test_settings"
 
 test-migrate:
-	SETTINGS=--settings=Settings.django.test_settings make migrate
+	${TEST_SETTINGS} make migrate
 
 test-populate:
-	SETTINGS=--settings=Settings.django.test_settings make populate
+	${TEST_SETTINGS} make populate
 
 test-flush:
-	SETTINGS=--settings=Settings.django.test_settings make flush
+	${TEST_SETTINGS} make flush
 
 test-recreate:
 	make test-flush
@@ -141,13 +142,13 @@ help:
 	@echo "                      < ${COMMAND} '${MANAGE} test <APP> --keepdb ${SETTINGS_FLAG_TEXT}' >"
 	@echo ""
 	@echo " • test-migrate: Run migrations for test environment"
-	@echo "   ↳ ${EQUALS} < SETTINGS=--settings=Settings.django.test_settings make migrate >"
+	@echo "   ↳ ${EQUALS} < ${TEST_SETTINGS} make migrate >"
 	@echo ""
 	@echo " • test-populate: Populate the testing database"
-	@echo "   ↳ ${EQUALS} < SETTINGS=--settings=Settings.django.test_settings make populate>"
+	@echo "   ↳ ${EQUALS} < ${TEST_SETTINGS} make populate>"
 	@echo ""
 	@echo " • test-flush: Flush the database for tests"
-	@echo "   ↳ ${EQUALS} < SETTINGS=--settings=Settings.django.test_settings make flush>"
+	@echo "   ↳ ${EQUALS} < ${TEST_SETTINGS} make flush>"
 	@echo ""
 	@echo " • test-recreate: Run recreate for tests"
 	@echo "   ↳ ${EQUALS} < make test-flush >"
