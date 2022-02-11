@@ -8,6 +8,7 @@ from django.utils.timesince import timesince
 
 from Users.models import User
 
+
 # remove these lines if you want these models on admin
 admin.site.unregister(Group)
 admin.site.unregister(ResetPasswordToken)

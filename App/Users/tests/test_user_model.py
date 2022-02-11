@@ -1,6 +1,5 @@
 from Users.factories.user_factories import UserFactory
 from Users.tests.abstract_test_classes import UsersAbstractUtils
-from Users.models import User
 
 
 class UserModelTest(UsersAbstractUtils):

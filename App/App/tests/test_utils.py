@@ -1,9 +1,9 @@
 from datetime import datetime
 
+from django.test import TestCase
+from freezegun import freeze_time
 from mock import MagicMock
 from mock import PropertyMock
-from freezegun import freeze_time
-from django.test import TestCase
 
 from App.utils import log_information
 from App.utils import log_email_action

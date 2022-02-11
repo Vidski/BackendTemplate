@@ -1,12 +1,12 @@
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
-from Users.tests.abstract_test_classes import UsersAbstractUtils
 from Users.factories.user_factories import UserFactory
 from Users.models import User
 from Users.serializers import UserLoginSerializer
 from Users.serializers import UserSerializer
 from Users.serializers import UserSignUpSerializer
+from Users.tests.abstract_test_classes import UsersAbstractUtils
 
 
 class TestUserSerializer(UsersAbstractUtils):
