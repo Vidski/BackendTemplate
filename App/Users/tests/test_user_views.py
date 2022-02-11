@@ -1,5 +1,6 @@
 import json
 
+from django.core import mail
 from django_rest_passwordreset.models import ResetPasswordToken
 
 from Users.factories.user_factories import UserFactory
@@ -59,6 +60,7 @@ class UserCreateTest(UsersAbstractUtils):
         self.assertEqual(response.data['is_verified'], False)
         self.assertEqual(response.data['is_admin'], False)
         self.assertEqual(response.data['is_premium'], False)
+        self.assertEqual(len(mail.outbox), 1)
 
     def test_sign_up_is_successfull_but_do_not_create_an_user_with_special_fields_modified(
         self,
@@ -467,3 +469,4 @@ class UserPasswordResetTests(UsersAbstractUtils):
         self.assertEqual(response.status_code, 200)
         self.normal_user = User.objects.get(id=self.normal_user.id)
         self.assertTrue(self.normal_user.check_password('NewPassword95'))
+        self.assertEqual(len(mail.outbox), 1)
