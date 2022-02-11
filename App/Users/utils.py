@@ -44,19 +44,19 @@ def send_email(email_type, instance):
     log_email_action(email_type, instance)
 
 
-def get_user_or_error(request_user, pk):
+def get_user_or_error(requester, pk):
     """
     Get user or raise an error with a returning response
     """
     try:
-        instance = User.objects.get(id=pk)
+        user = User.objects.get(id=pk)
     except User.DoesNotExist:
         raise NotFound('User not found')
-    if not request_user.is_admin and request_user.id != instance.id:
+    if not requester.is_admin and not requester.has_permission(user):
         raise PermissionDenied("You don't have permission")
-    if not request_user.is_verified:
+    if not requester.is_verified:
         raise PermissionDenied('You have to verify your account first')
-    return instance
+    return user
 
 
 def verify_user_query_token(user, query_token):
@@ -69,6 +69,10 @@ def verify_user_query_token(user, query_token):
 
 
 def check_e164_format(phone_number):
+    """
+    Checks if a phone number is in E.164 format
+    example: +11234567890
+    """
     regex_format = r'^\+[0-9]\d{1,20}$'
     if phone_number and not regex.match(regex_format, phone_number):
         raise ValidationError('Phone number is not valid')
