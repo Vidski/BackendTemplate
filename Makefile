@@ -17,7 +17,7 @@ bash:
 	docker-compose -f ./Docker/${ENV}/docker-compose.yml exec app /bin/bash
 
 shell:
-	docker exec -it django-app bash -c "python manage.py shell_plus --settings=Settings.Django.${SETTINGS}_settings"
+	docker exec -it django-app bash -c "python manage.py shell_plus --settings=Settings.django.${SETTINGS}_settings"
 
 create-app:
 	docker exec -it django-app bash -c "python manage.py create-app ${APP}"
@@ -26,14 +26,14 @@ createsuperuser:
 	docker exec -it django-app bash -c "python manage.py createsuperuser"
 
 migrate:
-	docker exec -it django-app bash -c "python manage.py makemigrations --settings=Settings.Django.${SETTINGS}_settings"
-	docker exec -it django-app bash -c "python manage.py migrate --settings=Settings.Django.${SETTINGS}_settings"
+	docker exec -it django-app bash -c "python manage.py makemigrations --settings=Settings.django.${SETTINGS}_settings"
+	docker exec -it django-app bash -c "python manage.py migrate --settings=Settings.django.${SETTINGS}_settings"
 
 populate:
-	docker exec -it django-app bash -c "python manage.py populate_db --settings=Settings.Django.${SETTINGS}_settings"
+	docker exec -it django-app bash -c "python manage.py populate_db --settings=Settings.django.${SETTINGS}_settings"
 
 flush:
-	docker exec -it django-app bash -c "python manage.py flush --settings=Settings.Django.${SETTINGS}_settings"
+	docker exec -it django-app bash -c "python manage.py flush --settings=Settings.django.${SETTINGS}_settings"
 
 recreate:
 	make flush
@@ -45,16 +45,16 @@ create-test-db:
 
 test:
 	make create-test-db
-	docker exec -it django-app bash -c "python manage.py test ${APP} --keepdb --settings=Settings.Django.test_settings"
+	docker exec -it django-app bash -c "python manage.py test ${APP} --keepdb --settings=Settings.django.test_settings"
 
 test-migrate:
-	SETTINGS=--settings=Settings.Django.test_settings make migrate
+	SETTINGS=--settings=Settings.django.test_settings make migrate
 
 test-populate:
-	SETTINGS=--settings=Settings.Django.test_settings make populate
+	SETTINGS=--settings=Settings.django.test_settings make populate
 
 test-flush:
-	SETTINGS=--settings=Settings.Django.test_settings make flush
+	SETTINGS=--settings=Settings.django.test_settings make flush
 
 test-recreate:
 	make test-flush

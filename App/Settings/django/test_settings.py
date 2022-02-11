@@ -1,4 +1,4 @@
-from Settings.Django.local_settings import *
+from Settings.django.local_settings import *
 
 ENVIRONMENT_NAME = 'test'
 
