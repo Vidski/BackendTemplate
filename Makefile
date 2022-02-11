@@ -20,7 +20,7 @@ shell:
 	docker exec -it django-app bash -c "python manage.py shell_plus --settings=Settings.django.${SETTINGS}_settings"
 
 create-app:
-	docker exec -it django-app bash -c "python manage.py create-app ${APP}"
+	docker exec -it django-app bash -c "python manage.py startapp ${APP}"
 
 createsuperuser:
 	docker exec -it django-app bash -c "python manage.py createsuperuser"
