@@ -1,39 +1,44 @@
 ENV ?= Local
 SETTINGS ?= $(shell echo $(ENV) | tr '[:upper:]' '[:lower:]')
+COMMAND = docker exec -it django-app bash -c
+MANAGE = python manage.py
+DOCKER_FILE = docker-compose -f ./Docker/${ENV}/docker-compose.yml
+EQUALS = is equivalent to
+SETTINGS_FLAG = --settings=Settings.django.${SETTINGS}_settings
 
 up:
-	docker-compose -f ./Docker/${ENV}/docker-compose.yml up
+	${DOCKER_FILE} up
 
 upd:
-	docker-compose -f ./Docker/${ENV}/docker-compose.yml up -d
+	${DOCKER_FILE} up -d
 
 stop:
-	docker-compose -f ./Docker/${ENV}/docker-compose.yml stop
+	${DOCKER_FILE} stop
 
 ps:
-	docker-compose -f ./Docker/${ENV}/docker-compose.yml ps
+	${DOCKER_FILE} ps
 
 bash:
-	docker-compose -f ./Docker/${ENV}/docker-compose.yml exec app /bin/bash
+	${DOCKER_FILE} exec app /bin/bash
 
 shell:
-	docker exec -it django-app bash -c "python manage.py shell_plus --settings=Settings.django.${SETTINGS}_settings"
+	${COMMAND} "${MANAGE} shell_plus ${SETTINGS_FLAG}"
 
-create-app:
-	docker exec -it django-app bash -c "python manage.py startapp ${APP}"
+startapp:
+	${COMMAND} "${MANAGE} startapp ${APP}"
 
 createsuperuser:
-	docker exec -it django-app bash -c "python manage.py createsuperuser"
+	${COMMAND} "${MANAGE} createsuperuser"
 
 migrate:
-	docker exec -it django-app bash -c "python manage.py makemigrations --settings=Settings.django.${SETTINGS}_settings"
-	docker exec -it django-app bash -c "python manage.py migrate --settings=Settings.django.${SETTINGS}_settings"
+	${COMMAND} "${MANAGE} makemigrations ${SETTINGS_FLAG}"
+	${COMMAND} "${MANAGE} migrate ${SETTINGS_FLAG}"
 
 populate:
-	docker exec -it django-app bash -c "python manage.py populate_db --settings=Settings.django.${SETTINGS}_settings"
+	${COMMAND} "${MANAGE} populate_db ${SETTINGS_FLAG}"
 
 flush:
-	docker exec -it django-app bash -c "python manage.py flush --settings=Settings.django.${SETTINGS}_settings"
+	${COMMAND} "${MANAGE} flush ${SETTINGS_FLAG}"
 
 recreate:
 	make flush
@@ -41,11 +46,11 @@ recreate:
 	make populate
 
 create-test-db:
-	docker exec -it django-app bash -c "python manage.py create_test_db"
+	${COMMAND} "${MANAGE} create_test_db"
 
 test:
 	make create-test-db
-	docker exec -it django-app bash -c "python manage.py test ${APP} --keepdb --settings=Settings.django.test_settings"
+	${COMMAND} "${MANAGE} test ${APP} --keepdb --settings=Settings.django.test_settings"
 
 test-migrate:
 	SETTINGS=--settings=Settings.django.test_settings make migrate
@@ -63,17 +68,16 @@ test-recreate:
 	make test-populate
 
 freeze:
-	# docker exec -it django-app bash -c "pip freeze > requirements.txt"
-	docker exec -it django-app bash -c "pip freeze"
+	${COMMAND} "pip freeze"
 
 logs:
-	docker-compose -f ./Docker/${ENV}/docker-compose.yml logs -f
+	${DOCKER_FILE} logs -f
 
 database:
-	docker-compose -f ./Docker/${ENV}/docker-compose.yml exec database mysql -u${USER} -p${PASSWORD}
+	${DOCKER_FILE} exec database mysql -u${USER} -p${PASSWORD}
 
 format:
-	docker exec -it django-app bash -c "oitnb . --exclude */migrations/* --icons"
+	${COMMAND} "oitnb . --exclude */migrations/* --icons"
 
 check-format:
-	docker exec -it django-app bash -c "oitnb --check . --exclude */migrations/* --icons"
+	${COMMAND} "oitnb --check . --exclude */migrations/* --icons"
