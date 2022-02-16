@@ -49,7 +49,7 @@ THIRD_PARTY_APPS = [
     'phonenumber_field',
 ]
 
-LOCAL_APPS = ['Users', 'Settings']
+LOCAL_APPS = ['Users', 'Settings', 'Emails']
 
 INSTALLED_APPS = SPECIAL_APPS + DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
