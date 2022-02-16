@@ -79,6 +79,8 @@ JAZZMIN_SETTINGS = {
         'auth.Group': 'fas fa-users',
         'admin.LogEntry': 'fas fa-file-signature',
         'Users.User': 'fas fa-user',
+        'Emails.Email': 'fas fa-envelope',
+        'Emails.Block': 'fas fa-envelope-open-text',
     },
     # Icons that are used when one is not manually specified
     'default_icon_parents': 'fas fa-chevron-circle-right',
