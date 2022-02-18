@@ -1,4 +1,4 @@
-celery==5.1.2
+celery==5.2.3
 Django==4.0
 djangorestframework==3.12.4
 markdown==3.3.4
