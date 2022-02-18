@@ -80,10 +80,10 @@ database:
 	${DOCKER_FILE} exec database mysql -u${USER} -p${PASSWORD}
 
 format:
-	${COMMAND} "oitnb . --exclude /migrations/* --icons"
+	${COMMAND} "oitnb . --exclude /migrations/* --icons --line-length=79"
 
 check-format:
-	${COMMAND} "oitnb --check . --exclude /migrations/* --icons"
+	${COMMAND} "oitnb --check . --exclude /migrations/* --icons --line-length=79"
 
 help:
 	@echo ""
@@ -166,10 +166,10 @@ help:
 	@echo "   ↳ ${EQUALS} < ${DOCKER_FILE} exec database mysql -u<USER> -p<PASSWORD> >"
 	@echo ""
 	@echo " • format: Format the code"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} 'oitnb . --exclude /migrations/* --icons' >"
+	@echo "   ↳ ${EQUALS} < ${COMMAND} 'oitnb . --exclude /migrations/* --icons --line-length=79' >"
 	@echo ""
 	@echo " • check-format: Check the code for formatting"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} 'oitnb --check . --exclude /migrations/* --icons' >"
+	@echo "   ↳ ${EQUALS} < ${COMMAND} 'oitnb --check . --exclude /migrations/* --icons --line-length=79' >"
 	@echo ""
 	@echo " • help: Show this help"
 	@echo ""
