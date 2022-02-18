@@ -1,10 +1,10 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth import password_validation
+from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.validators import UniqueValidator
-from phonenumber_field.serializerfields import PhoneNumberField
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from Users.models import User
 from Users.utils import check_e164_format

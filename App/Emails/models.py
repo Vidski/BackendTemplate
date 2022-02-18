@@ -6,6 +6,7 @@ from django.utils import timezone
 
 from App.utils import log_information
 
+
 TEMPLATE_CHOICES = [
     ('verify_email.html', 'Verify email'),
     ('reset_password.html', 'Reset password'),

@@ -4,6 +4,7 @@ from django.utils import timezone
 from Emails.models import Email
 from Worker.worker import app
 
+
 SECONDS = 10.0
 
 

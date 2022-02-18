@@ -2,9 +2,9 @@ from django.contrib import admin
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
-from django_rest_passwordreset.models import ResetPasswordToken
 from django.utils.html import format_html
 from django.utils.timesince import timesince
+from django_rest_passwordreset.models import ResetPasswordToken
 
 from Users.models import User
 

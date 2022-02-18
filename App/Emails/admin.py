@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from Emails.models import Email
 from Emails.models import Block
+from Emails.models import Email
 
 
 class BlockAdmin(admin.ModelAdmin):

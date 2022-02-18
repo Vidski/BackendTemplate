@@ -24,6 +24,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 
 from App.views import CustomView
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('home/admin/', admin.site.admin_view(CustomView.as_view())),

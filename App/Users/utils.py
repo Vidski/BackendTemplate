@@ -10,6 +10,7 @@ from rest_framework.serializers import ValidationError
 from App.utils import log_email_action
 from Users.models import User
 
+
 VERIFY_URL = f'{settings.URL}/api/v1/users'
 
 
