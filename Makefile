@@ -86,10 +86,10 @@ check-format:
 	${COMMAND} "oitnb --check . --exclude /migrations/* --icons --line-length=79"
 
 sort-imports:
-	${COMMAND} "isort **/*.py --lai=2 --wl=1 --fgw"
+	${COMMAND} "isort **/*.py --lai=2 --sl"
 
 check-imports-order:
-	${COMMAND} "isort **/*.py --lai=2 --wl=1 --fgw --check"
+	${COMMAND} "isort **/*.py --lai=2 --sl --check"
 
 help:
 	@echo ""
@@ -178,10 +178,10 @@ help:
 	@echo "   ↳ ${EQUALS} < ${COMMAND} 'oitnb --check . --exclude /migrations/* --icons --line-length=79' >"
 	@echo ""
 	@echo " • sort-imports: Sort the imports according PEP 8 and PEP 328"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} 'isort **/*.py --lai=2 --wl=1 --fgw' >"
+	@echo "   ↳ ${EQUALS} < ${COMMAND} 'isort **/*.py --lai=2 --sl' >"
 	@echo ""
 	@echo " • check-imports-order: Check the order of the imports according PEP 8 and PEP 328"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} 'isort **/*.py --lai=2 --wl=1 --fgw --check' >"
+	@echo "   ↳ ${EQUALS} < ${COMMAND} 'isort **/*.py --lai=2 --sl --check' >"
 	@echo ""
 	@echo " • help: Show this help"
 	@echo ""
