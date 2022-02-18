@@ -18,7 +18,6 @@ prometheus_client==0.12.0
 factory-boy==3.2.1
 freezegun==1.1.0
 mock==4.0.3
-oitnb==0.2.2
 django-inline-static==0.1.0
 phonenumbers==8.12.42
 django-phonenumber-field==6.0.0
