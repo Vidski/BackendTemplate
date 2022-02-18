@@ -1,0 +1,27 @@
+{% load inline_static_tags %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <style type="text/css">
+      {% inline_style 'email/styles/base.css' %}
+      {% inline_style 'email/styles/header.css' %}
+      {% inline_style 'email/styles/body.css' %}
+      {% inline_style 'email/styles/footer.css' %}
+    </style>
+    <title>Email</title>
+  </head>
+  <body>
+    <div align="center" class="content">
+      <div align="left" class="base-header">
+        {% include 'email/header.html' %}
+      </div>
+      <div align="left" class="section">
+        {% include 'email/body.html' %}
+      </div>
+      <div align="left" class="section">
+        {% include 'email/footer.html' %}
+      </div>
+    </div>
+  </body>
+</html>

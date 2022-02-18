@@ -1,0 +1,25 @@
+<div class="footer">
+  <div align="center" class="footer-heading">
+    <h2 class="footer-title">Follow Us</h2>
+  </div>
+  <div class="social-div">
+    {% with social_networks="facebook twitter instagram" %}
+      {% for social_network in social_networks.split %}
+        <div class="social-item">
+          <a
+            href="https://{{social_network}}.com/AppName/"
+            class="social-logo-div"
+            target="_blank"
+            ><img
+              src="http://localhost:8000/static/email/images/{{social_network}}.png"
+              alt="{{social_network}} icon"
+              class="social-logo"
+          /></a>
+        </div>
+      {% endfor %}
+    {% endwith %}
+  </div>
+  <a href="" target="_blank">
+    <p class="unsubscribe">Click here to unsubscribe.</p>
+  </a>
+</div>
