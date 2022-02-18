@@ -71,8 +71,12 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated'],
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated'
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication'
     ],
@@ -128,7 +132,9 @@ LOGGING = {
             'filename': '/tmp/DjangoBackend.log',
         },
     },
-    'loggers': {'django': {'handlers': ['file'], 'level': 'DEBUG', 'propagate': True,},},
+    'loggers': {
+        'django': {'handlers': ['file'], 'level': 'DEBUG', 'propagate': True,},
+    },
 }
 
 
@@ -136,10 +142,18 @@ LOGGING = {
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
 ]
 
 
@@ -180,4 +194,6 @@ VERIFY_EMAIL_CONTENT = (
     + 'on the button below.'
 )
 
-RESET_PASSWORD_EMAIL_CONTENT = 'Click in the link below to change your password.'
+RESET_PASSWORD_EMAIL_CONTENT = (
+    'Click in the link below to change your password.'
+)

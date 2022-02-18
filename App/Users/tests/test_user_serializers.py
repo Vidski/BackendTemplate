@@ -48,7 +48,9 @@ class TestUserSerializer(UsersAbstractUtils):
         with self.assertRaises(serializers.ValidationError):
             serializer.check_password(data, user)
 
-    def test_check_password_passes_with_right_old_password_and_no_common_new_password(self):
+    def test_check_password_passes_with_right_old_password_and_no_common_new_password(
+        self,
+    ):
         user = UserFactory()
         serializer = UserSerializer()
         data = {'password': 'Strong Password 123', 'old_password': 'password'}
@@ -244,7 +246,11 @@ class TestUserSignUpSerializer(UsersAbstractUtils):
 
     def test_validate_fails_with_wrong_email(self):
         serializer = UserSignUpSerializer()
-        data = {'first_name': 'Name', 'last_name': 'Lastname', 'email': 'wrong'}
+        data = {
+            'first_name': 'Name',
+            'last_name': 'Lastname',
+            'email': 'wrong',
+        }
         with self.assertRaises(serializers.ValidationError):
             serializer.validate(data)
 

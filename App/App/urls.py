@@ -32,10 +32,22 @@ urlpatterns = [
         'api/v1/password_reset/',
         include('django_rest_passwordreset.urls', namespace='password_reset'),
     ),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path(
+        'api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'
+    ),
+    path(
+        'api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'
+    ),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('doc/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('doc/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    path(
+        'doc/swagger/',
+        SpectacularSwaggerView.as_view(url_name='schema'),
+        name='swagger-ui',
+    ),
+    path(
+        'doc/redoc/',
+        SpectacularRedocView.as_view(url_name='schema'),
+        name='redoc',
+    ),
     path("", include('django_prometheus.urls'), name='django-prometheus'),
 ]

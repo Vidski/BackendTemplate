@@ -35,12 +35,10 @@ class Email(models.Model):
 
     subject = models.CharField(max_length=100)
     header = models.CharField(max_length=100, blank=True)
-    blocks = models.ManyToManyField(Block, related_name="blocks", blank=True)
+    blocks = models.ManyToManyField(Block, related_name='blocks', blank=True)
     to = models.TextField(blank=True)
     template = models.CharField(
-        max_length=100,
-        default='General',
-        choices=TEMPLATE_CHOICES
+        max_length=100, default='General', choices=TEMPLATE_CHOICES
     )
     is_test = models.BooleanField(default=False)
     programed_send_date = models.DateTimeField(blank=True, null=True)
@@ -87,10 +85,7 @@ class Email(models.Model):
 
     def get_email(self):
         email = EmailMultiAlternatives(
-            self.subject,
-            '',
-            settings.EMAIL_HOST_USER,
-            self.get_to_emails(),
+            self.subject, '', settings.EMAIL_HOST_USER, self.get_to_emails(),
         )
         email.attach_alternative(self.get_template(), 'text/html')
         email.fail_silently = False
@@ -99,7 +94,7 @@ class Email(models.Model):
     def send(self):
         email = self.get_email()
         email.send()
-        self.sent_date =  timezone.now()
+        self.sent_date = timezone.now()
         self.was_sent = True
         self.save()
         log_information('sent', self)

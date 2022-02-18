@@ -31,7 +31,9 @@ DJANGO = 'python3 manage.py runserver 0.0.0.0:8000'
 
 class Start:
     def __init__(self):
-        description = 'Check if port is open, avoid docker-compose race condition'
+        description = (
+            'Check if port is open, avoid docker-compose race condition'
+        )
         parser = argparse.ArgumentParser(description=description)
         self.arguments = self.get_arguments(parser)
         service = str(self.arguments.service)

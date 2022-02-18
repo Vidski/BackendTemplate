@@ -28,7 +28,10 @@ class UserAdmin(BaseUserAdmin):
 
     fieldsets = (
         (None, {'fields': ('id', 'email', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'phone_number')}),
+        (
+            'Personal info',
+            {'fields': ('first_name', 'last_name', 'phone_number')},
+        ),
         ('Account status', {'fields': ('is_verified', 'is_premium')}),
         ('Permissions', {'fields': ('is_admin',)}),
         ('Dates', {'fields': ('created_at', 'updated_at')}),
@@ -62,7 +65,13 @@ class UserAdmin(BaseUserAdmin):
 
 
 class LogEntryAdmin(admin.ModelAdmin):
-    list_display = ('user', 'object', 'action_flag', 'change_message', 'modified')
+    list_display = (
+        'user',
+        'object',
+        'action_flag',
+        'change_message',
+        'modified',
+    )
     readonly_fields = ['object', 'modified']
     search_fields = ('user__email',)
     date_hierarchy = 'action_time'

@@ -118,7 +118,9 @@ class UserLogInTest(UsersAbstractUtils):
         self.assertTrue(message in response.data['non_field_errors'][0])
 
     def test_log_in_is_successful_with_a_verified_user(self):
-        testing_user = UserFactory(email='rightemail@appname.me', password='RightPassword')
+        testing_user = UserFactory(
+            email='rightemail@appname.me', password='RightPassword'
+        )
         testing_user.is_verified = True
         testing_user.save()
         data = {'email': 'rightemail@appname.me', 'password': 'RightPassword'}
@@ -158,33 +160,47 @@ class UserListTests(UsersAbstractUtils):
 
 class UserGetTests(UsersAbstractUtils):
     def test_get_user_fails_as_an_unauthenticated_user(self):
-        response = self.client.get(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
+        response = self.client.get(
+            f'{ENDPOINT}/{self.normal_user.id}/', format='json'
+        )
         self.assertEqual(response.status_code, 401)
 
     def test_get_user_fails_as_an_authenticated_unverified_user(self):
         self.client.force_authenticate(user=self.normal_user)
-        response = self.client.get(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
+        response = self.client.get(
+            f'{ENDPOINT}/{self.normal_user.id}/', format='json'
+        )
         self.assertEqual(response.status_code, 403)
 
-    def test_get_user_fails_as_an_authenticated_verified_user_to_other_users_data(self):
+    def test_get_user_fails_as_an_authenticated_verified_user_to_other_users_data(
+        self,
+    ):
         self.normal_user.is_verified = True
         self.normal_user.save()
         self.client.force_authenticate(user=self.normal_user)
-        response = self.client.get(f'{ENDPOINT}/{self.admin_user.id}/', format='json')
+        response = self.client.get(
+            f'{ENDPOINT}/{self.admin_user.id}/', format='json'
+        )
         self.assertEqual(response.status_code, 403)
 
-    def test_get_user_is_successful_as_an_authenticated_verified_user_to_its_data(self):
+    def test_get_user_is_successful_as_an_authenticated_verified_user_to_its_data(
+        self,
+    ):
         self.normal_user.is_verified = True
         self.normal_user.save()
         self.client.force_authenticate(user=self.normal_user)
-        response = self.client.get(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
+        response = self.client.get(
+            f'{ENDPOINT}/{self.normal_user.id}/', format='json'
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['id'], self.normal_user.id)
         self.assertEqual(response.data['email'], self.normal_user.email)
 
     def test_get_user_is_successful_to_other_users_data_as_admin(self):
         self.client.force_authenticate(user=self.admin_user)
-        response = self.client.get(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
+        response = self.client.get(
+            f'{ENDPOINT}/{self.normal_user.id}/', format='json'
+        )
         self.assertEqual(response.status_code, 200)
 
 
@@ -198,7 +214,9 @@ class UserUpdateTest(UsersAbstractUtils):
             'old_password': 'password',
             'password': 'NewPassword95',
         }
-        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        response = self.client.put(
+            f'{ENDPOINT}/{self.normal_user.id}/', data, format='json'
+        )
         self.assertEqual(response.status_code, 401)
 
     def test_update_user_fails_as_an_authenticated_unverified_user(self):
@@ -211,10 +229,14 @@ class UserUpdateTest(UsersAbstractUtils):
             'password': 'NewPassword95',
         }
         self.client.force_authenticate(user=self.normal_user)
-        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        response = self.client.put(
+            f'{ENDPOINT}/{self.normal_user.id}/', data, format='json'
+        )
         self.assertEqual(response.status_code, 403)
 
-    def test_update_user_fails_as_an_authenticated_verified_user_to_other_users_data(self):
+    def test_update_user_fails_as_an_authenticated_verified_user_to_other_users_data(
+        self,
+    ):
         data = {
             'first_name': 'Test edited',
             'last_name': 'Tested Edit',
@@ -226,11 +248,15 @@ class UserUpdateTest(UsersAbstractUtils):
         self.normal_user.is_verified = True
         self.normal_user.save()
         self.client.force_authenticate(user=self.normal_user)
-        response = self.client.put(f'{ENDPOINT}/{self.admin_user.id}/', data, format='json')
+        response = self.client.put(
+            f'{ENDPOINT}/{self.admin_user.id}/', data, format='json'
+        )
         self.assertEqual(response.status_code, 403)
         self.assertNotEqual(self.normal_user.email, data['email'])
 
-    def test_update_user_is_successful_as_an_authenticated_verified_user_to_its_data(self):
+    def test_update_user_is_successful_as_an_authenticated_verified_user_to_its_data(
+        self,
+    ):
         data = {
             'first_name': 'Test edited',
             'last_name': 'Tested Edit',
@@ -242,7 +268,9 @@ class UserUpdateTest(UsersAbstractUtils):
         self.normal_user.is_verified = True
         self.normal_user.save()
         self.client.force_authenticate(user=self.normal_user)
-        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        response = self.client.put(
+            f'{ENDPOINT}/{self.normal_user.id}/', data, format='json'
+        )
         self.assertEqual(response.status_code, 202)
         self.normal_user = User.objects.get(id=self.normal_user.id)
         self.assertEqual(self.normal_user.email, data['email'])
@@ -251,7 +279,9 @@ class UserUpdateTest(UsersAbstractUtils):
         self.assertEqual(self.normal_user.last_name, data['last_name'])
         self.assertTrue(self.normal_user.check_password(data['password']))
 
-    def test_update_user_fails_as_an_authenticated_verified_user_with_an_used_email(self):
+    def test_update_user_fails_as_an_authenticated_verified_user_with_an_used_email(
+        self,
+    ):
         UserFactory(email='emailused@appname.me')
         data = {
             'first_name': 'Test',
@@ -262,7 +292,9 @@ class UserUpdateTest(UsersAbstractUtils):
         self.normal_user.is_verified = True
         self.normal_user.save()
         self.client.force_authenticate(user=self.normal_user)
-        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        response = self.client.put(
+            f'{ENDPOINT}/{self.normal_user.id}/', data, format='json'
+        )
         self.assertEqual(response.status_code, 400)
         self.assertTrue('Email is taken' in response.data)
 
@@ -280,7 +312,9 @@ class UserUpdateTest(UsersAbstractUtils):
         self.normal_user.is_verified = True
         self.normal_user.save()
         self.client.force_authenticate(user=self.normal_user)
-        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        response = self.client.put(
+            f'{ENDPOINT}/{self.normal_user.id}/', data, format='json'
+        )
         self.assertEqual(response.status_code, 400)
         self.assertTrue('Phone number is taken' in response.data)
 
@@ -298,12 +332,16 @@ class UserUpdateTest(UsersAbstractUtils):
         self.normal_user.is_verified = True
         self.normal_user.save()
         self.client.force_authenticate(user=self.normal_user)
-        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        response = self.client.put(
+            f'{ENDPOINT}/{self.normal_user.id}/', data, format='json'
+        )
         message = 'Wrong password'
         self.assertEqual(response.status_code, 400)
         self.assertTrue(message in response.data)
 
-    def test_update_user_fails_as_an_authenticated_verified_user_without_old_password(self):
+    def test_update_user_fails_as_an_authenticated_verified_user_without_old_password(
+        self,
+    ):
         self.normal_user.is_verified = True
         self.normal_user.save()
         self.client.force_authenticate(user=self.normal_user)
@@ -314,7 +352,9 @@ class UserUpdateTest(UsersAbstractUtils):
             'phone_number': '+32987654321',
             'password': 'This is a password',
         }
-        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        response = self.client.put(
+            f'{ENDPOINT}/{self.normal_user.id}/', data, format='json'
+        )
         message = 'Old password is required to set a new one'
         self.assertEqual(response.status_code, 400)
         self.assertTrue(message in response.data)
@@ -326,7 +366,9 @@ class UserUpdateTest(UsersAbstractUtils):
         self.normal_user.is_verified = True
         self.normal_user.save()
         self.client.force_authenticate(user=self.normal_user)
-        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        response = self.client.put(
+            f'{ENDPOINT}/{self.normal_user.id}/', data, format='json'
+        )
         self.assertEqual(response.status_code, 202)
         self.normal_user = User.objects.get(id=self.normal_user.id)
         self.assertTrue(self.normal_user.check_password(data['password']))
@@ -348,7 +390,9 @@ class UserUpdateTest(UsersAbstractUtils):
         self.normal_user.is_verified = True
         self.normal_user.save()
         self.client.force_authenticate(user=self.normal_user)
-        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        response = self.client.put(
+            f'{ENDPOINT}/{self.normal_user.id}/', data, format='json'
+        )
         self.assertEqual(response.status_code, 202)
         self.normal_user = User.objects.get(id=self.normal_user.id)
         self.assertEqual(self.normal_user.email, data['email'])
@@ -377,7 +421,9 @@ class UserUpdateTest(UsersAbstractUtils):
         self.normal_user.is_verified = True
         self.normal_user.save()
         self.client.force_authenticate(user=self.admin_user)
-        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        response = self.client.put(
+            f'{ENDPOINT}/{self.normal_user.id}/', data, format='json'
+        )
         self.assertEqual(response.status_code, 202)
         self.normal_user = User.objects.get(id=self.normal_user.id)
         self.assertEqual(self.normal_user.email, data['email'])
@@ -404,42 +450,60 @@ class UserUpdateTest(UsersAbstractUtils):
         self.normal_user.is_verified = True
         self.normal_user.save()
         self.client.force_authenticate(user=self.admin_user)
-        response = self.client.put(f'{ENDPOINT}/{self.normal_user.id}/', data, format='json')
+        response = self.client.put(
+            f'{ENDPOINT}/{self.normal_user.id}/', data, format='json'
+        )
         self.assertEqual(response.status_code, 400)
 
 
 class UserDeleteTests(UsersAbstractUtils):
     def test_delete_user_fails_as_an_unauthenticated_user(self):
         self.assertEqual(User.objects.count(), 2)
-        response = self.client.delete(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
+        response = self.client.delete(
+            f'{ENDPOINT}/{self.normal_user.id}/', format='json'
+        )
         self.assertEqual(response.status_code, 401)
         self.assertEqual(User.objects.count(), 2)
 
-    def test_delete_user_fails_as_an_authenticated_unverified_user_to_its_data(self):
+    def test_delete_user_fails_as_an_authenticated_unverified_user_to_its_data(
+        self,
+    ):
         self.client.force_authenticate(user=self.normal_user)
-        response = self.client.delete(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
+        response = self.client.delete(
+            f'{ENDPOINT}/{self.normal_user.id}/', format='json'
+        )
         self.assertEqual(response.status_code, 403)
         self.assertEqual(User.objects.count(), 2)
 
-    def test_delete_user_fails_as_an_authenticated_verified_user_to_to_other_users_data(self):
+    def test_delete_user_fails_as_an_authenticated_verified_user_to_to_other_users_data(
+        self,
+    ):
         self.normal_user.is_verified = True
         self.normal_user.save()
         self.client.force_authenticate(user=self.normal_user)
-        response = self.client.delete(f'{ENDPOINT}/{self.admin_user.id}/', format='json')
+        response = self.client.delete(
+            f'{ENDPOINT}/{self.admin_user.id}/', format='json'
+        )
         self.assertEqual(response.status_code, 403)
         self.assertEqual(User.objects.count(), 2)
 
-    def test_delete_user_is_successful_as_an_authenticated_verified_user_to_its_data(self):
+    def test_delete_user_is_successful_as_an_authenticated_verified_user_to_its_data(
+        self,
+    ):
         self.normal_user.is_verified = True
         self.normal_user.save()
         self.client.force_authenticate(user=self.normal_user)
-        response = self.client.delete(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
+        response = self.client.delete(
+            f'{ENDPOINT}/{self.normal_user.id}/', format='json'
+        )
         self.assertEqual(response.status_code, 204)
         self.assertEqual(User.objects.count(), 1)
 
     def test_delete_user_is_successful_as_admin_to_other_users_data(self):
         self.client.force_authenticate(user=self.admin_user)
-        response = self.client.delete(f'{ENDPOINT}/{self.normal_user.id}/', format='json')
+        response = self.client.delete(
+            f'{ENDPOINT}/{self.normal_user.id}/', format='json'
+        )
         self.assertEqual(response.status_code, 204)
         self.assertEqual(User.objects.count(), 1)
 
@@ -450,7 +514,9 @@ class UserVerifyTests(UsersAbstractUtils):
         # request with it id and token
         token = self.normal_user.generate_verification_token()
         self.assertEqual(self.normal_user.is_verified, False)
-        response = self.client.get(f'{ENDPOINT}/{self.normal_user.id}/verify/?token={token}')
+        response = self.client.get(
+            f'{ENDPOINT}/{self.normal_user.id}/verify/?token={token}'
+        )
         self.assertEqual(response.status_code, 202)
         normal_user_updated = User.objects.get(id=self.normal_user.id)
         self.assertEqual(normal_user_updated.is_verified, True)
@@ -468,7 +534,9 @@ class UserPasswordResetTests(UsersAbstractUtils):
         self.assertEqual(len(tokens), 1)
         token = tokens[0].key
         data = {'token': token, 'password': 'NewPassword95'}
-        self.client.post(f'/api/v1/password_reset/confirm/', data, format='json')
+        self.client.post(
+            f'/api/v1/password_reset/confirm/', data, format='json'
+        )
         self.assertEqual(response.status_code, 200)
         self.normal_user = User.objects.get(id=self.normal_user.id)
         self.assertTrue(self.normal_user.check_password('NewPassword95'))

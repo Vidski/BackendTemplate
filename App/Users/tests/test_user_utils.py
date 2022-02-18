@@ -43,11 +43,15 @@ class TestUserUtils(UsersAbstractUtils):
         with self.assertRaises(NotFound):
             get_user_or_error(1, 2)
 
-    def test_get_user_or_error_raises_PermissionDenied_looking_for_different_user(self):
+    def test_get_user_or_error_raises_PermissionDenied_looking_for_different_user(
+        self,
+    ):
         with self.assertRaises(PermissionDenied):
             get_user_or_error(self.normal_user, self.admin_user.id)
 
-    def test_get_user_or_error_returns_different_user_looking_for_it_as_admin(self):
+    def test_get_user_or_error_returns_different_user_looking_for_it_as_admin(
+        self,
+    ):
         instance = get_user_or_error(self.admin_user, self.normal_user.id)
         self.assertEqual(instance, self.normal_user)
 

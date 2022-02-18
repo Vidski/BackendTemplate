@@ -2,7 +2,7 @@ from celery import shared_task
 from django.utils import timezone
 
 from Emails.models import Email
-from  Worker.worker import app
+from Worker.worker import app
 
 SECONDS = 10.0
 
@@ -10,10 +10,7 @@ SECONDS = 10.0
 @shared_task
 def send_emails():
     now = timezone.now()
-    emails = Email.objects.filter(
-        was_sent=False,
-        programed_send_date__lte=now
-    )
+    emails = Email.objects.filter(was_sent=False, programed_send_date__lte=now)
     for email in emails:
         email.send()
 

@@ -36,7 +36,11 @@ def send_email(email_type, instance):
         f'{subject} your {credential}',
         '',
         settings.EMAIL_HOST_USER,
-        [instance.email if isinstance(instance, User) else instance.user.email],
+        [
+            instance.email
+            if isinstance(instance, User)
+            else instance.user.email
+        ],
     )
     email.attach_alternative(template, 'text/html')
     email.fail_silently = False

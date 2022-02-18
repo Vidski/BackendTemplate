@@ -54,8 +54,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     def check_phone_number(self, phone_number, user):
         check_e164_format(phone_number)
-        user_with_phone_number = User.objects.filter(phone_number=phone_number).first()
-        if user_with_phone_number and not user.has_permission(user_with_phone_number):
+        user_with_phone_number = User.objects.filter(
+            phone_number=phone_number
+        ).first()
+        if user_with_phone_number and not user.has_permission(
+            user_with_phone_number
+        ):
             raise ValidationError('Phone number is taken')
 
     def check_password(self, data, user):
@@ -63,7 +67,9 @@ class UserSerializer(serializers.ModelSerializer):
         if password:
             old_password = data.get('old_password', None)
             if not old_password:
-                raise ValidationError('Old password is required to set a new one')
+                raise ValidationError(
+                    'Old password is required to set a new one'
+                )
             old_password_is_valid = user.check_password(old_password) == True
             if not old_password_is_valid:
                 raise ValidationError('Wrong password')
@@ -71,7 +77,13 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['first_name', 'phone_number', 'email', 'created_at', 'updated_at']
+        fields = [
+            'first_name',
+            'phone_number',
+            'email',
+            'created_at',
+            'updated_at',
+        ]
 
 
 class UserAuthSerializer(serializers.Serializer):
@@ -145,7 +157,8 @@ class UserSignUpSerializer(UserAuthSerializer):
     first_name = serializers.CharField(required=True, max_length=255)
     last_name = serializers.CharField(required=True, max_length=255)
     email = serializers.EmailField(
-        required=True, validators=[UniqueValidator(queryset=User.objects.all())]
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all())],
     )
     password_confirmation = serializers.CharField(
         write_only=True, min_length=8, max_length=64, required=False

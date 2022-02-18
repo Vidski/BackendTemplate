@@ -19,7 +19,9 @@ class CustomUserManager(BaseUserManager):
     for authentication instead of usernames.
     """
 
-    def create_user(self, email, password, first_name, last_name, **extra_fields):
+    def create_user(
+        self, email, password, first_name, last_name, **extra_fields
+    ):
         """
         Creates and saves a User with the given email and password.
         """
@@ -27,18 +29,26 @@ class CustomUserManager(BaseUserManager):
             raise ValueError('The given email must be set')
         email = self.normalize_email(email)
         user = self.model(
-            email=email, first_name=first_name, last_name=last_name, **extra_fields
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+            **extra_fields
         )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, first_name, last_name, password, **extra_fields):
+    def create_superuser(
+        self, email, first_name, last_name, password, **extra_fields
+    ):
         """
         Create and save a SuperUser with the given email and password.
         """
         user = self.model(
-            email=email, first_name=first_name, last_name=last_name, **extra_fields
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+            **extra_fields
         )
         user.set_password(password)
         user.is_admin = True
@@ -48,13 +58,17 @@ class CustomUserManager(BaseUserManager):
         return user
 
 
-class User(ExportModelOperationsMixin('dataset'), AbstractBaseUser, PermissionsMixin):
+class User(
+    ExportModelOperationsMixin('dataset'), AbstractBaseUser, PermissionsMixin
+):
     username = None
     is_superuser = None
     last_login = None
 
     email = models.EmailField(
-        'Email address', unique=True, error_messages={'unique': 'This email already exists.'}
+        'Email address',
+        unique=True,
+        error_messages={'unique': 'This email already exists.'},
     )
     first_name = models.CharField('First name', blank=False, max_length=50)
     last_name = models.CharField('Last name', blank=False, max_length=50)
@@ -88,7 +102,12 @@ class User(ExportModelOperationsMixin('dataset'), AbstractBaseUser, PermissionsM
         string_user = self.email + settings.EMAIL_VERIFICATION_TOKEN_SECRET
         hashed = hashlib.md5(string_user.encode())
         decoded = base64.b64encode(hashed.digest()).decode('utf-8')
-        token = decoded.replace('\+', '-').replace('/', '_').replace('=', "").replace('+', "")
+        token = (
+            decoded.replace('\+', '-')
+            .replace('/', '_')
+            .replace('=', "")
+            .replace('+', "")
+        )
         return token
 
     def verify(self):
@@ -105,7 +124,9 @@ class User(ExportModelOperationsMixin('dataset'), AbstractBaseUser, PermissionsM
 
 
 @receiver(reset_password_token_created)
-def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
+def password_reset_token_created(
+    sender, instance, reset_password_token, *args, **kwargs
+):
     from Users.utils import send_email
 
     send_email('reset_password', reset_password_token)

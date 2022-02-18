@@ -19,7 +19,9 @@ class AppUtilsTest(TestCase):
         class_name = 'AppUtilsTest'
         introduction = f'{class_name}s App | {class_name}'
         test_instance = self.id
-        expected_message = f'INFO:App.utils:{introduction} "{test_instance}" test at {now}'
+        expected_message = (
+            f'INFO:App.utils:{introduction} "{test_instance}" test at {now}'
+        )
         self.assertEqual(message.output, [expected_message])
 
     @freeze_time('2012-01-14')
