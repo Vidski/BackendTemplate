@@ -4,6 +4,8 @@ from django.db import models
 from django.template.loader import render_to_string
 from django.utils import timezone
 
+from App.utils import log_information
+
 TEMPLATE_CHOICES = [
     ('verify_email.html', 'Verify email'),
     ('reset_password.html', 'Reset password'),
@@ -100,3 +102,4 @@ class Email(models.Model):
         self.sent_date =  timezone.now()
         self.was_sent = True
         self.save()
+        log_information('sent', self)
