@@ -8,7 +8,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from Users.models import User
 from Users.utils import check_e164_format
-from Users.utils import send_email
+from Emails.utils import send_email
 
 
 class UserSerializer(serializers.ModelSerializer):
