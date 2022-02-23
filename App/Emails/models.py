@@ -5,12 +5,13 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 
 from App.utils import log_information
+from Users.models import User
 
 
 TEMPLATE_CHOICES = [
-    ('verify_email.html', 'Verify email'),
-    ('reset_password.html', 'Reset password'),
     ('email/email.html', 'General'),
+    ('verify_email.html', 'Verify email'),
+    ('reset_password.html', 'Reset password')
 ]
 
 
@@ -36,20 +37,23 @@ class Email(models.Model):
 
     subject = models.CharField(max_length=100)
     header = models.CharField(max_length=100, blank=True)
-    blocks = models.ManyToManyField(Block, related_name='blocks', blank=True)
+    blocks = models.ManyToManyField(Block, related_name='blocks', blank=False)
+    is_test = models.BooleanField(default=False)
+    to_all_users = models.BooleanField(default=False)
     to = models.TextField(blank=True)
     template = models.CharField(
         max_length=100, default='General', choices=TEMPLATE_CHOICES
     )
-    is_test = models.BooleanField(default=False)
     programed_send_date = models.DateTimeField(blank=True, null=True)
     sent_date = models.DateTimeField(blank=True, null=True)
     was_sent = models.BooleanField(default=False, editable=False)
 
     def __str__(self):
-        return f'{self.subject} | {self.to}'
+        return f'{self.subject}'
 
     def save(self):
+        if self.to_all_users and not self.is_test:
+            self.to = [f"{user.email}, " for user in User.objects.all()]
         if self.is_test:
             self.to = f'{settings.TEST_EMAIL},'
         if self.programed_send_date is None:
