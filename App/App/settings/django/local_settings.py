@@ -13,7 +13,7 @@ ENVIRONMENT_NAME = 'dev'
 ALLOWED_HOSTS = []
 
 
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'Static'),)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, '/App/static'),)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Database
