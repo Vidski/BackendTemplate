@@ -5,9 +5,9 @@ MANAGE = python manage.py
 DOCKER_FILE = docker-compose -f ./Docker/${ENV}/docker-compose.yml
 DOCKER_FILE_TEXT = docker-compose -f ./Docker/<ENV>/docker-compose.yml
 EQUALS = is equivalent to
-SETTINGS_FLAG = --settings=Settings.django.${SETTINGS}_settings
-TEST_SETTINGS = SETTINGS=--settings=Settings.django.test_settings
-SETTINGS_FLAG_TEXT = --settings=Settings.django.<SETTINGS>_settings
+SETTINGS_FLAG = --settings=App.settings.django.${SETTINGS}_settings
+TEST_SETTINGS = SETTINGS=--settings=App.settings.django.test_settings
+SETTINGS_FLAG_TEXT = --settings=App.settings.django.<SETTINGS>_settings
 
 up:
 	${DOCKER_FILE} up
@@ -53,7 +53,7 @@ create-test-db:
 
 test:
 	make create-test-db
-	${COMMAND} "${MANAGE} test ${APP} --keepdb --settings=Settings.django.test_settings"
+	${COMMAND} "${MANAGE} test ${APP} --keepdb --settings=App.settings.django.test_settings"
 
 test-migrate:
 	${TEST_SETTINGS} make migrate

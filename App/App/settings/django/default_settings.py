@@ -12,10 +12,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 
-from Settings.jazzmin_settings import *
+from App.settings.jazzmin_settings import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -49,7 +49,7 @@ THIRD_PARTY_APPS = [
     'phonenumber_field',
 ]
 
-LOCAL_APPS = ['Users', 'Settings', 'Emails']
+LOCAL_APPS = ['App', 'Users', 'Emails']
 
 INSTALLED_APPS = SPECIAL_APPS + DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 

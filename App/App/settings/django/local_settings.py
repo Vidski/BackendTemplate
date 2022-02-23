@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from Settings.django.default_settings import *
+from App.settings.django.default_settings import *
 
 URL = 'http://localhost:8000'
 
