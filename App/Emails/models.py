@@ -11,7 +11,7 @@ from Users.models import User
 TEMPLATE_CHOICES = [
     ('email/email.html', 'General'),
     ('verify_email.html', 'Verify email'),
-    ('reset_password.html', 'Reset password')
+    ('reset_password.html', 'Reset password'),
 ]
 
 
@@ -53,7 +53,7 @@ class Email(models.Model):
 
     def save(self):
         if self.to_all_users and not self.is_test:
-            all_emails = [f"{user.email}" for user in User.objects.all()]
+            all_emails = [f'{user.email}' for user in User.objects.all()]
             self.to = ','.join(all_emails)
         if self.is_test:
             self.to = f'{settings.TEST_EMAIL},'
@@ -67,13 +67,14 @@ class Email(models.Model):
     def get_blocks(self):
         blocks = []
         for block in self.blocks.all():
-            blocks.append({
+            email_block = {
                 'title': block.title,
                 'content': block.content,
                 'show_link': block.show_link,
                 'link_text': block.link_text,
                 'link': block.link,
-            })
+            }
+            blocks.append(email_block)
         return blocks
 
     def get_email_data(self):
@@ -92,7 +93,7 @@ class Email(models.Model):
         email = EmailMultiAlternatives(
             subject=self.subject,
             from_email=settings.EMAIL_HOST_USER,
-            bcc=self.get_to_emails()
+            bcc=self.get_to_emails(),
         )
         email.attach_alternative(self.get_template(), 'text/html')
         email.fail_silently = False

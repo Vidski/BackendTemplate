@@ -128,4 +128,5 @@ def password_reset_token_created(
     sender, instance, reset_password_token, *args, **kwargs
 ):
     from Emails.utils import send_email
+
     send_email('reset_password', reset_password_token)
