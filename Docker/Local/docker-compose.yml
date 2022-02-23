@@ -114,3 +114,14 @@ services:
       - 9090:9090
     depends_on:
       - database
+
+  cloudbeaver:
+    container_name: cloudbeaver
+    image: dbeaver/cloudbeaver
+    restart: always
+    volumes:
+      - ~/.mdbdata/App/cloudbeaver:/opt/cloudbeaver/workspace
+    ports:
+      - 8081:8978
+    depends_on:
+      - database
