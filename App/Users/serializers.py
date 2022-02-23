@@ -6,9 +6,9 @@ from rest_framework.serializers import ValidationError
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from Emails.utils import send_email
 from Users.models import User
 from Users.utils import check_e164_format
-from Emails.utils import send_email
 
 
 class UserSerializer(serializers.ModelSerializer):
