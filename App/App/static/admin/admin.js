@@ -43,7 +43,7 @@ function addHomeButton() {
 function removeElements() {
   const profileButton = $('.user-panel.mt-3.pb-3.mb-3.d-flex');
   profileButton.remove();
-  const logTime = $('.logs-time');
+  const logTime = $('.time');
   logTime.remove();
   const changeButton = $('.btn.btn-sm.btn-outline-info.btn-flat.changelink');
   changeButton.remove();
