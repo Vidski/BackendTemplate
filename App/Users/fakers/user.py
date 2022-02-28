@@ -1,4 +1,4 @@
-from Users.factories.user_factories import UserFactory
+from Users.factories.user import UserFactory
 
 
 class UserFaker(UserFactory):

@@ -2,7 +2,7 @@ from rest_framework.exceptions import NotFound
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.serializers import ValidationError
 
-from Users.factories.user_factories import UserFactory
+from Users.factories.user import UserFactory
 from Users.tests.abstract_test_classes import UsersAbstractUtils
 from Users.utils import check_e164_format
 from Users.utils import get_user_or_error

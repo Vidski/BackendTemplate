@@ -4,7 +4,7 @@ from tqdm import trange as progress
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from Users.factories.user_factories import UserFactory
+from Users.factories.user import UserFactory
 
 logger = logging.getLogger(__name__)
 
