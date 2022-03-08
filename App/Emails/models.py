@@ -51,7 +51,7 @@ class Email(models.Model):
     def __str__(self):
         return f'{self.subject}'
 
-    def save(self):
+    def save(self, *args, **kwargs):
         if self.to_all_users and not self.is_test:
             all_emails = [f'{user.email}' for user in User.objects.all()]
             self.to = ','.join(all_emails)
@@ -59,7 +59,7 @@ class Email(models.Model):
             self.to = f'{settings.TEST_EMAIL},'
         if self.programed_send_date is None:
             self.programed_send_date = timezone.now()
-        super().save()
+        super(Email, self).save(*args, **kwargs)
 
     def get_to_emails(self):
         return self.to.split(',')
