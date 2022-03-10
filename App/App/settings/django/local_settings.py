@@ -47,6 +47,9 @@ EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = ''
 
+# Email settings
+TEST_EMAIL = 'test@ing.email'
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=50),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=100),
