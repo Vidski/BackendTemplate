@@ -76,7 +76,7 @@ class Email(models.Model):
 
     def get_template(self):
         data = self.get_email_data()
-        template = render_to_string('email/email.html', data)
+        template = render_to_string('email.html', data)
         return template
 
     def get_email(self):
