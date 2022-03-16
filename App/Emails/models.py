@@ -8,13 +8,6 @@ from App.utils import log_information
 from Users.models import User
 
 
-TEMPLATE_CHOICES = [
-    ('email/email.html', 'General'),
-    ('verify_email.html', 'Verify email'),
-    ('reset_password.html', 'Reset password'),
-]
-
-
 class Block(models.Model):
     """
     Block model used on email as block content
@@ -41,9 +34,6 @@ class Email(models.Model):
     is_test = models.BooleanField(default=False)
     to_all_users = models.BooleanField(default=False)
     to = models.TextField(blank=True)
-    template = models.CharField(
-        max_length=100, default='General', choices=TEMPLATE_CHOICES
-    )
     programed_send_date = models.DateTimeField(blank=True, null=True)
     sent_date = models.DateTimeField(blank=True, null=True)
     was_sent = models.BooleanField(default=False, editable=False)
@@ -86,7 +76,7 @@ class Email(models.Model):
 
     def get_template(self):
         data = self.get_email_data()
-        template = render_to_string(self.template, data)
+        template = render_to_string('email/email.html', data)
         return template
 
     def get_email(self):
