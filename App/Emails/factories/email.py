@@ -1,7 +1,13 @@
 import factory
 
+from django_rest_passwordreset.models import ResetPasswordToken
+from django.utils import timezone
+
 from Emails.factories.block import BlockFactory
+from Emails.factories.block import ResetPasswordBlockFactory
+from Emails.factories.block import VerifyEmailBlockFactory
 from Emails.models import Email
+from Users.models import User
 
 
 class EmailFactory(factory.django.DjangoModelFactory):
@@ -10,13 +16,15 @@ class EmailFactory(factory.django.DjangoModelFactory):
 
     subject = factory.Faker('sentence')
     header = factory.Faker('word')
-    blocks = factory.SubFactory(BlockFactory)
     is_test = False
     to_all_users = False
     to = factory.Faker('email')
-    template = 1
-    programed_send_date = factory.Faker('date_time')
-    sent_date = factory.Faker('date_time')
+    programed_send_date = factory.Faker(
+        "date_time", tzinfo=timezone.get_current_timezone()
+    )
+    sent_date = factory.Faker(
+        "date_time", tzinfo=timezone.get_current_timezone()
+    )
     was_sent = False
 
     @factory.post_generation
