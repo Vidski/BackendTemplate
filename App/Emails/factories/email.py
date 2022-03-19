@@ -36,3 +36,36 @@ class EmailFactory(factory.django.DjangoModelFactory):
                 self.blocks.add(block)
         else:
             self.blocks.add(BlockFactory())
+
+
+class ResetEmailFactory(EmailFactory):
+
+    class Params:
+        instance = None
+
+    subject = 'Reset your password'
+    header = 'Reset your password'
+    to = factory.LazyAttribute(lambda object: f'{object.instance.user.email}')
+
+    @factory.post_generation
+    def blocks(self, create, extracted, **kwargs):
+        user = User.objects.get(email=self.to)
+        token = ResetPasswordToken.objects.filter(user_id=user.id).last()
+        block = ResetPasswordBlockFactory(instance=token)
+        self.blocks.add(block)
+
+
+class VerifyEmailFactory(EmailFactory):
+
+    class Params:
+        instance = None
+
+    subject = 'Verify your email'
+    header = 'Welcome to APPNAME'
+    to = factory.LazyAttribute(lambda object: f'{object.instance.email}')
+
+    @factory.post_generation
+    def blocks(self, create, extracted, **kwargs):
+        user = User.objects.get(email=self.to)
+        block = VerifyEmailBlockFactory(user=user)
+        self.blocks.add(block)
