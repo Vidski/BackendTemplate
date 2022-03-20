@@ -20,10 +20,10 @@ class EmailFactory(factory.django.DjangoModelFactory):
     to_all_users = False
     to = factory.Faker('email')
     programed_send_date = factory.Faker(
-        "date_time", tzinfo=timezone.get_current_timezone()
+        'date_time', tzinfo=timezone.get_current_timezone()
     )
     sent_date = factory.Faker(
-        "date_time", tzinfo=timezone.get_current_timezone()
+        'date_time', tzinfo=timezone.get_current_timezone()
     )
     was_sent = False
 
@@ -39,7 +39,6 @@ class EmailFactory(factory.django.DjangoModelFactory):
 
 
 class ResetEmailFactory(EmailFactory):
-
     class Params:
         instance = None
 
@@ -56,7 +55,6 @@ class ResetEmailFactory(EmailFactory):
 
 
 class VerifyEmailFactory(EmailFactory):
-
     class Params:
         instance = None
 
