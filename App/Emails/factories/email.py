@@ -1,3 +1,4 @@
+import datetime
 import factory
 
 from django.conf import settings
@@ -6,6 +7,7 @@ from django.utils import timezone
 
 from Emails.factories.block import BlockFactory
 from Emails.factories.block import ResetPasswordBlockFactory
+from Emails.factories.block import SuggestionBlockFactory
 from Emails.factories.block import VerifyEmailBlockFactory
 from Emails.models import Email
 from Users.models import User
@@ -46,6 +48,7 @@ class ResetEmailFactory(EmailFactory):
     subject = settings.RESET_PASSWORD_EMAIL_SUBJECT
     header = settings.RESET_PASSWORD_EMAIL_HEADER
     to = factory.LazyAttribute(lambda object: f'{object.instance.user.email}')
+    programed_send_date = None
 
     @factory.post_generation
     def blocks(self, create, extracted, **kwargs):
@@ -62,9 +65,43 @@ class VerifyEmailFactory(EmailFactory):
     subject = settings.VERIFY_EMAIL_SUBJECT
     header = settings.VERIFY_EMAIL_HEADER
     to = factory.LazyAttribute(lambda object: f'{object.instance.email}')
+    programed_send_date = None
 
     @factory.post_generation
     def blocks(self, create, extracted, **kwargs):
         user = User.objects.get(email=self.to)
         block = VerifyEmailBlockFactory(user=user)
+        self.blocks.add(block)
+
+
+class SuggestionEmailFactory(EmailFactory):
+    class Params:
+        type = None
+        content = None
+        instance = None
+
+    subject = factory.LazyAttribute(
+        lambda object: (
+            f'{object.type.replace("||", "")} ||'
+            + f' {object.content.replace("||", "")}'
+        )
+    )
+    header = factory.LazyAttribute(
+        lambda object: (
+            f'{object.type}'
+            + f' {settings.SUGGESTIONS_EMAIL_HEADER}'
+            + f' {object.instance.id}'
+        )
+    )
+    to = settings.SUGGESTIONS_EMAIL
+    programed_send_date = None
+
+    @factory.post_generation
+    def blocks(self, create, extracted, **kwargs):
+        subject_splitted = self.subject.split('||')
+        type = subject_splitted[0]
+        content = subject_splitted[1]
+        self.subject = type
+        self.save()
+        block = SuggestionBlockFactory(title=self.header, content=content)
         self.blocks.add(block)

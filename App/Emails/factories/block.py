@@ -46,3 +46,9 @@ class VerifyEmailBlockFactory(BlockFactory):
             f'{object.user.generate_verification_token()}'
         )
     )
+
+
+class SuggestionBlockFactory(BlockFactory):
+    show_link = False
+    link_text = ''
+    link = ''
