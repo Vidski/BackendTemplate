@@ -13,12 +13,15 @@ from Users.models import User
 CREATED = status.HTTP_201_CREATED
 SUGGESTION_TYPES = ['Suggestion', 'Error', 'Other']
 
+
 class EmailViewSet(viewsets.ViewSet):
     """
     API endpoint that allows users to create a suggestion email
     """
 
-    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
+    @action(
+        detail=False, methods=['post'], permission_classes=[IsAuthenticated]
+    )
     def suggestion(self, request):
         type = request.data.get('type')
         if type not in SUGGESTION_TYPES:

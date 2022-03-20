@@ -14,9 +14,7 @@ class SuggestionEmailSerializer(serializers.Serializer):
     subject = serializers.CharField()
     header = serializers.CharField()
     blocks = serializers.SlugRelatedField(
-        many=True,
-        read_only=True,
-        slug_field='content'
+        many=True, read_only=True, slug_field='content'
     )
 
     class Meta:
