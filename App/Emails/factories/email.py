@@ -1,5 +1,6 @@
 import factory
 
+from django.conf import settings
 from django_rest_passwordreset.models import ResetPasswordToken
 from django.utils import timezone
 
@@ -42,8 +43,8 @@ class ResetEmailFactory(EmailFactory):
     class Params:
         instance = None
 
-    subject = 'Reset your password'
-    header = 'Reset your password'
+    subject = settings.RESET_PASSWORD_EMAIL_SUBJECT
+    header = settings.RESET_PASSWORD_EMAIL_HEADER
     to = factory.LazyAttribute(lambda object: f'{object.instance.user.email}')
 
     @factory.post_generation
@@ -58,8 +59,8 @@ class VerifyEmailFactory(EmailFactory):
     class Params:
         instance = None
 
-    subject = 'Verify your email'
-    header = 'Welcome to APPNAME'
+    subject = settings.VERIFY_EMAIL_SUBJECT
+    header = settings.VERIFY_EMAIL_HEADER
     to = factory.LazyAttribute(lambda object: f'{object.instance.email}')
 
     @factory.post_generation

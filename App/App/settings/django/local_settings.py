@@ -50,6 +50,9 @@ EMAIL_PORT = ''
 # Email settings
 TEST_EMAIL = 'test@ing.email'
 
+# Verify email settings
+VERIFY_EMAIL_URL = f'{URL}/api/v1/users'
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=50),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=100),

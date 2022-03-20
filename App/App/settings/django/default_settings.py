@@ -23,6 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 
 
 # Applications definition
+APP_NAME = 'APPNAME'
+URL = ''
+FRONTEND_URL = ''
 
 SPECIAL_APPS = [
     'jazzmin',
@@ -187,13 +190,25 @@ CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
+# Reset email settings
+RESET_PASSWORD_EMAIL_SUBJECT = 'Reset your password'
+RESET_PASSWORD_EMAIL_HEADER = 'Reset your password'
+RESET_PASSWORD_EMAIL_LINK_TEXT = 'Click here to reset your password'
+RESET_PASSWORD_EMAIL_CONTENT = (
+    'Click in the link below to change your password.'
+)
+RESET_PASSWORD_EMAIL_LINK_TEXT = 'Reset password'
+RESET_PASSWORD_URL = f'' # Must redirect a front url with the token in url
+
+# Verify email settings
+VERIFY_EMAIL_SUBJECT = 'Verify your email'
+VERIFY_EMAIL_HEADER = 'Welcome to ' + APP_NAME
+VERIFY_EMAIL_LINK_TEXT = 'Click here to reset your password'
 VERIFY_EMAIL_CONTENT = (
     'First of all we want to thank you to give us a chance! '
     + 'To fully start using the system and begin to be part '
     + 'of the community, you must verify your email clicking'
     + 'on the button below.'
 )
-
-RESET_PASSWORD_EMAIL_CONTENT = (
-    'Click in the link below to change your password.'
-)
+VERIFY_EMAIL_LINK_TEXT = 'Verify email'
+VERIFY_EMAIL_URL = f'{URL}/api/v1/users'
