@@ -190,6 +190,10 @@ CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
+# Suggestion email settings
+SUGGESTIONS_EMAIL = ''
+SUGGESTIONS_EMAIL_HEADER = 'from user with id:'
+
 # Reset email settings
 RESET_PASSWORD_EMAIL_SUBJECT = 'Reset your password'
 RESET_PASSWORD_EMAIL_HEADER = 'Reset your password'
