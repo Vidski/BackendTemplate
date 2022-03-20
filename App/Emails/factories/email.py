@@ -99,8 +99,8 @@ class SuggestionEmailFactory(EmailFactory):
     @factory.post_generation
     def blocks(self, create, extracted, **kwargs):
         subject_splitted = self.subject.split('||')
-        type = subject_splitted[0]
-        content = subject_splitted[1]
+        type = subject_splitted[0][:-1]
+        content = subject_splitted[1][1:]
         self.subject = type
         self.save()
         block = SuggestionBlockFactory(title=self.header, content=content)
