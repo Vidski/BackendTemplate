@@ -48,7 +48,9 @@ class Email(models.Model):
         if self.is_test:
             self.to = f'{settings.TEST_EMAIL},'
         if self.programed_send_date is None:
-            self.programed_send_date = timezone.now()
+            self.programed_send_date = timezone.now() + timezone.timedelta(
+                minutes=5
+            )
         super(Email, self).save(*args, **kwargs)
 
     def get_to_emails(self):
