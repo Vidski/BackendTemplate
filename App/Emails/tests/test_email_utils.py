@@ -1,34 +1,32 @@
-from mock import MagicMock
-from mock import PropertyMock
+from django.core import mail
+from django.test import TestCase
+from django_rest_passwordreset.models import ResetPasswordToken
 
-from django.conf import settings
-
-from Users.factories.user import UserFactory
-from Users.tests.abstract_test_classes import UsersAbstractUtils
-from Emails.utils import get_email_data
+from Emails.models import Email
+from Emails.utils import send_email
+from Users.fakers.user import UserFaker
 
 
-class TestUserUtils(UsersAbstractUtils):
-    def test_get_email_data_for_instance(self):
-        instance = MagicMock()
-        user = UserFactory()
-        key = PropertyMock(return_value=10000)
-        type(instance).key = key
-        type(instance).user = user
-        expected_data = {
-            'greeting': f'Hi, {user.first_name}!',
-            'link': 10000,
-            'content': settings.RESET_PASSWORD_EMAIL_CONTENT,
-        }
-        actual_data = get_email_data('reset_password', instance)
-        self.assertEqual(actual_data, expected_data)
+class TestUserUtils(TestCase):
+    def test_send_email_verify_email(self):
+        email_type = 'verify_email'
+        user = UserFaker()
+        emails = Email.objects.all().count()
+        self.assertEqual(emails, 0)
+        self.assertEqual(len(mail.outbox), 0)
+        send_email(email_type, user)
+        emails = Email.objects.all().count()
+        self.assertEqual(emails, 1)
+        self.assertEqual(len(mail.outbox), 1)
 
-    def test_get_email_data_for_user(self):
-        user = UserFactory()
-        expected_data = {
-            'greeting': f'Hi, {user.first_name}!',
-            'link': f'{settings.URL}/api/v1/users/{user.id}/verify/?token={user.generate_verification_token()}',
-            'content': settings.VERIFY_EMAIL_CONTENT,
-        }
-        actual_data = get_email_data('verify_email', user)
-        self.assertEqual(actual_data, expected_data)
+    def test_send_email_verify_email(self):
+        email_type = 'reset_password'
+        user = UserFaker()
+        instance = ResetPasswordToken.objects.create(user=user)
+        emails = Email.objects.all().count()
+        self.assertEqual(emails, 0)
+        self.assertEqual(len(mail.outbox), 0)
+        send_email(email_type, instance)
+        emails = Email.objects.all().count()
+        self.assertEqual(emails, 1)
+        self.assertEqual(len(mail.outbox), 1)
