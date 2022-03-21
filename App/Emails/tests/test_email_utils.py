@@ -7,7 +7,7 @@ from Emails.utils import send_email
 from Users.fakers.user import UserFaker
 
 
-class TestUserUtils(TestCase):
+class TestEmailUtils(TestCase):
     def test_send_email_verify_email(self):
         email_type = 'verify_email'
         user = UserFaker()
