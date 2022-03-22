@@ -8,9 +8,9 @@ class EmailTestFaker(EmailFactory):
     subject = 'Test subject'
     header = 'Test header'
     is_test = True
+    to_all_users = False
     to = None
     programed_send_date = None
-    blocks = [BlockTestFaker()]
     sent_date = None
     was_sent = False
 
