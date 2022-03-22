@@ -17,7 +17,7 @@ class TestEmailFakers(EmailsAbstractUtils):
         assert email.subject == 'Test subject'
         assert email.header == 'Test header'
         assert email.is_test == True
-        assert email.to == f'{settings.TEST_EMAIL},'
+        assert email.to == f'{settings.TEST_EMAIL}'
         assert email.to_all_users == False
         assert email.blocks.first() is not None
         block = email.blocks.first()

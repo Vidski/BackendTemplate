@@ -42,19 +42,20 @@ class Email(models.Model):
         return f'{self.subject}'
 
     def save(self, *args, **kwargs):
-        if self.to_all_users and not self.is_test:
-            all_emails = [f'{user.email}' for user in User.objects.all()]
-            self.to = ','.join(all_emails)
-        if self.is_test:
-            self.to = f'{settings.TEST_EMAIL},'
+        self.to = ','.join(self.get_emails())
         if self.programed_send_date is None:
-            self.programed_send_date = timezone.now() + timezone.timedelta(
-                minutes=5
-            )
+            now = timezone.now()
+            five_minutes_from_now = now + timezone.timedelta(minutes=5)
+            self.programed_send_date = five_minutes_from_now
         super(Email, self).save(*args, **kwargs)
 
-    def get_to_emails(self):
-        return self.to.split(',')
+    def get_emails(self):
+        if self.to_all_users and not self.is_test:
+            return [f'{user.email}' for user in User.objects.all()]
+        if self.is_test:
+            return [f'{settings.TEST_EMAIL}']
+        emails = self.to.split(',')
+        return [email.strip() for email in emails]
 
     def get_email_data(self):
         return {
@@ -71,7 +72,7 @@ class Email(models.Model):
         email = EmailMultiAlternatives(
             subject=self.subject,
             from_email=settings.EMAIL_HOST_USER,
-            bcc=self.get_to_emails(),
+            bcc=self.get_emails(),
         )
         email.attach_alternative(self.get_template(), 'text/html')
         email.fail_silently = False
