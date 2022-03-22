@@ -6,7 +6,7 @@ DOCKER_FILE = docker-compose -f ./Docker/${ENV}/docker-compose.yml
 DOCKER_FILE_TEXT = docker-compose -f ./Docker/<ENV>/docker-compose.yml
 EQUALS = is equivalent to
 SETTINGS_FLAG = --settings=App.settings.django.${SETTINGS}_settings
-TEST_SETTINGS = SETTINGS=--settings=App.settings.django.test_settings
+TEST_SETTINGS = SETTINGS=test
 SETTINGS_FLAG_TEXT = --settings=App.settings.django.<SETTINGS>_settings
 
 up:
