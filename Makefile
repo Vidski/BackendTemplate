@@ -53,7 +53,11 @@ create-test-db:
 
 test:
 	make create-test-db
+ifeq (${COVER}, yes)
+	${COMMAND} "pytest ${APP} -s --reuse-db --ds=App.settings.django.test_settings --cov --cov-config=.coveragerc -W ignore::django.utils.deprecation.RemovedInDjango41Warning"
+else
 	${COMMAND} "pytest ${APP} -s --reuse-db --ds=App.settings.django.test_settings -W ignore::django.utils.deprecation.RemovedInDjango41Warning"
+endif
 
 test-migrate:
 	${TEST_SETTINGS} make migrate
