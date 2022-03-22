@@ -53,7 +53,7 @@ create-test-db:
 
 test:
 	make create-test-db
-	${COMMAND} "${MANAGE} test ${APP} --keepdb --settings=App.settings.django.test_settings"
+	${COMMAND} "pytest ${APP} -s --reuse-db --ds=App.settings.django.test_settings -W ignore::django.utils.deprecation.RemovedInDjango41Warning"
 
 test-migrate:
 	${TEST_SETTINGS} make migrate
