@@ -1,6 +1,10 @@
 from django.conf import settings
 from django_rest_passwordreset.models import ResetPasswordToken
 
+from Emails.factories.block import BlockFactory
+from Emails.factories.block import ResetPasswordBlockFactory
+from Emails.factories.block import SuggestionBlockFactory
+from Emails.factories.block import VerifyEmailBlockFactory
 from Emails.factories.email import EmailFactory
 from Emails.factories.email import get_subject_for_suggestion
 from Emails.factories.email import ResetEmailFactory
@@ -16,10 +20,7 @@ class TestEmailFactories(EmailsAbstractUtils):
     def test_email_factory_creates_email_with_block(self):
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
-        email = EmailFactory(
-            subject='Test subject',
-            header='Test header',
-        )
+        email = EmailFactory(subject='Test subject', header='Test header',)
         assert Email.objects.count() == 1
         assert Block.objects.count() == 1
         assert email.subject == 'Test subject'
@@ -142,7 +143,9 @@ class TestEmailFactories(EmailsAbstractUtils):
         type = 'Error'
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
-        email = SuggestionEmailFactory(type=type, content=content, instance=user)
+        email = SuggestionEmailFactory(
+            type=type, content=content, instance=user
+        )
         assert Email.objects.count() == 1
         assert Block.objects.count() == 1
         assert email.subject == 'Error'
@@ -157,4 +160,65 @@ class TestEmailFactories(EmailsAbstractUtils):
         block = email.blocks.first()
         assert email.header == block.title
         assert block.content == content
+        assert block.show_link is False
+
+
+class TestBlockFactories(EmailsAbstractUtils):
+    def test_block_factory(self):
+        assert Block.objects.count() == 0
+        block = BlockFactory()
+        assert Block.objects.count() == 1
+        assert block.title is not None
+        assert block.content is not None
+        assert block.show_link is not None
+        assert block.link_text is not None
+        assert block.link is not None
+
+    def test_reset_password_block_factory_raises_exception_without_params(
+        self,
+    ):
+        assert Email.objects.count() == 0
+        assert Block.objects.count() == 0
+        with self.assertRaises(AttributeError):
+            ResetPasswordBlockFactory()
+        assert Email.objects.count() == 0
+        assert Block.objects.count() == 0
+
+    def test_reset_password_block_factory(self):
+        assert Block.objects.count() == 0
+        user = UserFactory()
+        instance = ResetPasswordToken.objects.create(user=user)
+        block = ResetPasswordBlockFactory(instance=instance)
+        assert Block.objects.count() == 1
+        assert block.title is not None
+        assert block.content is not None
+        assert block.show_link is not None
+        assert block.link_text is not None
+        assert block.link is not None
+
+    def test_verify_email_block_factory_raises_exception_without_params(self):
+        assert Email.objects.count() == 0
+        assert Block.objects.count() == 0
+        with self.assertRaises(AttributeError):
+            VerifyEmailBlockFactory()
+        assert Email.objects.count() == 0
+        assert Block.objects.count() == 0
+
+    def test_verify_email_block_factory(self):
+        assert Block.objects.count() == 0
+        user = UserFactory()
+        block = VerifyEmailBlockFactory(user=user)
+        assert Block.objects.count() == 1
+        assert block.title is not None
+        assert block.content is not None
+        assert block.show_link is not None
+        assert block.link_text is not None
+        assert block.link is not None
+
+    def test_suggestion_block_factory(self):
+        assert Block.objects.count() == 0
+        block = SuggestionBlockFactory()
+        assert Block.objects.count() == 1
+        assert block.title is not None
+        assert block.content is not None
         assert block.show_link is False
