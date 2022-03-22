@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -11,7 +12,6 @@ from Users.models import User
 
 
 CREATED = status.HTTP_201_CREATED
-SUGGESTION_TYPES = ['Suggestion', 'Error', 'Other']
 
 
 class EmailViewSet(viewsets.ViewSet):
@@ -24,7 +24,7 @@ class EmailViewSet(viewsets.ViewSet):
     )
     def suggestion(self, request):
         type = request.data.get('type')
-        if type not in SUGGESTION_TYPES:
+        if type not in settings.SUGGESTION_TYPES:
             raise ParseError('Invalid type of suggestion')
         content = request.data.get('content')
         user = User.objects.get(id=request.user.id)
