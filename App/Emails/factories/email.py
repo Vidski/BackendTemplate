@@ -105,5 +105,5 @@ class SuggestionEmailFactory(EmailFactory):
 
 def get_subject_for_suggestion(type, content):
     if type not in settings.SUGGESTION_TYPES:
-        raise ValueError("Type not allowed")
+        raise ValueError('Type not allowed')
     return f'{type} || {content.replace("||", "")}'

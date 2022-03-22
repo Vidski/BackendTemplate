@@ -21,8 +21,7 @@ class ResetPasswordBlockFactory(BlockFactory):
 
     title = factory.LazyAttribute(
         lambda object: (
-            f'{settings.EMAIL_GREETING}'
-            f' {object.instance.user.first_name}!'
+            f'{settings.EMAIL_GREETING}' f' {object.instance.user.first_name}!'
         )
     )
     content = settings.RESET_PASSWORD_EMAIL_CONTENT
@@ -39,8 +38,7 @@ class VerifyEmailBlockFactory(BlockFactory):
 
     title = factory.LazyAttribute(
         lambda object: (
-            f'{settings.EMAIL_GREETING}'
-            f'{object.user.first_name}!'
+            f'{settings.EMAIL_GREETING}' f'{object.user.first_name}!'
         )
     )
     content = settings.VERIFY_EMAIL_CONTENT
