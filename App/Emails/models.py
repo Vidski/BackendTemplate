@@ -56,25 +56,11 @@ class Email(models.Model):
     def get_to_emails(self):
         return self.to.split(',')
 
-    def get_blocks(self):
-        blocks = []
-        for block in self.blocks.all():
-            email_block = {
-                'title': block.title,
-                'content': block.content,
-                'show_link': block.show_link,
-                'link_text': block.link_text,
-                'link': block.link,
-            }
-            blocks.append(email_block)
-        return blocks
-
     def get_email_data(self):
-        data = {
+        return {
             'header': self.header,
-            'blocks': self.get_blocks(),
+            'blocks': self.blocks.all() if self.blocks.all() else [],
         }
-        return data
 
     def get_template(self):
         data = self.get_email_data()
