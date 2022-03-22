@@ -1,4 +1,3 @@
-import datetime
 import factory
 
 from django.conf import settings
@@ -81,10 +80,7 @@ class SuggestionEmailFactory(EmailFactory):
         instance = None
 
     subject = factory.LazyAttribute(
-        lambda object: (
-            f'{object.type.replace("||", "")} ||'
-            + f' {object.content.replace("||", "")}'
-        )
+        lambda object: get_subject_for_suggestion(object.type, object.content)
     )
     header = factory.LazyAttribute(
         lambda object: (
@@ -105,3 +101,9 @@ class SuggestionEmailFactory(EmailFactory):
         self.save()
         block = SuggestionBlockFactory(title=self.header, content=content)
         self.blocks.add(block)
+
+
+def get_subject_for_suggestion(type, content):
+    if type not in settings.SUGGESTION_TYPES:
+        raise ValueError("Type not allowed")
+    return f'{type} || {content.replace("||", "")}'
