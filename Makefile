@@ -8,6 +8,9 @@ EQUALS = is equivalent to
 SETTINGS_FLAG = --settings=App.settings.django.${SETTINGS}_settings
 TEST_SETTINGS = SETTINGS=test
 SETTINGS_FLAG_TEXT = --settings=App.settings.django.<SETTINGS>_settings
+PYTEST_SETTINGS = -s --reuse-db --ds=App.settings.django.test_settings -W ignore::django.utils.deprecation.RemovedInDjango41Warning
+COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
+COVERAGE_WITH_HTML_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html
 
 up:
 	${DOCKER_FILE} up
@@ -54,9 +57,11 @@ create-test-db:
 test:
 	make create-test-db
 ifeq (${COVER}, yes)
-	${COMMAND} "pytest ${APP} -s --reuse-db --ds=App.settings.django.test_settings --cov --cov-config=.coveragerc -W ignore::django.utils.deprecation.RemovedInDjango41Warning"
+	${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
+else ifeq (${COVERHTML}, yes)
+	${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS} ${COVERAGE_WITH_HTML_SETTINGS}"
 else
-	${COMMAND} "pytest ${APP} -s --reuse-db --ds=App.settings.django.test_settings -W ignore::django.utils.deprecation.RemovedInDjango41Warning"
+	${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS}"
 endif
 
 test-migrate:
