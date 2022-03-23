@@ -19,7 +19,7 @@ class TestEmailUtils(TestCase):
         self.assertEqual(emails, 1)
         self.assertEqual(len(mail.outbox), 1)
 
-    def test_send_email_verify_email(self):
+    def test_reset_password_verify_email(self):
         email_type = 'reset_password'
         user = UserFaker()
         instance = ResetPasswordToken.objects.create(user=user)

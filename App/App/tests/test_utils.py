@@ -25,7 +25,7 @@ class AppUtilsTest(TestCase):
         self.assertEqual(message.output, [expected_message])
 
     @freeze_time('2012-01-14')
-    def test_log_email_verification_action(self):
+    def test_log_email_verification_action_on_verify(self):
         instance = MagicMock()
         email = PropertyMock(return_value='test@test.com')
         type(instance).email = email
@@ -39,7 +39,7 @@ class AppUtilsTest(TestCase):
         self.assertEqual(message.output, [expected_message])
 
     @freeze_time('2012-01-14')
-    def test_log_email_verification_action(self):
+    def test_log_email_verification_action_on_restore(self):
         instance = MagicMock()
         user = MagicMock()
         email = PropertyMock(return_value='test@test.com')

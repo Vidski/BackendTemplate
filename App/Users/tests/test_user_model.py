@@ -15,7 +15,7 @@ class UserModelTest(UsersAbstractUtils):
         assert hasattr(user, 'created_at')
         assert hasattr(user, 'updated_at')
 
-    def test_model_has_attributes(self):
+    def test_model_do_not_has_attributes(self):
         user = UserFactory()
         assert user.username == None
         assert user.is_superuser == None
@@ -38,7 +38,7 @@ class UserModelTest(UsersAbstractUtils):
         assert type(token) == str
         assert len(token) > 10
 
-    def test_has_permission_returns_true(self):
+    def test_has_permission_returns_false(self):
         user = UserFactory()
         user2 = UserFactory()
         has_permission = user.has_permission(user2)
