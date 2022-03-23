@@ -75,7 +75,7 @@ test-flush:
 
 test-recreate:
 	make test-flush
-	make create_test_db
+	make create-test-db
 	make test-migrate
 	make test-populate
 
