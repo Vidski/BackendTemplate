@@ -1,5 +1,7 @@
 ENV ?= Local
 SETTINGS ?= $(shell echo $(ENV) | tr '[:upper:]' '[:lower:]')
+DBUSER ?= user
+DBPASSWORD ?= password
 COMMAND = docker exec -it django-app bash -c
 MANAGE = python manage.py
 DOCKER_FILE = docker-compose -f ./Docker/${ENV}/docker-compose.yml
@@ -86,7 +88,7 @@ logs:
 	${DOCKER_FILE} logs -f
 
 database:
-	${DOCKER_FILE} exec database mysql -u${USER} -p${PASSWORD}
+	${DOCKER_FILE} exec database mysql -u${DBUSER} -p${DBPASSWORD}
 
 format:
 	${COMMAND} "oitnb . --exclude /migrations/* --icons --line-length=79"
