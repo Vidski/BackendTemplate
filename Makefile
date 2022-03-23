@@ -192,7 +192,7 @@ help:
 	@echo "   ↳ ${EQUALS} < ${DOCKER_FILE} logs -f>"
 	@echo ""
 	@echo " • database: Open a mysql shell"
-	@echo "   ↳ ${EQUALS} < ${DOCKER_FILE} exec database mysql -u<USER> -p<PASSWORD> >"
+	@echo "   ↳ ${EQUALS} < ${DOCKER_FILE} exec database mysql -u<DBUSER> -p<DBPASSWORD> >"
 	@echo ""
 	@echo " • format: Format the code"
 	@echo "   ↳ ${EQUALS} < ${COMMAND} 'oitnb . --exclude /migrations/* --icons --line-length=79' >"
