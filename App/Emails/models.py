@@ -39,7 +39,7 @@ class Email(models.Model):
     was_sent = models.BooleanField(default=False, editable=False)
 
     def __str__(self):
-        return f'{self.subject}'
+        return f'{self.id} | {self.subject}'
 
     def save(self, *args, **kwargs):
         self.to = ','.join(self.get_emails())
