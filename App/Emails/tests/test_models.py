@@ -13,14 +13,14 @@ class TestEmailModel(EmailsAbstractUtils):
         email = EmailFactory()
         dict_keys = email.__dict__.keys()
         attributes = [attribute for attribute in dict_keys]
-        assert "subject" in attributes
-        assert "header" in attributes
-        assert "is_test" in attributes
-        assert "to_all_users" in attributes
-        assert "to" in attributes
-        assert "programed_send_date" in attributes
-        assert "sent_date" in attributes
-        assert "was_sent" in attributes
+        assert 'subject' in attributes
+        assert 'header' in attributes
+        assert 'is_test' in attributes
+        assert 'to_all_users' in attributes
+        assert 'to' in attributes
+        assert 'programed_send_date' in attributes
+        assert 'sent_date' in attributes
+        assert 'was_sent' in attributes
 
     def test_email_str(self):
         email = EmailFactory()
@@ -30,19 +30,19 @@ class TestEmailModel(EmailsAbstractUtils):
     def test_save(self):
         email = EmailFactory.build()
         email.programed_send_date = None
-        email.to = "email@test.com, email2@test.com"
+        email.to = 'email@test.com, email2@test.com'
         email.is_test = False
         assert email.programed_send_date is None
-        assert email.to == "email@test.com, email2@test.com"
+        assert email.to == 'email@test.com, email2@test.com'
         assert email.is_test is False
         email.save()
         assert email.programed_send_date is not None
-        assert email.to == "email@test.com, email2@test.com"
+        assert email.to == 'email@test.com, email2@test.com'
 
     def test_saving_an_email_without_date(self):
         email = EmailFactory.build()
         email.programed_send_date = None
-        email.to = "email@test.com, email2@test.com"
+        email.to = 'email@test.com, email2@test.com'
         email.is_test = False
         assert email.programed_send_date is None
         assert email.is_test is False
@@ -51,69 +51,64 @@ class TestEmailModel(EmailsAbstractUtils):
 
     def test_saving_an_email_with_emails(self):
         email = EmailFactory.build()
-        email.to = "email@test.com, email2@test.com"
+        email.to = 'email@test.com, email2@test.com'
         email.is_test = False
-        assert email.to == "email@test.com, email2@test.com"
+        assert email.to == 'email@test.com, email2@test.com'
         assert email.is_test is False
         email.save()
-        assert email.to == "email@test.com, email2@test.com"
+        assert email.to == 'email@test.com, email2@test.com'
 
     def test_saving_an_email_with_emails_as_test(self):
         email = EmailFactory.build()
-        email.to = "email@test.com, email2@test.com"
+        email.to = 'email@test.com, email2@test.com'
         email.is_test = True
-        assert email.to == "email@test.com, email2@test.com"
+        assert email.to == 'email@test.com, email2@test.com'
         assert email.is_test is True
         email.save()
-        assert email.to == f"{settings.TEST_EMAIL}"
+        assert email.to == f'{settings.TEST_EMAIL}'
 
     def test_saving_an_email_with_emails_to_all_users(self):
         email = EmailFactory.build()
-        email.to = "email@test.com, email2@test.com"
+        email.to = 'email@test.com, email2@test.com'
         email.is_test = False
         email.to_all_users = True
-        assert email.to == "email@test.com, email2@test.com"
+        assert email.to == 'email@test.com, email2@test.com'
         assert email.is_test is False
         assert email.to_all_users is True
         email.save()
-        assert email.to == f"{self.admin_user}, {self.normal_user}"
+        assert email.to == f'{self.admin_user}, {self.normal_user}'
 
     def test_get_emails_with_emails(self):
-        email = EmailFactory(
-            to = "email@test.com, email2@test.com"
-        )
-        assert email.to == "email@test.com, email2@test.com"
+        email = EmailFactory(to='email@test.com, email2@test.com')
+        assert email.to == 'email@test.com, email2@test.com'
 
     def test_get_emails_with_emails_as_test(self):
         email = EmailFactory(
-            to = "email@test.com, email2@test.com",
-            is_test = True
+            to='email@test.com, email2@test.com', is_test=True
         )
-        assert email.to == f"{settings.TEST_EMAIL}"
+        assert email.to == f'{settings.TEST_EMAIL}'
 
     def test_get_emails_with_emails_to_all_users(self):
         email = EmailFactory(
-            to = "email@test.com, email2@test.com",
-            is_test = False,
-            to_all_users = True
+            to='email@test.com, email2@test.com',
+            is_test=False,
+            to_all_users=True,
         )
-        assert email.to == f"{self.admin_user}, {self.normal_user}"
+        assert email.to == f'{self.admin_user}, {self.normal_user}'
 
     def test_get_emails_data_with_blocks(self):
         block = BlockFactory()
-        email = EmailFactory(blocks=[
-            block
-        ])
+        email = EmailFactory(blocks=[block])
         data = email.get_email_data()
-        assert data["header"] == email.header
-        assert list(data["blocks"]) == list(email.blocks.all())
+        assert data['header'] == email.header
+        assert list(data['blocks']) == list(email.blocks.all())
 
     def test_get_emails_data_without_blocks(self):
         email = EmailFactory(blocks=None)
         email.blocks.all().delete()
         data = email.get_email_data()
-        assert data["header"] == email.header
-        assert data["blocks"] == []
+        assert data['header'] == email.header
+        assert data['blocks'] == []
 
     def test_get_template(self):
         email = EmailFactory()
@@ -140,11 +135,11 @@ class TestBlockModel(EmailsAbstractUtils):
         block = BlockFactory()
         dict_keys = block.__dict__.keys()
         attributes = [attribute for attribute in dict_keys]
-        assert "title" in attributes
-        assert "content" in attributes
-        assert "show_link" in attributes
-        assert "link_text" in attributes
-        assert "link" in attributes
+        assert 'title' in attributes
+        assert 'content' in attributes
+        assert 'show_link' in attributes
+        assert 'link_text' in attributes
+        assert 'link' in attributes
 
     def test_block_str(self):
         block = BlockFactory()
