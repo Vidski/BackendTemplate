@@ -1,8 +1,7 @@
 import factory
-
 from django.conf import settings
-from django_rest_passwordreset.models import ResetPasswordToken
 from django.utils import timezone
+from django_rest_passwordreset.models import ResetPasswordToken
 
 from Emails.factories.block import BlockFactory
 from Emails.factories.block import ResetPasswordBlockFactory

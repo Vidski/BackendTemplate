@@ -1,8 +1,9 @@
+import argparse
 import os
 import socket
 import time
-import argparse
 from datetime import datetime
+
 
 """
 This is a workaround python script in order to check if

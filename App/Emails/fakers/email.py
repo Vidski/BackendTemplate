@@ -1,7 +1,7 @@
 import factory
 
-from Emails.fakers.block import BlockTestFaker
 from Emails.factories.email import EmailFactory
+from Emails.fakers.block import BlockTestFaker
 
 
 class EmailTestFaker(EmailFactory):

@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from App.settings.django.default_settings import *
 
+
 URL = 'http://localhost:8000'
 
 # SECURITY WARNING: keep the secret key used in production secret!

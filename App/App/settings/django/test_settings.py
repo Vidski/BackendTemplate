@@ -1,5 +1,6 @@
 from App.settings.django.local_settings import *
 
+
 ENVIRONMENT_NAME = 'test'
 
 STATICFILES_DIRS = ()

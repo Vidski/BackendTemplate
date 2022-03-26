@@ -6,10 +6,10 @@ from Emails.factories.block import ResetPasswordBlockFactory
 from Emails.factories.block import SuggestionBlockFactory
 from Emails.factories.block import VerifyEmailBlockFactory
 from Emails.factories.email import EmailFactory
-from Emails.factories.email import get_subject_for_suggestion
 from Emails.factories.email import ResetEmailFactory
 from Emails.factories.email import SuggestionEmailFactory
 from Emails.factories.email import VerifyEmailFactory
+from Emails.factories.email import get_subject_for_suggestion
 from Emails.models import Block
 from Emails.models import Email
 from Emails.tests.abstract_test_classes import EmailsAbstractUtils

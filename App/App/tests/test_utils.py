@@ -5,8 +5,8 @@ from freezegun import freeze_time
 from mock import MagicMock
 from mock import PropertyMock
 
-from App.utils import log_information
 from App.utils import log_email_action
+from App.utils import log_information
 
 
 class AppUtilsTest(TestCase):

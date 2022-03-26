@@ -4,8 +4,9 @@ from django.core import mail
 from django_rest_passwordreset.models import ResetPasswordToken
 
 from Users.factories.user import UserFactory
-from Users.tests.abstract_test_classes import UsersAbstractUtils
 from Users.models import User
+from Users.tests.abstract_test_classes import UsersAbstractUtils
+
 
 ENDPOINT = '/api/v1/users'
 
