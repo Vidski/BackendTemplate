@@ -22,7 +22,7 @@ from Emails.tests.abstract_test_classes import EmailsAbstractUtils
 from Users.factories.user import UserFactory
 
 
-class TestEmailModels(EmailsAbstractUtils):
+class TestEmailModel(EmailsAbstractUtils):
     def test_email_attributes(self):
         email = EmailFactory()
         dict_keys = email.__dict__.keys()
@@ -147,3 +147,20 @@ class TestEmailModels(EmailsAbstractUtils):
         email.send()
         assert email.was_sent is True
         assert len(mail.outbox) == 1
+
+
+class TestBlockModel(EmailsAbstractUtils):
+    def test_block_attributes(self):
+        block = BlockFactory()
+        dict_keys = block.__dict__.keys()
+        attributes = [attribute for attribute in dict_keys]
+        assert "title" in attributes
+        assert "content" in attributes
+        assert "show_link" in attributes
+        assert "link_text" in attributes
+        assert "link" in attributes
+
+    def test_block_str(self):
+        block = BlockFactory()
+        expected_str = f'{block.id} | {block.title}'
+        assert str(block) == expected_str
