@@ -1,25 +1,12 @@
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-from django_rest_passwordreset.models import ResetPasswordToken
-import pytest
 from django.core import mail
-from mock import patch
 
 
 from Emails.factories.block import BlockFactory
-from Emails.factories.block import ResetPasswordBlockFactory
-from Emails.factories.block import SuggestionBlockFactory
-from Emails.factories.block import VerifyEmailBlockFactory
 from Emails.factories.email import EmailFactory
-from Emails.factories.email import get_subject_for_suggestion
-from Emails.factories.email import ResetEmailFactory
-from Emails.factories.email import SuggestionEmailFactory
-from Emails.factories.email import VerifyEmailFactory
-from Emails.models import Block
-from Emails.models import Email
 from Emails.tests.abstract_test_classes import EmailsAbstractUtils
-from Users.factories.user import UserFactory
 
 
 class TestEmailModel(EmailsAbstractUtils):
