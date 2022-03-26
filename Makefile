@@ -97,10 +97,10 @@ check-format:
 	${COMMAND} "oitnb --check . --exclude /migrations/* --icons --line-length=79"
 
 sort-imports:
-	${COMMAND} "isort **/*.py --lai=2 --sl"
+	${COMMAND} "isort . --skip-glob=**/migrations/* --lai=2 --sl"
 
 check-imports-order:
-	${COMMAND} "isort **/*.py --lai=2 --sl --check"
+	${COMMAND} "isort . --skip-glob=**/migrations/* --lai=2 --sl --check"
 
 help:
 	@echo ""
