@@ -1,17 +1,15 @@
-from django.test import TestCase
-from rest_framework.test import APIClient
-
+from App.tests.abstract_test_class import AbstractTestClass
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.models import User
 
 
-class UsersAbstractUtils(TestCase):
+class UsersAbstractUtils(AbstractTestClass):
     def setUp(self):
         self._clean()
         self.admin_user = AdminFaker()
         self.normal_user = UserFaker()
-        self.client = APIClient()
+        super().setUp()
 
     def _clean(self):
         User.objects.all().delete()
