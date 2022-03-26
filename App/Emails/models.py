@@ -42,7 +42,7 @@ class Email(models.Model):
         return f'{self.id} | {self.subject}'
 
     def save(self, *args, **kwargs):
-        self.to = ','.join(self.get_emails())
+        self.to = ', '.join(self.get_emails())
         if self.programed_send_date is None:
             now = timezone.now()
             five_minutes_from_now = now + timezone.timedelta(minutes=5)
@@ -54,7 +54,7 @@ class Email(models.Model):
             return [f'{user.email}' for user in User.objects.all()]
         if self.is_test:
             return [f'{settings.TEST_EMAIL}']
-        emails = self.to.split(',')
+        emails = self.to.split(', ')
         return [email.strip() for email in emails]
 
     def get_email_data(self):
@@ -68,7 +68,7 @@ class Email(models.Model):
         template = render_to_string('email.html', data)
         return template
 
-    def get_email(self):
+    def get_email_object(self):
         email = EmailMultiAlternatives(
             subject=self.subject,
             from_email=settings.EMAIL_HOST_USER,
@@ -79,7 +79,7 @@ class Email(models.Model):
         return email
 
     def send(self):
-        email = self.get_email()
+        email = self.get_email_object()
         email.send()
         self.sent_date = timezone.now()
         self.was_sent = True
