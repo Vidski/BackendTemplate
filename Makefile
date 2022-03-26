@@ -48,6 +48,13 @@ populate:
 flush:
 	${COMMAND} "${MANAGE} flush ${SETTINGS_FLAG}"
 
+show_urls:
+ifeq (${GREP},)
+	${COMMAND} "${MANAGE} show_urls"
+else
+	${COMMAND} "${MANAGE} show_urls | grep ${GREP}"
+endif
+
 recreate:
 	make flush
 	make migrate
