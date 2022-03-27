@@ -31,3 +31,17 @@ class TestSuggestionViews(EmailsAbstractUtils):
         assert ['Error found'] == response.data['blocks']
         assert len(mail.outbox) == 0
         assert email_count == 1
+
+    def test_suggestion_fails_as_authenticate_user_because_wrong_type(self):
+        email_count = Email.objects.all().count()
+        assert len(mail.outbox) == 0
+        assert email_count == 0
+        data = {'type': 'Wrong', 'content': 'Error found'}
+        self.client.force_authenticate(user=self.normal_user)
+        response = self.client.post(ENDPOINT, data, format='json')
+        email_count = Email.objects.all().count()
+        expected_error_message = 'Invalid type of suggestion'
+        assert response.status_code == 400
+        assert expected_error_message in response.data['detail']
+        assert len(mail.outbox) == 0
+        assert email_count == 0
