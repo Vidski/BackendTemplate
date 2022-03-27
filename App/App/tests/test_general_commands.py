@@ -24,8 +24,8 @@ class TestPopulateCommand(TestCase):
         assert User.objects.all().count() == 0
         suppress_text = io.StringIO()
         sys.stdout = suppress_text
-        command.create_fake_users()
-        assert User.objects.all().count() == 50
+        command.create_fake_users(3)
+        assert User.objects.all().count() == 3
 
     def test_create_fake_verify_emails(self):
         command = PopulateCommand()
@@ -41,6 +41,6 @@ class TestPopulateCommand(TestCase):
     def test_command(self):
         assert User.objects.all().count() == 0
         assert Email.objects.all().count() == 0
-        call_command(COMMAND)
-        assert User.objects.all().count() == 50
-        assert Email.objects.all().count() == 50
+        call_command(COMMAND, '-i', '5')
+        assert User.objects.all().count() == 5
+        assert Email.objects.all().count() == 5

@@ -43,7 +43,11 @@ migrate:
 	${COMMAND} "${MANAGE} migrate ${SETTINGS_FLAG}"
 
 populate:
-	${COMMAND} "${MANAGE} populate_db ${SETTINGS_FLAG}"
+ifeq (${INSTANCES},)
+	${COMMAND} "${MANAGE} populate_db -i 50 ${SETTINGS_FLAG}"
+else
+	${COMMAND} "${MANAGE} populate_db -i $(INSTANCES) ${SETTINGS_FLAG}"
+endif
 
 flush:
 	${COMMAND} "${MANAGE} flush ${SETTINGS_FLAG}"
@@ -148,7 +152,10 @@ help:
 	@echo "                      < ${COMMAND} '${MANAGE} migrate ${SETTINGS_FLAG_TEXT}' >"
 	@echo ""
 	@echo " • populate: Populate the database"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} '${MANAGE} populate_db ${SETTINGS_FLAG_TEXT}' >"
+	@echo "   ↳ ${EQUALS} < ${COMMAND} '${MANAGE} populate_db -i 50 ${SETTINGS_FLAG_TEXT}' >"
+	@echo ""
+	@echo " • INSTANCES=<int> populate: Populate the database with a number of instances"
+	@echo "   ↳ ${EQUALS} < ${COMMAND} '${MANAGE} populate_db -i <INSTANCES> ${SETTINGS_FLAG_TEXT}' >"
 	@echo ""
 	@echo " • flush: Flush the database"
 	@echo "   ↳ ${EQUALS} < ${COMMAND} '${MANAGE} flush ${SETTINGS_FLAG_TEXT}' >"

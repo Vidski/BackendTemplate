@@ -16,23 +16,27 @@ class Command(BaseCommand):
 
     help = 'Populate database with fake data'
 
+    def add_arguments(self, parser):
+        parser.add_argument('-i', '--instances', type=int, default=50)
+
     def handle(self, *args, **options):
+        instances = options['instances']
         if settings.ENVIRONMENT_NAME in ['dev', 'local', 'test']:
-            self.populate()
+            self.populate(instances)
         else:
             logger.critical(
                 'This command creates fake data do NOT run this in'
                 + ' production environments'
             )
 
-    def populate(self):
-        users = self.create_fake_users()
+    def populate(self, instances):
+        users = self.create_fake_users(instances)
         self.create_fake_verify_emails(users)
 
-    def create_fake_users(self):
+    def create_fake_users(self, instances):
         self.stdout.write('Creating fake users')
         users = []
-        for _ in progress(50):
+        for _ in progress(instances):
             user = UserFactory()
             users.append(user)
         self.stdout.write('Fake users created')
