@@ -24,3 +24,7 @@ django-phonenumber-field==6.0.0
 tqdm==4.62.3
 pytest-django==4.5.2
 pytest-cov==3.0.0
+arrow==1.2.2
+Pillow==9.0.1
+boto3==1.21.28
+django-storages==1.12.3
