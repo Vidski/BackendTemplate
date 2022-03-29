@@ -6,6 +6,7 @@ from django.utils.html import format_html
 from django.utils.timesince import timesince
 from django_rest_passwordreset.models import ResetPasswordToken
 
+from Users.models import Profile
 from Users.models import User
 
 
@@ -55,6 +56,22 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = ()
 
 
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('nickname', 'gender', 'birth_date')
+    list_display_links = ('nickname',)
+    list_filter = ('gender', 'birth_date')
+    fieldsets = (
+        (None, {'fields': ('user',)}),
+        (
+            'Personal info',
+            {'fields': ('profile_image', 'birth_date', 'gender')},
+        ),
+        ('Account info', {'fields': ('nickname', 'bio')}),
+    )
+    search_fields = ('nickname', 'id')
+    ordering = ('user', 'nickname', 'gender', 'birth_date')
+
+
 class LogEntryAdmin(admin.ModelAdmin):
     list_display = (
         'user',
@@ -85,3 +102,4 @@ class LogEntryAdmin(admin.ModelAdmin):
 
 admin.site.register(User, UserAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)
+admin.site.register(Profile, ProfileAdmin)
