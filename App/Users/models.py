@@ -12,6 +12,8 @@ from django_prometheus.models import ExportModelOperationsMixin
 from django_rest_passwordreset.signals import reset_password_token_created
 from phonenumber_field.modelfields import PhoneNumberField
 
+from App.storage import image_file_upload
+
 
 class CustomUserManager(BaseUserManager):
     """
@@ -78,6 +80,7 @@ class User(
     is_admin = models.BooleanField('Admin status', default=False)
     created_at = models.DateTimeField('Creation date', auto_now_add=True)
     updated_at = models.DateTimeField('Update date', auto_now=True)
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
@@ -121,6 +124,57 @@ class User(
     @property
     def is_staff(self):
         return self.is_admin
+
+
+class Profile(models.Model):
+    class Gender(models.TextChoices):
+        FEMALE = (
+            'F',
+            'Female',
+        )
+        MALE = (
+            'M',
+            'Male',
+        )
+        NON_BINARY = (
+            'N',
+            'Non-binary',
+        )
+        NOT_SAID = 'P', 'Prefer not to say'
+
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='profile',
+        primary_key=True,
+    )
+    nickname = models.CharField(
+        'Nickname',
+        unique=True,
+        error_messages={'unique': 'This nickname already exists.'},
+        blank=True,
+        null=True,
+        max_length=50,
+    )
+    bio = models.TextField('Bio', blank=True)
+    profile_image = models.ImageField(
+        'Profile image', upload_to=image_file_upload, blank=True, null=True,
+    )
+    gender = models.CharField(
+        max_length=1,
+        choices=Gender.choices,
+        default=Gender.NOT_SAID,
+        blank=True,
+        null=True,
+    )
+    birth_date = models.DateTimeField(
+        'Birth date', blank=True, null=True, auto_now_add=False
+    )
+    created_at = models.DateTimeField('Creation date', auto_now_add=True)
+    updated_at = models.DateTimeField('Update date', auto_now=True)
+
+    def __str__(self):
+        return self.user.name
 
 
 @receiver(reset_password_token_created)
