@@ -178,6 +178,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MEDIA_DIRS = os.path.join(BASE_DIR, '/App/App/mMdia')
+MEDIA_URL = '/media/'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -217,3 +220,14 @@ VERIFY_EMAIL_CONTENT = (
 )
 VERIFY_EMAIL_LINK_TEXT = 'Verify email'
 VERIFY_EMAIL_URL = f'{URL}/api/v1/users'
+
+# Storage
+
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+
+AWS_ACCESS_KEY_ID = None
+AWS_STORAGE_DOCUMENT_BUCKET_NAME = None
+AWS_STORAGE_IMAGE_BUCKET_NAME = None
+AWS_SECRET_ACCESS_KEY = None
+AWS_S3_REGION_NAME = None
+AWS_S3_SIGNATURE_VERSION = None
