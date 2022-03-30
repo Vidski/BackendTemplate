@@ -149,7 +149,7 @@ class Profile(models.Model):
         primary_key=True,
     )
     nickname = models.CharField(
-        'Nickname',
+        'Nick',
         unique=True,
         error_messages={'unique': 'This nickname already exists.'},
         blank=True,
@@ -161,13 +161,14 @@ class Profile(models.Model):
         'Profile image', upload_to=image_file_upload, blank=True, null=True,
     )
     gender = models.CharField(
+        'Gender',
         max_length=1,
         choices=Gender.choices,
         default=Gender.NOT_SAID,
         blank=True,
         null=True,
     )
-    birth_date = models.DateTimeField(
+    birth_date = models.DateField(
         'Birth date', blank=True, null=True, auto_now_add=False
     )
     created_at = models.DateTimeField('Creation date', auto_now_add=True)

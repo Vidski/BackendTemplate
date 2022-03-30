@@ -81,6 +81,7 @@ JAZZMIN_SETTINGS = {
         'Users.User': 'fas fa-user',
         'Emails.Email': 'fas fa-envelope',
         'Emails.Block': 'fas fa-envelope-open-text',
+        'Users.Profile': 'fas fa-address-card'
     },
     # Icons that are used when one is not manually specified
     'default_icon_parents': 'fas fa-chevron-circle-right',
