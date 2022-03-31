@@ -1,4 +1,7 @@
+from Users.factories.profile import ProfileFactory
 from Users.factories.user import UserFactory
+from Users.fakers.profile import AdultProfileFaker
+from Users.fakers.profile import KidProfileFaker
 from Users.tests.abstract_test_classes import UsersAbstractUtils
 
 
@@ -48,3 +51,33 @@ class UserModelTest(UsersAbstractUtils):
         user = UserFactory()
         has_permission = user.has_permission(user)
         assert has_permission == True
+
+
+class ProfileModelTest(UsersAbstractUtils):
+    def test_model_has_attributes(self):
+        profile = ProfileFactory()
+        dict_keys = profile.__dict__.keys()
+        attributes = [attribute for attribute in dict_keys]
+        assert 'user_id' in attributes
+        assert 'nickname' in attributes
+        assert 'bio' in attributes
+        assert 'profile_image' in attributes
+        assert 'gender' in attributes
+        assert 'birth_date' in attributes
+        assert 'created_at' in attributes
+        assert 'updated_at' in attributes
+
+    def test_profile_str(self):
+        profile = ProfileFactory()
+        expected_str = f'User ({profile.user_id}) profile ({profile.pk})'
+        assert str(profile) == expected_str
+
+    def test_is_adult(self):
+        adult_profile = AdultProfileFaker()
+        expected_result = True
+        assert adult_profile.is_adult() == expected_result
+
+    def test_is_not_adult(self):
+        kid_profile = KidProfileFaker()
+        expected_result = False
+        assert kid_profile.is_adult() == expected_result
