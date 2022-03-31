@@ -10,7 +10,7 @@ class ProfileFactory(factory.django.DjangoModelFactory):
         model = Profile
 
     user = factory.SubFactory(UserFactory)
-    nickname = factory.Faker('last_name')
+    nickname = factory.Faker('isbn13')
     bio = factory.Faker('text')
     profile_image = factory.django.ImageField(
         filename="profile_picture.jpg",
