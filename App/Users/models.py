@@ -1,4 +1,6 @@
 import base64
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 import hashlib
 
 from django.conf import settings
@@ -160,8 +162,11 @@ class Profile(models.Model):
     updated_at = models.DateTimeField('Update date', auto_now=True)
 
     def __str__(self):
-        return self.user.name
+        return f'User ({self.user_id}) profile ({self.pk})'
 
+    def is_adult(self):
+        adultness = (datetime.now() - relativedelta(years=18))
+        return datetime.strptime(self.birth_date, '%Y-%m-%d') < adultness
 
 @receiver(reset_password_token_created)
 def password_reset_token_created(
