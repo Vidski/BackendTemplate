@@ -6,6 +6,7 @@ from tqdm import tqdm
 from tqdm import trange as progress
 
 from Emails.factories.email import VerifyEmailFactory
+from Users.factories.profile import ProfileFactory
 from Users.factories.user import UserFactory
 
 
@@ -32,6 +33,7 @@ class Command(BaseCommand):
     def populate(self, instances):
         users = self.create_fake_users(instances)
         self.create_fake_verify_emails(users)
+        self.create_fake_profiles(users)
 
     def create_fake_users(self, instances):
         self.stdout.write('Creating fake users')
@@ -48,4 +50,12 @@ class Command(BaseCommand):
             for user in users:
                 VerifyEmailFactory(instance=user)
                 progress_bar.update(1)
-        self.stdout.write('Fake users created')
+        self.stdout.write('Fake verify emails created')
+
+    def create_fake_profiles(self, users):
+        self.stdout.write('Creating fake profiles')
+        with tqdm(total=len(users)) as progress_bar:
+            for user in users:
+                ProfileFactory(user=user)
+                progress_bar.update(1)
+        self.stdout.write('Fake profiles created')
