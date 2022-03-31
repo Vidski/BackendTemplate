@@ -13,7 +13,7 @@ from django_rest_passwordreset.signals import reset_password_token_created
 from phonenumber_field.modelfields import PhoneNumberField
 
 from App.storage import image_file_upload
-
+from Users.choices import GenderChoices
 
 class CustomUserManager(BaseUserManager):
     """
@@ -127,21 +127,6 @@ class User(
 
 
 class Profile(models.Model):
-    class Gender(models.TextChoices):
-        FEMALE = (
-            'F',
-            'Female',
-        )
-        MALE = (
-            'M',
-            'Male',
-        )
-        NON_BINARY = (
-            'N',
-            'Non-binary',
-        )
-        NOT_SAID = 'P', 'Prefer not to say'
-
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -163,8 +148,8 @@ class Profile(models.Model):
     gender = models.CharField(
         'Gender',
         max_length=1,
-        choices=Gender.choices,
-        default=Gender.NOT_SAID,
+        choices=GenderChoices.choices,
+        default=GenderChoices.NOT_SAID,
         blank=True,
         null=True,
     )
