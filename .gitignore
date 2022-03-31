@@ -125,3 +125,6 @@ bower_components/
 # Python Environment
 Pipfile
 Pipfile.lock
+
+# Media files
+media/
