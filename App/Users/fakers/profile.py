@@ -6,18 +6,22 @@ from Users.factories.profile import ProfileFactory
 
 
 class FemaleProfileFaker(ProfileFactory):
+    nickname = factory.Faker('name_female')
     bio = 'Custom bio for female profile'
     gender = 'F'
 
 class MaleProfileFaker(ProfileFactory):
+    nickname = factory.Faker('name_male')
     bio = 'Custom bio for male profile'
     gender = 'M'
 
 class NonBinaryProfileFaker(ProfileFactory):
+    nickname = factory.Faker('name_nonbinary')
     bio = 'Custom bio for non-binary profile'
     gender = 'N'
 
 class NotSaidProfileFaker(ProfileFactory):
+    nickname = factory.Faker('suffix')
     bio = 'Custom bio for x profile'
     gender = 'P'
 
