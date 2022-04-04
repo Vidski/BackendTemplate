@@ -73,8 +73,10 @@ ifeq (${COVER}, yes)
 	${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
 else ifeq (${COVERHTML}, yes)
 	${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS} ${COVERAGE_WITH_HTML_SETTINGS}"
-else
+else ifeq (${APP},)
 	${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS}"
+else
+	${COMMAND} "pytest ${APP} -s ${PYTEST_SETTINGS}"
 endif
 
 test-migrate:
