@@ -1,3 +1,5 @@
+import pytest
+
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
@@ -6,10 +8,10 @@ from Users.models import User
 from Users.serializers import UserLoginSerializer
 from Users.serializers import UserSerializer
 from Users.serializers import UserSignUpSerializer
-from Users.tests.abstract_test_classes import UsersAbstractUtils
 
 
-class TestUserSerializer(UsersAbstractUtils):
+@pytest.mark.django_db
+class TestUserSerializer:
     def test_data_serialized_from_user(self):
         user = UserFactory()
         created_at = user.created_at
@@ -25,27 +27,27 @@ class TestUserSerializer(UsersAbstractUtils):
             'updated_at': expected_updated_at,
         }
         actual_data = UserSerializer(user).data
-        self.assertEqual(actual_data, expected_data)
+        assert actual_data == expected_data
 
     def test_check_password_fails_without_old_password(self):
         user = UserFactory()
         serializer = UserSerializer()
         data = {'password': 'newpassword'}
-        with self.assertRaises(serializers.ValidationError):
+        with pytest.raises(serializers.ValidationError):
             serializer.check_password(data, user)
 
     def test_check_password_fails_with_wrong_old_password(self):
         user = UserFactory()
         serializer = UserSerializer()
         data = {'password': 'newpassword', 'old_password': 'wrongpassword'}
-        with self.assertRaises(serializers.ValidationError):
+        with pytest.raises(serializers.ValidationError):
             serializer.check_password(data, user)
 
     def test_check_password_fails_with_common_password(self):
         user = UserFactory()
         serializer = UserSerializer()
         data = {'password': '123456', 'old_password': 'wrongpassword'}
-        with self.assertRaises(serializers.ValidationError):
+        with pytest.raises(serializers.ValidationError):
             serializer.check_password(data, user)
 
     def test_check_password_passes_with_right_old_password_and_no_common_new_password(
@@ -57,11 +59,12 @@ class TestUserSerializer(UsersAbstractUtils):
         serializer.check_password(data, user)
 
     def test_check_phone_number_fails_with_existing_phone_number(self):
-        user = UserFactory()
-        serializer = UserSerializer()
         phone_number = '+1123123123'
-        with self.assertRaises(serializers.ValidationError):
-            serializer.check_phone_number(phone_number, user)
+        UserFactory(phone_number=phone_number)
+        new_user = UserFactory()
+        serializer = UserSerializer()
+        with pytest.raises(serializers.ValidationError):
+            serializer.check_phone_number(phone_number, new_user)
 
     def test_check_phone_number_passes(self):
         user = UserFactory()
@@ -70,11 +73,12 @@ class TestUserSerializer(UsersAbstractUtils):
         serializer.check_phone_number(phone_number, user)
 
     def test_check_email_fails_with_existing_email(self):
-        user = UserFactory()
-        serializer = UserSerializer()
         email = 'normaluser@appname.me'
-        with self.assertRaises(serializers.ValidationError):
-            serializer.check_email(email, user)
+        UserFactory(email=email)
+        new_user = UserFactory()
+        serializer = UserSerializer()
+        with pytest.raises(serializers.ValidationError):
+            serializer.check_email(email, new_user)
 
     def test_check_email_passes(self):
         user = UserFactory()
@@ -94,11 +98,11 @@ class TestUserSerializer(UsersAbstractUtils):
         }
         serializer.update(user, data)
         user.refresh_from_db()
-        self.assertEqual(user.first_name, data['first_name'])
-        self.assertEqual(user.last_name, data['last_name'])
-        self.assertEqual(user.phone_number, data['phone_number'])
-        self.assertEqual(user.email, data['email'])
-        self.assertTrue(user.check_password(data['password']))
+        assert user.first_name == data['first_name']
+        assert user.last_name == data['last_name']
+        assert user.phone_number == data['phone_number']
+        assert user.email == data['email']
+        assert user.check_password(data['password']) == True
 
     def test_create(self):
         serializer = UserSerializer()
@@ -110,38 +114,42 @@ class TestUserSerializer(UsersAbstractUtils):
             'password': 'newpassword',
         }
         user = serializer.create(data)
-        self.assertEqual(user.first_name, data['first_name'])
-        self.assertEqual(user.last_name, data['last_name'])
-        self.assertEqual(user.phone_number, data['phone_number'])
-        self.assertEqual(user.email, data['email'])
-        self.assertTrue(user.check_password(data['password']))
+        assert user.first_name == data['first_name']
+        assert user.last_name == data['last_name']
+        assert user.phone_number == data['phone_number']
+        assert user.email == data['email']
+        assert user.check_password(data['password']) == True
 
     def test_is_valid_fails_with_email_taken(self):
+        email = 'normaluser@appname.me'
+        UserFactory(email=email)
         user = UserFactory()
         serializer = UserSerializer()
-        data = {'email': 'normaluser@appname.me'}
-        with self.assertRaises(serializers.ValidationError):
+        data = {'email': email}
+        with pytest.raises(serializers.ValidationError):
             serializer.is_valid(data, user)
 
     def test_is_valid_fails_with_phone_number_taken(self):
-        user = UserFactory(phone_number='+1123123123')
+        phone_number='+1123123123'
+        UserFactory(phone_number=phone_number)
+        user = UserFactory()
         serializer = UserSerializer()
-        data = {'phone_number': '+1123123123'}
-        with self.assertRaises(serializers.ValidationError):
+        data = {'phone_number': phone_number}
+        with pytest.raises(serializers.ValidationError):
             serializer.is_valid(data, user)
 
     def test_is_valid_fails_with_phone_number_with_bad_format(self):
         user = UserFactory(phone_number='+1123123123')
         serializer = UserSerializer()
         data = {'phone_number': '123123123'}
-        with self.assertRaises(serializers.ValidationError):
+        with pytest.raises(serializers.ValidationError):
             serializer.is_valid(data, user)
 
     def test_is_valid_fails_with_wrong_password(self):
         user = UserFactory()
         serializer = UserSerializer()
         data = {'password': 'wrongpassword'}
-        with self.assertRaises(serializers.ValidationError):
+        with pytest.raises(serializers.ValidationError):
             serializer.is_valid(data, user)
 
     def test_is_valid_passes_with_valid_data(self):
@@ -156,47 +164,48 @@ class TestUserSerializer(UsersAbstractUtils):
         serializer.is_valid(data, user)
 
 
-class TestUserLoginSerializer(UsersAbstractUtils):
+@pytest.mark.django_db
+class TestUserLoginSerializer:
     def test_data_serialized_from_data(self):
         user = UserFactory()
         user.verify()
         expected_data = {'email': user.email}
         data = {'email': user.email, 'password': 'password'}
         actual_data = UserLoginSerializer(data).data
-        self.assertEqual(actual_data, expected_data)
+        assert actual_data == expected_data
 
     def test_validate_fails_with_wrong_email(self):
         serializer = UserLoginSerializer()
         data = {'email': 'wrongemail@appname.me', 'password': 'password'}
-        with self.assertRaises(serializers.ValidationError):
+        with pytest.raises(serializers.ValidationError):
             serializer.validate(data)
 
     def test_validate_fails_with_wrong_password(self):
         serializer = UserLoginSerializer()
         data = {'email': 'normaluser@appname.me', 'password': 'wrongpassword'}
-        with self.assertRaises(serializers.ValidationError):
+        with pytest.raises(serializers.ValidationError):
             serializer.validate(data)
 
     def test_validate_fails_without_email(self):
         serializer = UserLoginSerializer()
         data = {'password': 'password'}
-        with self.assertRaises(serializers.ValidationError):
+        with pytest.raises(serializers.ValidationError):
             serializer.validate(data)
 
     def test_validate_fails_without_password(self):
         serializer = UserLoginSerializer()
         data = {'email': 'normaluser@appname.me'}
-        with self.assertRaises(serializers.ValidationError):
+        with pytest.raises(serializers.ValidationError):
             serializer.validate(data)
 
     def test_validate_passes_fails_with_user_not_verified(self):
         serializer = UserLoginSerializer()
         data = {'email': 'normaluser@appname.me', 'password': 'password'}
-        with self.assertRaises(serializers.ValidationError):
+        with pytest.raises(serializers.ValidationError):
             serializer.validate(data)
 
-    def test_validate_passes_with_right_data(self):
-        self.normal_user.verify()
+    def test_validate_passes_with_right_data(self, user):
+        user.verify()
         serializer = UserLoginSerializer()
         data = {'email': 'normaluser@appname.me', 'password': 'password'}
         serializer.validate(data)
@@ -204,13 +213,13 @@ class TestUserLoginSerializer(UsersAbstractUtils):
     def test_check_email_and_password_fails_without_email(self):
         serializer = UserLoginSerializer()
         data = {'password': 'password'}
-        with self.assertRaises(serializers.ValidationError):
+        with pytest.raises(serializers.ValidationError):
             serializer.check_email_and_password(data)
 
     def test_check_email_and_password_fails_without_password(self):
         serializer = UserLoginSerializer()
         data = {'email': 'normaluser@appname.me'}
-        with self.assertRaises(serializers.ValidationError):
+        with pytest.raises(serializers.ValidationError):
             serializer.check_email_and_password(data)
 
     def test_check_email_and_password_passes(self):
@@ -218,17 +227,18 @@ class TestUserLoginSerializer(UsersAbstractUtils):
         data = {'email': 'normaluser@appname.me', 'password': 'password'}
         serializer.check_email_and_password(data)
 
-    def test_create_function(self):
-        self.normal_user.verify()
+    def test_create_function(self, user):
+        user.verify()
         serializer = UserLoginSerializer()
         data = {'email': 'normaluser@appname.me', 'password': 'password'}
         serializer.validate(data)
-        user, token = serializer.create(data)
-        self.assertEqual(user, self.normal_user)
+        actual_user, token = serializer.create(data)
+        assert actual_user == user
         assert token is not None
 
 
-class TestUserSignUpSerializer(UsersAbstractUtils):
+@pytest.mark.django_db
+class TestUserSignUpSerializer:
     def test_data_serialized_from_data(self):
         data = {
             'first_name': 'Name',
@@ -242,7 +252,7 @@ class TestUserSignUpSerializer(UsersAbstractUtils):
             'email': data['email'],
         }
         actual_data = UserSignUpSerializer(data).data
-        self.assertEqual(actual_data, expected_data)
+        assert actual_data == expected_data
 
     def test_validate_fails_with_wrong_email(self):
         serializer = UserSignUpSerializer()
@@ -251,7 +261,7 @@ class TestUserSignUpSerializer(UsersAbstractUtils):
             'last_name': 'Lastname',
             'email': 'wrong',
         }
-        with self.assertRaises(serializers.ValidationError):
+        with pytest.raises(serializers.ValidationError):
             serializer.validate(data)
 
     def test_validate_fails_with_wrong_password(self):
@@ -263,7 +273,7 @@ class TestUserSignUpSerializer(UsersAbstractUtils):
             'password': 'wrong',
             'password_confirmation': 'Wrong',
         }
-        with self.assertRaises(serializers.ValidationError):
+        with pytest.raises(serializers.ValidationError):
             serializer.validate(data)
 
     def test_validate_fails_with_missing_password_confirmation(self):
@@ -274,7 +284,7 @@ class TestUserSignUpSerializer(UsersAbstractUtils):
             'email': 'email@appname.me',
             'password': 'wrong',
         }
-        with self.assertRaises(serializers.ValidationError):
+        with pytest.raises(serializers.ValidationError):
             serializer.validate(data)
 
     def test_validate_fails_with_common_password(self):
@@ -286,7 +296,7 @@ class TestUserSignUpSerializer(UsersAbstractUtils):
             'password': '123456',
             'password_confirmation': '123456',
         }
-        with self.assertRaises(ValidationError):
+        with pytest.raises(ValidationError):
             serializer.validate(data)
 
     def test_validate_is_successful(self):
@@ -311,7 +321,7 @@ class TestUserSignUpSerializer(UsersAbstractUtils):
         }
         user = serializer.create(data)
         assert isinstance(user, User)
-        self.assertEqual(user.email, data['email'])
-        self.assertEqual(user.first_name, data['first_name'])
-        self.assertEqual(user.last_name, data['last_name'])
-        self.assertEqual(user.is_verified, False)
+        assert user.email == data['email']
+        assert user.first_name == data['first_name']
+        assert user.last_name == data['last_name']
+        assert user.is_verified == False
