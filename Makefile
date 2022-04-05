@@ -79,6 +79,9 @@ else
 	${COMMAND} "pytest ${APP} -s ${PYTEST_SETTINGS}"
 endif
 
+fast-test:
+	${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS} -n auto"
+
 test-migrate:
 	${TEST_SETTINGS} make migrate
 
@@ -191,6 +194,11 @@ help:
 	@echo "                      < ${COMMAND} 'pytest <APP>"
 	@echo "                        ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
 	@echo "                        --cov-report=html' >"
+	@echo ""
+	@echo " • fast-test: Run tests faster with x-dist pytest extension"
+	@echo "   ↳ ${EQUALS} < make create-test-db >"
+	@echo "                      < ${COMMAND} 'pytest <APP>"
+	@echo "                        ${PYTEST_SETTINGS} -n auto' >"
 	@echo ""
 	@echo " • test-migrate: Run migrations for test environment"
 	@echo "   ↳ ${EQUALS} < ${TEST_SETTINGS} make migrate >"

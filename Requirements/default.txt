@@ -28,3 +28,4 @@ arrow==1.2.2
 Pillow==9.0.1
 boto3==1.21.28
 django-storages==1.12.3
+pytest-xdist==2.5.0
