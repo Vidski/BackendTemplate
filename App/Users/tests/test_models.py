@@ -2,10 +2,9 @@ from Users.factories.profile import ProfileFactory
 from Users.factories.user import UserFactory
 from Users.fakers.profile import AdultProfileFaker
 from Users.fakers.profile import KidProfileFaker
-from Users.tests.abstract_test_classes import UsersAbstractUtils
 
 
-class UserModelTest(UsersAbstractUtils):
+class UserModelTest:
     def test_model_has_attributes(self):
         user = UserFactory()
         assert hasattr(user, 'email')
@@ -53,7 +52,7 @@ class UserModelTest(UsersAbstractUtils):
         assert has_permission == True
 
 
-class ProfileModelTest(UsersAbstractUtils):
+class ProfileModelTest:
     def test_model_has_attributes(self):
         profile = ProfileFactory()
         dict_keys = profile.__dict__.keys()
