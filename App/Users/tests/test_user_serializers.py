@@ -204,7 +204,8 @@ class TestUserLoginSerializer:
         with pytest.raises(serializers.ValidationError):
             serializer.validate(data)
 
-    def test_validate_passes_with_right_data(self, user):
+    def test_validate_passes_with_right_data(self):
+        user = UserFactory(email='normaluser@appname.me', password='password')
         user.verify()
         serializer = UserLoginSerializer()
         data = {'email': 'normaluser@appname.me', 'password': 'password'}
@@ -227,7 +228,8 @@ class TestUserLoginSerializer:
         data = {'email': 'normaluser@appname.me', 'password': 'password'}
         serializer.check_email_and_password(data)
 
-    def test_create_function(self, user):
+    def test_create_function(self):
+        user = UserFactory(email='normaluser@appname.me', password='password')
         user.verify()
         serializer = UserLoginSerializer()
         data = {'email': 'normaluser@appname.me', 'password': 'password'}
