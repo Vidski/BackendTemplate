@@ -1,4 +1,3 @@
-from Users.fakers.user import AdminFaker, UserFaker
 import pytest
 
 from rest_framework.exceptions import NotFound
@@ -6,7 +5,8 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.serializers import ValidationError
 
 from Users.factories.user import UserFactory
-from Users.tests.abstract_test_classes import UsersAbstractUtils
+from Users.fakers.user import AdminFaker
+from Users.fakers.user import UserFaker
 from Users.utils import check_e164_format
 from Users.utils import get_user_or_error
 from Users.utils import verify_user_query_token
