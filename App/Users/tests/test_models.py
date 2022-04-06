@@ -1,10 +1,13 @@
+import pytest
+
 from Users.factories.profile import ProfileFactory
 from Users.factories.user import UserFactory
 from Users.fakers.profile import AdultProfileFaker
 from Users.fakers.profile import KidProfileFaker
 
 
-class UserModelTest:
+@pytest.mark.django_db
+class TestUserModel:
     def test_model_has_attributes(self):
         user = UserFactory()
         assert hasattr(user, 'email')
@@ -52,7 +55,8 @@ class UserModelTest:
         assert has_permission == True
 
 
-class ProfileModelTest:
+@pytest.mark.django_db
+class TestProfileModel:
     def test_model_has_attributes(self):
         profile = ProfileFactory()
         dict_keys = profile.__dict__.keys()

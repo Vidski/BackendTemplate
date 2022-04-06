@@ -7,6 +7,7 @@ from rest_framework.serializers import ValidationError
 from Users.factories.user import UserFactory
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
+from Users.fakers.user import VerifiedUserFaker
 from Users.utils import check_e164_format
 from Users.utils import get_user_or_error
 from Users.utils import verify_user_query_token
@@ -35,14 +36,12 @@ class TestUserUtils:
         assert instance == user
 
     def test_get_user_or_error_raises_an_error_if_user_is_not_verified(self):
-        admin = AdminFaker()
         user = UserFaker()
         with pytest.raises(PermissionDenied):
             get_user_or_error(user, user.id)
 
     def test_get_user_or_error_returns_its_user(self):
-        user = UserFaker()
-        user.verify()
+        user = VerifiedUserFaker()
         instance = get_user_or_error(user, user.id)
         assert instance == user
 

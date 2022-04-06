@@ -3,7 +3,8 @@ import pytest
 from django.contrib.auth import get_user_model
 
 
-class UsersManagersTests:
+@pytest.mark.django_db
+class TestUsersManagers:
     def test_create_user_successfully(self):
         User = get_user_model()
         user = User.objects.create_user(
