@@ -1,3 +1,5 @@
+import pytest
+
 from django.conf import settings
 
 from Emails.fakers.block import BlockTestFaker
@@ -7,7 +9,8 @@ from Emails.models import Email
 from Emails.tests.abstract_test_classes import EmailsAbstractUtils
 
 
-class TestEmailFakers(EmailsAbstractUtils):
+@pytest.mark.django_db
+class TestEmailFakers:
     def test_email_faker_creates_email_with_block(self):
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
@@ -28,7 +31,8 @@ class TestEmailFakers(EmailsAbstractUtils):
         assert block.link == 'test.com'
 
 
-class TestBlockFakers(EmailsAbstractUtils):
+@pytest.mark.django_db
+class TestBlockFakers:
     def test_block_faker_creates_block(self):
         assert Block.objects.count() == 0
         block = BlockTestFaker()
