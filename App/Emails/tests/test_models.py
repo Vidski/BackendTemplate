@@ -1,3 +1,5 @@
+import pytest
+
 from django.conf import settings
 from django.core import mail
 from django.core.mail import EmailMultiAlternatives
@@ -6,9 +8,12 @@ from django.template.loader import render_to_string
 from Emails.factories.block import BlockFactory
 from Emails.factories.email import EmailFactory
 from Emails.tests.abstract_test_classes import EmailsAbstractUtils
+from Users.fakers.user import AdminFaker
+from Users.fakers.user import UserFaker
 
 
-class TestEmailModel(EmailsAbstractUtils):
+@pytest.mark.django_db
+class TestEmailModel:
     def test_email_attributes(self):
         email = EmailFactory()
         dict_keys = email.__dict__.keys()
@@ -68,6 +73,8 @@ class TestEmailModel(EmailsAbstractUtils):
         assert email.to == f'{settings.TEST_EMAIL}'
 
     def test_saving_an_email_with_emails_to_all_users(self):
+        admin_user = AdminFaker()
+        normal_user = UserFaker()
         email = EmailFactory.build()
         email.to = 'email@test.com, email2@test.com'
         email.is_test = False
@@ -76,7 +83,7 @@ class TestEmailModel(EmailsAbstractUtils):
         assert email.is_test is False
         assert email.to_all_users is True
         email.save()
-        assert email.to == f'{self.admin_user}, {self.normal_user}'
+        assert email.to == f'{admin_user}, {normal_user}'
 
     def test_get_emails_with_emails(self):
         email = EmailFactory(to='email@test.com, email2@test.com')
@@ -89,12 +96,14 @@ class TestEmailModel(EmailsAbstractUtils):
         assert email.to == f'{settings.TEST_EMAIL}'
 
     def test_get_emails_with_emails_to_all_users(self):
+        admin_user = AdminFaker()
+        normal_user = UserFaker()
         email = EmailFactory(
             to='email@test.com, email2@test.com',
             is_test=False,
             to_all_users=True,
         )
-        assert email.to == f'{self.admin_user}, {self.normal_user}'
+        assert email.to == f'{admin_user}, {normal_user}'
 
     def test_get_emails_data_with_blocks(self):
         block = BlockFactory()
@@ -130,7 +139,8 @@ class TestEmailModel(EmailsAbstractUtils):
         assert len(mail.outbox) == 1
 
 
-class TestBlockModel(EmailsAbstractUtils):
+@pytest.mark.django_db
+class TestBlockModel:
     def test_block_attributes(self):
         block = BlockFactory()
         dict_keys = block.__dict__.keys()
