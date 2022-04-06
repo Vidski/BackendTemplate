@@ -1,3 +1,5 @@
+import pytest
+
 from django.conf import settings
 from django_rest_passwordreset.models import ResetPasswordToken
 
@@ -16,7 +18,8 @@ from Emails.tests.abstract_test_classes import EmailsAbstractUtils
 from Users.factories.user import UserFactory
 
 
-class TestEmailFactories(EmailsAbstractUtils):
+@pytest.mark.django_db
+class TestEmailFactories:
     def test_email_factory_creates_email_with_block(self):
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
@@ -40,7 +43,7 @@ class TestEmailFactories(EmailsAbstractUtils):
     def test_reset_password_email_factory_raises_exception(self):
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError):
             ResetEmailFactory()
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
@@ -71,7 +74,7 @@ class TestEmailFactories(EmailsAbstractUtils):
     def test_verify_email_factory_raises_exception(self):
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError):
             VerifyEmailFactory()
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
@@ -103,7 +106,7 @@ class TestEmailFactories(EmailsAbstractUtils):
     def test_get_subject_for_suggestion_raises_an_exception(self):
         content = 'I found a bug'
         type = 'wrong_suggestion_type'
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             get_subject_for_suggestion(type, content)
 
     def test_get_subject_for_suggestion_returns_subject(self):
@@ -121,7 +124,7 @@ class TestEmailFactories(EmailsAbstractUtils):
     def test_suggestion_email_factory_raises_exception_without_params(self):
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             SuggestionEmailFactory()
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
@@ -132,7 +135,7 @@ class TestEmailFactories(EmailsAbstractUtils):
         type = 'wrong_suggestion_type'
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             SuggestionEmailFactory(type=type, content=content, instance=user)
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
@@ -163,7 +166,8 @@ class TestEmailFactories(EmailsAbstractUtils):
         assert block.show_link is False
 
 
-class TestBlockFactories(EmailsAbstractUtils):
+@pytest.mark.django_db
+class TestBlockFactories:
     def test_block_factory(self):
         assert Block.objects.count() == 0
         block = BlockFactory()
@@ -179,7 +183,7 @@ class TestBlockFactories(EmailsAbstractUtils):
     ):
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError):
             ResetPasswordBlockFactory()
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
@@ -199,7 +203,7 @@ class TestBlockFactories(EmailsAbstractUtils):
     def test_verify_email_block_factory_raises_exception_without_params(self):
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError):
             VerifyEmailBlockFactory()
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
