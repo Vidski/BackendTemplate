@@ -6,6 +6,10 @@ class UserFaker(UserFactory):
     phone_number = '+1123123123'
 
 
+class VerifiedUserFaker(UserFaker):
+    is_verified = True
+
+
 class AdminFaker(UserFactory):
     email = 'adminuser@appname.me'
     phone_number = '+1123123124'
