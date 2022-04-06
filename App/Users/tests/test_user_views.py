@@ -9,7 +9,6 @@ from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker
 from Users.models import User
-from Users.tests.abstract_test_classes import UsersAbstractUtils
 
 
 ENDPOINT = '/api/v1/users'

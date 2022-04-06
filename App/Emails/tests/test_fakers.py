@@ -6,7 +6,6 @@ from Emails.fakers.block import BlockTestFaker
 from Emails.fakers.email import EmailTestFaker
 from Emails.models import Block
 from Emails.models import Email
-from Emails.tests.abstract_test_classes import EmailsAbstractUtils
 
 
 @pytest.mark.django_db

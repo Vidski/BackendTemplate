@@ -14,7 +14,6 @@ from Emails.factories.email import VerifyEmailFactory
 from Emails.factories.email import get_subject_for_suggestion
 from Emails.models import Block
 from Emails.models import Email
-from Emails.tests.abstract_test_classes import EmailsAbstractUtils
 from Users.factories.user import UserFactory
 
 
