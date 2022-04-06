@@ -3,6 +3,7 @@ import pytest
 
 from django.core import mail
 from django_rest_passwordreset.models import ResetPasswordToken
+from rest_framework.test import APIClient
 
 from Users.factories.user import UserFactory
 from Users.fakers.user import AdminFaker
@@ -12,6 +13,11 @@ from Users.models import User
 
 
 ENDPOINT = '/api/v1/users'
+
+
+@pytest.fixture(scope="function")
+def client():
+    return APIClient()
 
 
 @pytest.mark.django_db

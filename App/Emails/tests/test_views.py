@@ -4,9 +4,15 @@ from django.core import mail
 
 from Emails.models import Email
 from Users.fakers.user import VerifiedUserFaker
+from rest_framework.test import APIClient
 
 
 ENDPOINT = '/api/v1/emails/suggestion/'
+
+
+@pytest.fixture(scope="function")
+def client():
+    return APIClient()
 
 
 @pytest.mark.django_db
