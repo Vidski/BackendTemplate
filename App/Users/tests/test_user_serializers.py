@@ -10,7 +10,7 @@ from Users.serializers import UserSerializer
 from Users.serializers import UserSignUpSerializer
 
 
-@pytest.fixture(scope="function", autouse=True)
+@pytest.fixture(scope='function', autouse=True)
 def setUp(django_db_blocker):
     with django_db_blocker.unblock():
         User.objects.all().delete()
@@ -137,7 +137,7 @@ class TestUserSerializer:
             serializer.is_valid(data, user)
 
     def test_is_valid_fails_with_phone_number_taken(self):
-        phone_number='+1123123123'
+        phone_number = '+1123123123'
         UserFactory(phone_number=phone_number)
         user = UserFactory()
         serializer = UserSerializer()

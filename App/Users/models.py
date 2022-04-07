@@ -37,7 +37,7 @@ class CustomUserManager(BaseUserManager):
             email=email,
             first_name=first_name,
             last_name=last_name,
-            **extra_fields
+            **extra_fields,
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -53,7 +53,7 @@ class CustomUserManager(BaseUserManager):
             email=email,
             first_name=first_name,
             last_name=last_name,
-            **extra_fields
+            **extra_fields,
         )
         user.set_password(password)
         user.is_admin = True
@@ -166,8 +166,9 @@ class Profile(models.Model):
         return f'User ({self.user_id}) profile ({self.pk})'
 
     def is_adult(self):
-        adultness = (datetime.now() - relativedelta(years=18))
+        adultness = datetime.now() - relativedelta(years=18)
         return datetime.strptime(self.birth_date, '%Y-%m-%d') < adultness
+
 
 @receiver(reset_password_token_created)
 def password_reset_token_created(

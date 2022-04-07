@@ -11,20 +11,24 @@ class FemaleProfileFaker(ProfileFactory):
     bio = 'Custom bio for female profile'
     gender = 'F'
 
+
 class MaleProfileFaker(ProfileFactory):
     nickname = factory.Faker('name_male')
     bio = 'Custom bio for male profile'
     gender = 'M'
+
 
 class NonBinaryProfileFaker(ProfileFactory):
     nickname = factory.Faker('name_nonbinary')
     bio = 'Custom bio for non-binary profile'
     gender = 'N'
 
+
 class NotSaidProfileFaker(ProfileFactory):
     nickname = factory.Faker('suffix')
     bio = 'Custom bio for x profile'
     gender = 'P'
+
 
 class AdultProfileFaker(ProfileFactory):
     bio = 'Custom bio for adult profile'
@@ -33,6 +37,7 @@ class AdultProfileFaker(ProfileFactory):
             (datetime.now() - relativedelta(years=20)).strftime('%Y-%m-%d')
         )
     )
+
 
 class KidProfileFaker(ProfileFactory):
     bio = 'Custom bio for kid profile'

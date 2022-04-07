@@ -9,7 +9,7 @@ from Users.models import Profile
 from Users.models import User
 
 
-@pytest.fixture(scope="function", autouse=True)
+@pytest.fixture(scope='function', autouse=True)
 def setUp(django_db_blocker):
     with django_db_blocker.unblock():
         Email.objects.all().delete()
@@ -21,7 +21,7 @@ def setUp(django_db_blocker):
 ENDPOINT = '/api/v1/emails/suggestion/'
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope='function')
 def client():
     return APIClient()
 

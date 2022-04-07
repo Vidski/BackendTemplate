@@ -13,7 +13,7 @@ from Users.models import Profile
 from Users.models import User
 
 
-@pytest.fixture(scope="function", autouse=True)
+@pytest.fixture(scope='function', autouse=True)
 def setUp(django_db_blocker):
     with django_db_blocker.unblock():
         User.objects.all().delete()
@@ -23,7 +23,7 @@ def setUp(django_db_blocker):
 ENDPOINT = '/api/v1/users'
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope='function')
 def client():
     return APIClient()
 
@@ -185,17 +185,13 @@ class TestUserListEndpoint:
 class TestUserGetEndpoint:
     def test_get_user_fails_as_an_unauthenticated_user(self, client):
         normal_user = VerifiedUserFaker()
-        response = client.get(
-            f'{ENDPOINT}/{normal_user.id}/', format='json'
-        )
+        response = client.get(f'{ENDPOINT}/{normal_user.id}/', format='json')
         assert response.status_code == 401
 
     def test_get_user_fails_as_an_authenticated_unverified_user(self, client):
         normal_user = UserFaker()
         client.force_authenticate(user=normal_user)
-        response = client.get(
-            f'{ENDPOINT}/{normal_user.id}/', format='json'
-        )
+        response = client.get(f'{ENDPOINT}/{normal_user.id}/', format='json')
         assert response.status_code == 403
 
     def test_get_user_fails_as_an_authenticated_verified_user_to_other_users_data(
@@ -204,9 +200,7 @@ class TestUserGetEndpoint:
         normal_user = VerifiedUserFaker()
         admin_user = AdminFaker()
         client.force_authenticate(user=normal_user)
-        response = client.get(
-            f'{ENDPOINT}/{admin_user.id}/', format='json'
-        )
+        response = client.get(f'{ENDPOINT}/{admin_user.id}/', format='json')
         assert response.status_code == 403
 
     def test_get_user_is_successful_as_an_authenticated_verified_user_to_its_data(
@@ -214,9 +208,7 @@ class TestUserGetEndpoint:
     ):
         normal_user = VerifiedUserFaker()
         client.force_authenticate(user=normal_user)
-        response = client.get(
-            f'{ENDPOINT}/{normal_user.id}/', format='json'
-        )
+        response = client.get(f'{ENDPOINT}/{normal_user.id}/', format='json')
         assert response.status_code == 200
         assert response.data['id'] == normal_user.id
         assert response.data['email'] == normal_user.email
@@ -225,9 +217,7 @@ class TestUserGetEndpoint:
         admin_user = AdminFaker()
         normal_user = VerifiedUserFaker()
         client.force_authenticate(user=admin_user)
-        response = client.get(
-            f'{ENDPOINT}/{normal_user.id}/', format='json'
-        )
+        response = client.get(f'{ENDPOINT}/{normal_user.id}/', format='json')
         assert response.status_code == 200
 
 
@@ -248,7 +238,9 @@ class TestUserUpdateEndpoint:
         )
         assert response.status_code == 401
 
-    def test_update_user_fails_as_an_authenticated_unverified_user(self, client):
+    def test_update_user_fails_as_an_authenticated_unverified_user(
+        self, client
+    ):
         normal_user = UserFaker()
         data = {
             'first_name': 'Test edited',
@@ -507,9 +499,7 @@ class TestUserDeleteEndpoint:
         normal_user = UserFaker()
         admin_user = AdminFaker()
         client.force_authenticate(user=normal_user)
-        response = client.delete(
-            f'{ENDPOINT}/{admin_user.id}/', format='json'
-        )
+        response = client.delete(f'{ENDPOINT}/{admin_user.id}/', format='json')
         assert response.status_code == 403
         assert User.objects.count() == 2
 
@@ -552,6 +542,7 @@ class TestUserVerifyEndpoint:
         normal_user.refresh_from_db()
         assert normal_user.is_verified is True
 
+
 @pytest.mark.django_db
 class TestUserPasswordResetTests:
     def test_reset_password(self, client):
@@ -566,9 +557,7 @@ class TestUserPasswordResetTests:
         assert len(tokens) == 1
         token = tokens[0].key
         data = {'token': token, 'password': 'NewPassword95'}
-        client.post(
-            f'/api/v1/password_reset/confirm/', data, format='json'
-        )
+        client.post(f'/api/v1/password_reset/confirm/', data, format='json')
         assert response.status_code == 200
         normal_user.refresh_from_db()
         assert normal_user.check_password('NewPassword95') is True
