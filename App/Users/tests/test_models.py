@@ -4,6 +4,15 @@ from Users.factories.profile import ProfileFactory
 from Users.factories.user import UserFactory
 from Users.fakers.profile import AdultProfileFaker
 from Users.fakers.profile import KidProfileFaker
+from Users.models import Profile
+from Users.models import User
+
+
+@pytest.fixture(scope="function", autouse=True)
+def setUp(django_db_blocker):
+    with django_db_blocker.unblock():
+        User.objects.all().delete()
+        Profile.objects.all().delete()
 
 
 @pytest.mark.django_db

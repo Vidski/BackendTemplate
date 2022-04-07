@@ -15,6 +15,17 @@ from Emails.factories.email import get_subject_for_suggestion
 from Emails.models import Block
 from Emails.models import Email
 from Users.factories.user import UserFactory
+from Users.models import Profile
+from Users.models import User
+
+
+@pytest.fixture(scope="function", autouse=True)
+def setUp(django_db_blocker):
+    with django_db_blocker.unblock():
+        Email.objects.all().delete()
+        Block.objects.all().delete()
+        User.objects.all().delete()
+        Profile.objects.all().delete()
 
 
 @pytest.mark.django_db

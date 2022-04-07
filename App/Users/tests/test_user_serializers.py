@@ -8,6 +8,14 @@ from Users.models import User
 from Users.serializers import UserLoginSerializer
 from Users.serializers import UserSerializer
 from Users.serializers import UserSignUpSerializer
+from Users.models import Profile
+
+
+@pytest.fixture(scope="function", autouse=True)
+def setUp(django_db_blocker):
+    with django_db_blocker.unblock():
+        User.objects.all().delete()
+        Profile.objects.all().delete()
 
 
 @pytest.mark.django_db
