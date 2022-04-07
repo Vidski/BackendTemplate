@@ -1,14 +1,13 @@
 import pytest
-
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
 from Users.factories.user import UserFactory
+from Users.models import Profile
 from Users.models import User
 from Users.serializers import UserLoginSerializer
 from Users.serializers import UserSerializer
 from Users.serializers import UserSignUpSerializer
-from Users.models import Profile
 
 
 @pytest.fixture(scope="function", autouse=True)

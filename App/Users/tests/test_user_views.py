@@ -1,6 +1,6 @@
 import json
-import pytest
 
+import pytest
 from django.core import mail
 from django_rest_passwordreset.models import ResetPasswordToken
 from rest_framework.test import APIClient

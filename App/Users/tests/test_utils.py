@@ -1,5 +1,4 @@
 import pytest
-
 from rest_framework.exceptions import NotFound
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.serializers import ValidationError
@@ -8,11 +7,11 @@ from Users.factories.user import UserFactory
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker
+from Users.models import Profile
+from Users.models import User
 from Users.utils import check_e164_format
 from Users.utils import get_user_or_error
 from Users.utils import verify_user_query_token
-from Users.models import Profile
-from Users.models import User
 
 
 @pytest.fixture(scope="function", autouse=True)

@@ -1,6 +1,7 @@
 from datetime import datetime
-from dateutil.relativedelta import relativedelta
+
 import factory
+from dateutil.relativedelta import relativedelta
 
 from Users.factories.profile import ProfileFactory
 

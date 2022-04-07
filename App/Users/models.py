@@ -1,8 +1,8 @@
 import base64
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
 import hashlib
+from datetime import datetime
 
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.base_user import BaseUserManager
@@ -16,6 +16,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 from App.storage import image_file_upload
 from Users.choices import GenderChoices
+
 
 class CustomUserManager(BaseUserManager):
     """

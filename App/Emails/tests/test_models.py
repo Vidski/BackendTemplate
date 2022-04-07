@@ -1,5 +1,4 @@
 import pytest
-
 from django.conf import settings
 from django.core import mail
 from django.core.mail import EmailMultiAlternatives
@@ -7,10 +6,10 @@ from django.template.loader import render_to_string
 
 from Emails.factories.block import BlockFactory
 from Emails.factories.email import EmailFactory
-from Users.fakers.user import AdminFaker
-from Users.fakers.user import UserFaker
 from Emails.models import Block
 from Emails.models import Email
+from Users.fakers.user import AdminFaker
+from Users.fakers.user import UserFaker
 from Users.models import Profile
 from Users.models import User
 

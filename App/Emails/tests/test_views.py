@@ -1,12 +1,10 @@
 import pytest
-
 from django.core import mail
-
-from Emails.models import Email
-from Users.fakers.user import VerifiedUserFaker
 from rest_framework.test import APIClient
+
 from Emails.models import Block
 from Emails.models import Email
+from Users.fakers.user import VerifiedUserFaker
 from Users.models import Profile
 from Users.models import User
 
