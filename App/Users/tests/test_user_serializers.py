@@ -3,18 +3,10 @@ from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
 from Users.factories.user import UserFactory
-from Users.models import Profile
 from Users.models import User
 from Users.serializers import UserLoginSerializer
 from Users.serializers import UserSerializer
 from Users.serializers import UserSignUpSerializer
-
-
-@pytest.fixture(scope='function', autouse=True)
-def setUp(django_db_blocker):
-    with django_db_blocker.unblock():
-        User.objects.all().delete()
-        Profile.objects.all().delete()
 
 
 @pytest.mark.django_db

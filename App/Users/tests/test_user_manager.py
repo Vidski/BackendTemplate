@@ -1,16 +1,6 @@
 import pytest
 from django.contrib.auth import get_user_model
 
-from Users.models import Profile
-from Users.models import User
-
-
-@pytest.fixture(scope='function', autouse=True)
-def setUp(django_db_blocker):
-    with django_db_blocker.unblock():
-        User.objects.all().delete()
-        Profile.objects.all().delete()
-
 
 @pytest.mark.django_db
 class TestUsersManagers:

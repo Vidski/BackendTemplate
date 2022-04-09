@@ -7,18 +7,9 @@ from Users.factories.user import UserFactory
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker
-from Users.models import Profile
-from Users.models import User
 from Users.utils import check_e164_format
 from Users.utils import get_user_or_error
 from Users.utils import verify_user_query_token
-
-
-@pytest.fixture(scope='function', autouse=True)
-def setUp(django_db_blocker):
-    with django_db_blocker.unblock():
-        User.objects.all().delete()
-        Profile.objects.all().delete()
 
 
 @pytest.mark.django_db

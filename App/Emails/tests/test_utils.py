@@ -2,21 +2,9 @@ import pytest
 from django.core import mail
 from django_rest_passwordreset.models import ResetPasswordToken
 
-from Emails.models import Block
 from Emails.models import Email
 from Emails.utils import send_email
 from Users.fakers.user import UserFaker
-from Users.models import Profile
-from Users.models import User
-
-
-@pytest.fixture(scope='function', autouse=True)
-def setUp(django_db_blocker):
-    with django_db_blocker.unblock():
-        Email.objects.all().delete()
-        Block.objects.all().delete()
-        User.objects.all().delete()
-        Profile.objects.all().delete()
 
 
 @pytest.mark.django_db
