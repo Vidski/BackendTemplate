@@ -1,49 +1,14 @@
 import pytest
-from rest_framework.exceptions import NotFound
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.serializers import ValidationError
 
 from Users.factories.user import UserFactory
-from Users.fakers.user import AdminFaker
-from Users.fakers.user import UserFaker
-from Users.fakers.user import VerifiedUserFaker
 from Users.utils import check_e164_format
-from Users.utils import get_user_or_error
 from Users.utils import verify_user_query_token
 
 
 @pytest.mark.django_db
 class TestUserUtils:
-    def test_get_user_or_error_raises_NotFound_when_users_not_exists(self):
-        with pytest.raises(NotFound):
-            get_user_or_error(1, 2)
-
-    def test_get_user_or_error_raises_PermissionDenied_looking_for_different_user(
-        self,
-    ):
-        admin = AdminFaker()
-        user = UserFaker()
-        with pytest.raises(PermissionDenied):
-            get_user_or_error(user, admin.id)
-
-    def test_get_user_or_error_returns_different_user_looking_for_it_as_admin(
-        self,
-    ):
-        admin = AdminFaker()
-        user = UserFaker()
-        instance = get_user_or_error(admin, user.id)
-        assert instance == user
-
-    def test_get_user_or_error_raises_an_error_if_user_is_not_verified(self):
-        user = UserFaker()
-        with pytest.raises(PermissionDenied):
-            get_user_or_error(user, user.id)
-
-    def test_get_user_or_error_returns_its_user(self):
-        user = VerifiedUserFaker()
-        instance = get_user_or_error(user, user.id)
-        assert instance == user
-
     def test_verify_user_query_token_raises_PermissionDenied(self):
         user = UserFactory()
         token = 'Wrong token'

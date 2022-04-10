@@ -1,25 +1,7 @@
 import re as regex
 
-from rest_framework.exceptions import NotFound
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.serializers import ValidationError
-
-from Users.models import User
-
-
-def get_user_or_error(requester, pk):
-    """
-    Get user or raise an error with a returning response
-    """
-    try:
-        user = User.objects.get(id=pk)
-    except User.DoesNotExist:
-        raise NotFound('User not found')
-    if not requester.is_admin and not requester.has_permission(user):
-        raise PermissionDenied("You don't have permission")
-    if not requester.is_verified:
-        raise PermissionDenied('You have to verify your account first')
-    return user
 
 
 def verify_user_query_token(user, query_token):
