@@ -32,8 +32,8 @@ class UserViewSet(viewsets.GenericViewSet):
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    normal_user_permissions = (IsAuthenticated & IsVerified & IsUserOwner)
-    admin_user_permissions = (IsAuthenticated & IsAdmin)
+    normal_user_permissions = IsAuthenticated & IsVerified & IsUserOwner
+    admin_user_permissions = IsAuthenticated & IsAdmin
     permission_classes = [normal_user_permissions | admin_user_permissions]
 
     def list(self, request):

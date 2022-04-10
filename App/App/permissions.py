@@ -5,7 +5,7 @@ from Users.models import User
 
 
 class IsAdmin(BasePermission):
-    message = 'You don\'t have permission'
+    message = "You don't have permission"
 
     def has_permission(self, request, view):
         return request.user.is_admin
@@ -19,7 +19,7 @@ class IsVerified(BasePermission):
 
 
 class IsUserOwner(BasePermission):
-    message = 'You don\'t have permission'
+    message = "You don't have permission"
 
     def has_permission(self, request, view):
         try:

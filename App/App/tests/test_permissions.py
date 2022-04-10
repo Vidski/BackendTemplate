@@ -9,6 +9,7 @@ from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker
 
+
 @pytest.mark.django_db
 class TestIsAdminPermission:
     def test_returns_false_if_user_is_not_admin(self):
@@ -26,6 +27,7 @@ class TestIsAdminPermission:
         mocked_requester = PropertyMock(return_value=requester)
         type(request).user = mocked_requester
         assert IsAdmin().has_permission(request, None) is True
+
 
 @pytest.mark.django_db
 class TestIsVerifiedPermission:
@@ -45,13 +47,14 @@ class TestIsVerifiedPermission:
         type(request).user = mocked_requester
         assert IsVerified().has_permission(request, None) is True
 
+
 @pytest.mark.django_db
 class TestIsUserOwnerPermission:
     def test_returns_false_if_user_is_not_owner(self):
         user = UserFaker()
         requester = VerifiedUserFaker()
         request = MagicMock()
-        kwargs = {'kwargs':{'pk': user.id}}
+        kwargs = {'kwargs': {'pk': user.id}}
         mocked_kwargs = PropertyMock(return_value=kwargs)
         type(request).parser_context = mocked_kwargs
         mocked_requester = PropertyMock(return_value=requester)
@@ -61,7 +64,7 @@ class TestIsUserOwnerPermission:
     def test_returns_true_if_user_is_owner(self):
         requester = VerifiedUserFaker()
         request = MagicMock()
-        kwargs = {'kwargs':{'pk': requester.id}}
+        kwargs = {'kwargs': {'pk': requester.id}}
         mocked_kwargs = PropertyMock(return_value=kwargs)
         mocked_requester = PropertyMock(return_value=requester)
         type(request).user = mocked_requester
