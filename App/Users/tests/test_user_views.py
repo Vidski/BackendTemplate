@@ -152,7 +152,7 @@ class TestUserListEndpoint:
     def test_list_users_fails_as_an_authenticated_unverified_normal_user(
         self, client
     ):
-        normal_user = VerifiedUserFaker()
+        normal_user = UserFaker()
         client.force_authenticate(user=normal_user)
         response = client.get(f'{ENDPOINT}/', format='json')
         assert response.status_code == 403
