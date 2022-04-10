@@ -7,12 +7,14 @@ from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from App.permissions import IsAdmin
+from App.permissions import IsUserOwner
+from App.permissions import IsVerified
 from App.utils import log_information
 from Users.models import User
 from Users.serializers import UserLoginSerializer
 from Users.serializers import UserSerializer
 from Users.serializers import UserSignUpSerializer
-from Users.utils import get_user_or_error
 from Users.utils import verify_user_query_token
 
 
@@ -30,7 +32,9 @@ class UserViewSet(viewsets.GenericViewSet):
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permissions_classes = (IsAuthenticated,)
+    normal_user_permissions = (IsAuthenticated & IsVerified & IsUserOwner)
+    admin_user_permissions = (IsAuthenticated & IsAdmin)
+    permission_classes = [normal_user_permissions | admin_user_permissions]
 
     def list(self, request):
         """
@@ -38,7 +42,7 @@ class UserViewSet(viewsets.GenericViewSet):
         """
         if not request.user.is_admin:
             raise PermissionDenied("You don't have permission")
-        users = User.objects.all().order_by('-created_at')
+        users = self.queryset.order_by('-created_at')
         serializer = UserSerializer(users, many=True)
         data = serializer.data
         return Response(data, status=SUCCESS)
@@ -47,7 +51,7 @@ class UserViewSet(viewsets.GenericViewSet):
         """
         API endpoint that allow to get information of one user
         """
-        instance = get_user_or_error(request.user, pk)
+        instance = self.queryset.get(pk=pk)
         data = UserLoginSerializer(instance).data
         return Response(data, status=SUCCESS)
 
@@ -55,7 +59,7 @@ class UserViewSet(viewsets.GenericViewSet):
         """
         API endpoint that allow to edit an user
         """
-        instance = get_user_or_error(request.user, pk)
+        instance = self.queryset.get(pk=pk)
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(request.data, request.user)
         user = serializer.update(instance, request.data)
@@ -67,7 +71,7 @@ class UserViewSet(viewsets.GenericViewSet):
         """
         API endpoint that allow to delete an user
         """
-        instance = get_user_or_error(request.user, pk)
+        instance = self.queryset.get(pk=pk)
         log_information('deleted', instance)
         instance.delete()
         return Response(status=DELETED)
@@ -102,7 +106,7 @@ class UserViewSet(viewsets.GenericViewSet):
         API endpoint that allows to verify user
         """
         query_token = request.query_params.get('token')
-        user = User.objects.get(id=pk)
+        user = self.queryset.get(pk=pk)
         verify_user_query_token(user, query_token)
         user.verify()
         data = {'user': UserLoginSerializer(user).data}
