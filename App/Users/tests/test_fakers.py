@@ -32,7 +32,7 @@ class TestUserFakers:
         user = VerifiedUserFaker()
         assert User.objects.count() == 1
         assert user.name is not None
-        assert user.email == 'normaluser@appname.me'
+        assert user.email == 'normalverifieduser@appname.me'
         assert user.phone_number is not '+1123123123'
         assert user.password is not None
         assert user.check_password('password') is True

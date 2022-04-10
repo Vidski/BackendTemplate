@@ -7,6 +7,7 @@ class UserFaker(UserFactory):
 
 
 class VerifiedUserFaker(UserFaker):
+    email = 'normalverifieduser@appname.me'
     is_verified = True
 
 
