@@ -93,6 +93,15 @@ class User(
     def __str__(self):
         return self.email
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        has_profile = Profile.objects.filter(user=self).exists()
+        if not has_profile and self.is_verified:
+            self.create_profile()
+
+    def create_profile(self):
+        Profile.objects.create(user=self)
+
     def has_perm(self, perm, obj=None):
         return self.is_admin
 
@@ -110,10 +119,10 @@ class User(
         hashed = hashlib.md5(string_user.encode())
         decoded = base64.b64encode(hashed.digest()).decode('utf-8')
         token = (
-            decoded.replace('\+', '-')
+            decoded.replace('\\', '-')
             .replace('/', '_')
-            .replace('=', "")
-            .replace('+', "")
+            .replace('=', '')
+            .replace('+', '')
         )
         return token
 

@@ -9,6 +9,7 @@ from Users.factories.user import UserFactory
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker
+from Users.models import Profile
 from Users.models import User
 
 
@@ -524,6 +525,7 @@ class TestUserVerifyEndpoint:
     def test_verify_user(self, client):
         # Test that any user can verify its user with a get
         # request with it id and token
+        assert Profile.objects.count() == 0
         normal_user = UserFaker()
         token = normal_user.generate_verification_token()
         assert normal_user.is_verified is False
@@ -533,6 +535,8 @@ class TestUserVerifyEndpoint:
         assert response.status_code == 202
         normal_user.refresh_from_db()
         assert normal_user.is_verified is True
+        assert Profile.objects.count() == 1
+        assert normal_user.profile is not None
 
 
 @pytest.mark.django_db
