@@ -2,6 +2,7 @@ import factory
 from django.conf import settings
 
 from Emails.models import Block
+from Users.utils import generate_user_verification_token
 
 
 class BlockFactory(factory.django.DjangoModelFactory):
@@ -47,7 +48,7 @@ class VerifyEmailBlockFactory(BlockFactory):
     link = factory.LazyAttribute(
         lambda object: (
             f'{settings.VERIFY_EMAIL_URL}/{object.user.id}/verify/?token='
-            f'{object.user.generate_verification_token()}'
+            f'{generate_user_verification_token(object.user)}'
         )
     )
 

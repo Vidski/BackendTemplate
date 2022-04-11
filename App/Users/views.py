@@ -1,4 +1,5 @@
 from django.http.response import JsonResponse
+from rest_framework import generics
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action

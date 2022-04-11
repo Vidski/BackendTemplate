@@ -4,6 +4,7 @@ from Users.factories.profile import ProfileFactory
 from Users.factories.user import UserFactory
 from Users.fakers.profile import AdultProfileFaker
 from Users.fakers.profile import KidProfileFaker
+from Users.utils import generate_user_verification_token
 
 
 @pytest.mark.django_db
@@ -36,12 +37,6 @@ class TestUserModel:
         assert user.is_verified == False
         user.verify()
         assert user.is_verified == True
-
-    def test_generate_verification_token_function(self):
-        user = UserFactory()
-        token = user.generate_verification_token()
-        assert type(token) == str
-        assert len(token) > 10
 
     def test_has_permission_returns_false(self):
         user = UserFactory()

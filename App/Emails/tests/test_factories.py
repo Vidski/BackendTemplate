@@ -14,6 +14,7 @@ from Emails.factories.email import get_subject_for_suggestion
 from Emails.models import Block
 from Emails.models import Email
 from Users.factories.user import UserFactory
+from Users.utils import generate_user_verification_token
 
 
 @pytest.mark.django_db
@@ -98,7 +99,7 @@ class TestEmailFactories:
         assert block.show_link
         assert block.link_text == settings.VERIFY_EMAIL_LINK_TEXT
         assert settings.VERIFY_EMAIL_URL in block.link
-        assert user.generate_verification_token() in block.link
+        assert generate_user_verification_token(user) in block.link
         assert f'{user.id}' in block.link
 
     def test_get_subject_for_suggestion_raises_an_exception(self):

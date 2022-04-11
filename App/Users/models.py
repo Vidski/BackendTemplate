@@ -114,18 +114,6 @@ class User(
     def has_module_perms(self, app_label):
         return True
 
-    def generate_verification_token(self):
-        string_user = self.email + settings.EMAIL_VERIFICATION_TOKEN_SECRET
-        hashed = hashlib.md5(string_user.encode())
-        decoded = base64.b64encode(hashed.digest()).decode('utf-8')
-        token = (
-            decoded.replace('\\', '-')
-            .replace('/', '_')
-            .replace('=', '')
-            .replace('+', '')
-        )
-        return token
-
     def verify(self):
         self.is_verified = True
         self.save()

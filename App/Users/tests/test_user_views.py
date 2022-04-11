@@ -11,7 +11,7 @@ from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker
 from Users.models import Profile
 from Users.models import User
-
+from Users.utils import generate_user_verification_token
 
 ENDPOINT = '/api/v1/users'
 
@@ -527,7 +527,7 @@ class TestUserVerifyEndpoint:
         # request with it id and token
         assert Profile.objects.count() == 0
         normal_user = UserFaker()
-        token = normal_user.generate_verification_token()
+        token = generate_user_verification_token(normal_user)
         assert normal_user.is_verified is False
         response = client.get(
             f'{ENDPOINT}/{normal_user.id}/verify/?token={token}'
