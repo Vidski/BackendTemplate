@@ -64,8 +64,9 @@ class TestProfileModel:
         assert 'user_id' in attributes
         assert 'nickname' in attributes
         assert 'bio' in attributes
-        assert 'profile_image' in attributes
+        assert 'image' in attributes
         assert 'gender' in attributes
+        assert 'preferred_language' in attributes
         assert 'birth_date' in attributes
         assert 'created_at' in attributes
         assert 'updated_at' in attributes

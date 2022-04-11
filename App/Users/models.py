@@ -16,6 +16,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 from App.storage import image_file_upload
 from Users.choices import GenderChoices
+from Users.choices import PreferredLanguageChoices
 
 
 class CustomUserManager(BaseUserManager):
@@ -134,7 +135,6 @@ class Profile(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='profile',
-        primary_key=True,
     )
     nickname = models.CharField(
         'Nick',
@@ -145,7 +145,7 @@ class Profile(models.Model):
         max_length=50,
     )
     bio = models.TextField('Bio', blank=True)
-    profile_image = models.ImageField(
+    image = models.ImageField(
         'Profile image', upload_to=image_file_upload, blank=True, null=True,
     )
     gender = models.CharField(
@@ -153,6 +153,14 @@ class Profile(models.Model):
         max_length=1,
         choices=GenderChoices.choices,
         default=GenderChoices.NOT_SAID,
+        blank=True,
+        null=True,
+    )
+    preferred_language = models.CharField(
+        'Preferred language',
+        max_length=2,
+        choices=PreferredLanguageChoices.choices,
+        default=PreferredLanguageChoices.OTHER,
         blank=True,
         null=True,
     )

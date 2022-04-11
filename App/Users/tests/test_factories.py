@@ -32,5 +32,5 @@ class TestProfileFactory:
         assert profile.bio is not None
         assert profile.gender is not None
         assert profile.birth_date is not None
-        assert profile.profile_image is not None
-        assert profile.profile_image.url is not None
+        assert profile.image is not None
+        assert profile.image.url is not None

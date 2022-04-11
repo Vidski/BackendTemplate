@@ -64,7 +64,7 @@ class ProfileAdmin(admin.ModelAdmin):
         (None, {'fields': ('user',)}),
         (
             'Personal info',
-            {'fields': ('profile_image', 'birth_date', 'gender')},
+            {'fields': ('image', 'birth_date', 'gender')},
         ),
         ('Account info', {'fields': ('nickname', 'bio')}),
     )

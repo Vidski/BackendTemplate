@@ -64,8 +64,8 @@ class TestProfileFakers:
         assert profile.gender is not None
         assert profile.birth_date is not None
         assert profile.is_adult() is True
-        assert profile.profile_image is not None
-        assert profile.profile_image.url is not None
+        assert profile.image is not None
+        assert profile.image.url is not None
 
     def test_kid_profile_faker(self):
         assert Profile.objects.count() == 0
@@ -77,8 +77,8 @@ class TestProfileFakers:
         assert profile.gender is not None
         assert profile.birth_date is not None
         assert profile.is_adult() is False
-        assert profile.profile_image is not None
-        assert profile.profile_image.url is not None
+        assert profile.image is not None
+        assert profile.image.url is not None
 
     def test_female_profile_faker(self):
         assert Profile.objects.count() == 0
@@ -90,8 +90,8 @@ class TestProfileFakers:
         assert profile.gender is not None
         assert profile.gender == 'F'
         assert profile.birth_date is not None
-        assert profile.profile_image is not None
-        assert profile.profile_image.url is not None
+        assert profile.image is not None
+        assert profile.image.url is not None
 
     def test_male_profile_faker(self):
         assert Profile.objects.count() == 0
@@ -103,8 +103,8 @@ class TestProfileFakers:
         assert profile.gender is not None
         assert profile.gender == 'M'
         assert profile.birth_date is not None
-        assert profile.profile_image is not None
-        assert profile.profile_image.url is not None
+        assert profile.image is not None
+        assert profile.image.url is not None
 
     def test_non_binary_profile_faker(self):
         assert Profile.objects.count() == 0
@@ -116,8 +116,8 @@ class TestProfileFakers:
         assert profile.gender is not None
         assert profile.gender == 'N'
         assert profile.birth_date is not None
-        assert profile.profile_image is not None
-        assert profile.profile_image.url is not None
+        assert profile.image is not None
+        assert profile.image.url is not None
 
     def test_not_said_profile_faker(self):
         assert Profile.objects.count() == 0
@@ -129,5 +129,5 @@ class TestProfileFakers:
         assert profile.gender is not None
         assert profile.gender == 'P'
         assert profile.birth_date is not None
-        assert profile.profile_image is not None
-        assert profile.profile_image.url is not None
+        assert profile.image is not None
+        assert profile.image.url is not None
