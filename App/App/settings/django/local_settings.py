@@ -52,7 +52,7 @@ EMAIL_PORT = ''
 TEST_EMAIL = 'test@ing.email'
 
 # Verify email settings
-VERIFY_EMAIL_URL = f'{URL}/api/v1/users'
+VERIFY_EMAIL_URL = f'{URL}/api/users'
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=50),

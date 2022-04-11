@@ -219,7 +219,7 @@ VERIFY_EMAIL_CONTENT = (
     + 'on the button below.'
 )
 VERIFY_EMAIL_LINK_TEXT = 'Verify email'
-VERIFY_EMAIL_URL = f'{URL}/api/v1/users'
+VERIFY_EMAIL_URL = f'{URL}/api/users'
 
 # Storage
 

@@ -6,7 +6,7 @@ from Emails.models import Email
 from Users.fakers.user import VerifiedUserFaker
 
 
-ENDPOINT = '/api/v1/emails/suggestion/'
+ENDPOINT = '/api/emails/suggestion/'
 
 
 @pytest.fixture(scope='function')

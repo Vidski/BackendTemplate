@@ -31,10 +31,10 @@ from App.views import CustomView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('home/admin/', admin.site.admin_view(CustomView.as_view())),
-    path('api/v1/', include(('Users.urls', 'users'), namespace='users')),
-    path('api/v1/', include(('Emails.urls', 'emails'), namespace='emails')),
+    path('api/', include(('Users.urls', 'users'), namespace='users')),
+    path('api/', include(('Emails.urls', 'emails'), namespace='emails')),
     path(
-        'api/v1/password_reset/',
+        'api/password_reset/',
         include('django_rest_passwordreset.urls', namespace='password_reset'),
     ),
     path(

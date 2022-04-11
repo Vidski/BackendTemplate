@@ -13,7 +13,7 @@ from Users.models import Profile
 from Users.models import User
 from Users.utils import generate_user_verification_token
 
-ENDPOINT = '/api/v1/users'
+ENDPOINT = '/api/users'
 
 
 @pytest.fixture(scope='function')
@@ -546,14 +546,14 @@ class TestUserPasswordResetTests:
         normal_user = UserFaker()
         assert normal_user.check_password('password') is True
         response = client.post(
-            f'/api/v1/password_reset/', {'email': normal_user.email}
+            f'/api/password_reset/', {'email': normal_user.email}
         )
         assert response.status_code == 200
         tokens = ResetPasswordToken.objects.all()
         assert len(tokens) == 1
         token = tokens[0].key
         data = {'token': token, 'password': 'NewPassword95'}
-        client.post(f'/api/v1/password_reset/confirm/', data, format='json')
+        client.post(f'/api/password_reset/confirm/', data, format='json')
         assert response.status_code == 200
         normal_user.refresh_from_db()
         assert normal_user.check_password('NewPassword95') is True
