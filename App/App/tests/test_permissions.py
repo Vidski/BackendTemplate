@@ -3,6 +3,7 @@ from mock import MagicMock
 from mock import PropertyMock
 
 from App.permissions import IsAdmin
+from App.permissions import IsProfileOwner
 from App.permissions import IsUserOwner
 from App.permissions import IsVerified
 from Users.fakers.user import AdminFaker
@@ -70,3 +71,27 @@ class TestIsUserOwnerPermission:
         type(request).user = mocked_requester
         type(request).parser_context = mocked_kwargs
         assert IsUserOwner().has_permission(request, None) is True
+
+
+@pytest.mark.django_db
+class TestIsProfileOwnerPermission:
+    def test_returns_true_if_profile_is_from_user(self):
+        requester = VerifiedUserFaker()
+        request = MagicMock()
+        kwargs = {'kwargs': {'pk': requester.profile.id}}
+        mocked_kwargs = PropertyMock(return_value=kwargs)
+        mocked_requester = PropertyMock(return_value=requester)
+        type(request).user = mocked_requester
+        type(request).parser_context = mocked_kwargs
+        assert IsProfileOwner().has_permission(request, None) is True
+
+    def test_returns_false_if_profile_is_not_from_user(self):
+        requester = VerifiedUserFaker()
+        other_user = VerifiedUserFaker(email="other@user.com")
+        request = MagicMock()
+        kwargs = {'kwargs': {'pk': other_user.profile.id}}
+        mocked_kwargs = PropertyMock(return_value=kwargs)
+        mocked_requester = PropertyMock(return_value=requester)
+        type(request).user = mocked_requester
+        type(request).parser_context = mocked_kwargs
+        assert IsProfileOwner().has_permission(request, None) is False

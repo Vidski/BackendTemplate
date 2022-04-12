@@ -1,6 +1,8 @@
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import BasePermission
+from rest_framework.permissions import DjangoObjectPermissions
 
+from Users.models import Profile
 from Users.models import User
 
 
@@ -28,3 +30,15 @@ class IsUserOwner(BasePermission):
         except:
             return False
         return request.user.has_permission(user)
+
+
+class IsProfileOwner(DjangoObjectPermissions):
+    message = "You don't have permission"
+
+    def has_permission(self, request, view):
+        try:
+            pk = request.parser_context['kwargs']['pk']
+            profile = get_object_or_404(Profile, id=pk)
+        except:
+            return False
+        return request.user.has_permission(profile)
