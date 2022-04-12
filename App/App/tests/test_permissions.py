@@ -2,6 +2,7 @@ import pytest
 from mock import MagicMock
 from mock import PropertyMock
 
+from App.permissions import IsActionAllowed
 from App.permissions import IsAdmin
 from App.permissions import IsProfileOwner
 from App.permissions import IsUserOwner
@@ -95,3 +96,41 @@ class TestIsProfileOwnerPermission:
         type(request).user = mocked_requester
         type(request).parser_context = mocked_kwargs
         assert IsProfileOwner().has_permission(request, None) is False
+
+
+@pytest.mark.django_db
+class TestIsActionAllowedPermission:
+    def test_returns_true_for_retrieve_action_allowed(self):
+        view = MagicMock()
+        action = 'retrieve'
+        mocked_action = PropertyMock(return_value=action)
+        type(view).action = mocked_action
+        assert IsActionAllowed().has_permission(None, view) is True
+
+    def test_returns_true_for_update_action_allowed(self):
+        view = MagicMock()
+        action = 'update'
+        mocked_action = PropertyMock(return_value=action)
+        type(view).action = mocked_action
+        assert IsActionAllowed().has_permission(None, view) is True
+
+    def test_returns_false_for_list_action_not_allowed(self):
+        view = MagicMock()
+        action = 'list'
+        mocked_action = PropertyMock(return_value=action)
+        type(view).action = mocked_action
+        assert IsActionAllowed().has_permission(None, view) is False
+
+    def test_returns_false_for_create_action_not_allowed(self):
+        view = MagicMock()
+        action = 'create'
+        mocked_action = PropertyMock(return_value=action)
+        type(view).action = mocked_action
+        assert IsActionAllowed().has_permission(None, view) is False
+
+    def test_returns_false_for_delete_action_not_allowed(self):
+        view = MagicMock()
+        action = 'delete'
+        mocked_action = PropertyMock(return_value=action)
+        type(view).action = mocked_action
+        assert IsActionAllowed().has_permission(None, view) is False

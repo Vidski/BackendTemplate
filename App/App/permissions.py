@@ -42,3 +42,11 @@ class IsProfileOwner(DjangoObjectPermissions):
         except:
             return False
         return request.user.has_permission(profile)
+
+
+class IsActionAllowed(DjangoObjectPermissions):
+    message = "You don't have permission"
+    allowed_actions_for_user = ['retrieve', 'update']
+
+    def has_permission(self, request, view):
+        return view.action in self.allowed_actions_for_user
