@@ -10,6 +10,7 @@ from App.permissions import IsVerified
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker
+from Users.models import Profile
 
 
 @pytest.mark.django_db
@@ -91,6 +92,17 @@ class TestIsProfileOwnerPermission:
         other_user = VerifiedUserFaker(email="other@user.com")
         request = MagicMock()
         kwargs = {'kwargs': {'pk': other_user.profile.id}}
+        mocked_kwargs = PropertyMock(return_value=kwargs)
+        mocked_requester = PropertyMock(return_value=requester)
+        type(request).user = mocked_requester
+        type(request).parser_context = mocked_kwargs
+        assert IsProfileOwner().has_permission(request, None) is False
+
+    def test_returns_false_if_profile_do_not_exists(self):
+        requester = VerifiedUserFaker()
+        request = MagicMock()
+        last_profile = Profile.objects.all().last()
+        kwargs = {'kwargs': {'pk': last_profile.id + 1}}
         mocked_kwargs = PropertyMock(return_value=kwargs)
         mocked_requester = PropertyMock(return_value=requester)
         type(request).user = mocked_requester
