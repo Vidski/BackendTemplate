@@ -1,5 +1,4 @@
 from django.http.response import JsonResponse
-from rest_framework import generics
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -8,11 +7,15 @@ from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from App.permissions import IsActionAllowed
 from App.permissions import IsAdmin
+from App.permissions import IsProfileOwner
 from App.permissions import IsUserOwner
 from App.permissions import IsVerified
 from App.utils import log_information
+from Users.models import Profile
 from Users.models import User
+from Users.serializers import ProfileSerializer
 from Users.serializers import UserLoginSerializer
 from Users.serializers import UserSerializer
 from Users.serializers import UserSignUpSerializer
@@ -113,3 +116,19 @@ class UserViewSet(viewsets.GenericViewSet):
         data = {'user': UserLoginSerializer(user).data}
         log_information('verified', user)
         return JsonResponse(data, status=UPDATED)
+
+
+class ProfileViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows to interact with Profile model;
+    List, create and destroy are only available only for admin users because the
+    create and destroy will be triggered when verify/delete the user instance
+    """
+
+    queryset = Profile.objects.all()
+    lookup_url_kwarg = 'pk'
+    serializer_class = ProfileSerializer
+    normal_user_permissions = IsVerified & IsProfileOwner & IsActionAllowed
+    admin_user_permissions = IsAdmin
+    permissions = normal_user_permissions | admin_user_permissions
+    permission_classes = [IsAuthenticated & permissions]
