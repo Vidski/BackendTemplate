@@ -15,8 +15,7 @@ def generate_user_verification_token(user):
     hashed = hashlib.md5(string_user.encode())
     decoded = base64.b64encode(hashed.digest()).decode('utf-8')
     token = (
-        decoded
-        .replace('\\', '-')
+        decoded.replace('\\', '-')
         .replace('/', '_')
         .replace('=', '')
         .replace('+', '')
