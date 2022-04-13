@@ -171,6 +171,8 @@ class Profile(models.Model):
         return f'User ({self.user_id}) profile ({self.pk})'
 
     def is_adult(self):
+        if not self.birth_date:
+            return None
         adultness = datetime.now() - relativedelta(years=18)
         return datetime.strptime(self.birth_date, '%Y-%m-%d') < adultness
 

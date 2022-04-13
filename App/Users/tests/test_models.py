@@ -80,3 +80,8 @@ class TestProfileModel:
         kid_profile = KidProfileFaker()
         expected_result = False
         assert kid_profile.is_adult() == expected_result
+
+    def test_is_adult_without_birth_date(self):
+        profile = ProfileFactory(birth_date=None)
+        expected_result = None
+        assert profile.is_adult() == expected_result
