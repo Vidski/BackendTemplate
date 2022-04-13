@@ -62,10 +62,7 @@ class ProfileAdmin(admin.ModelAdmin):
     list_filter = ('gender', 'birth_date')
     fieldsets = (
         (None, {'fields': ('user',)}),
-        (
-            'Personal info',
-            {'fields': ('image', 'birth_date', 'gender')},
-        ),
+        ('Personal info', {'fields': ('image', 'birth_date', 'gender')},),
         ('Account info', {'fields': ('nickname', 'bio')}),
     )
     search_fields = ('nickname', 'id')

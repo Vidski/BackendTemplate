@@ -89,7 +89,7 @@ class TestIsProfileOwnerPermission:
 
     def test_returns_false_if_profile_is_not_from_user(self):
         requester = VerifiedUserFaker()
-        other_user = VerifiedUserFaker(email="other@user.com")
+        other_user = VerifiedUserFaker(email='other@user.com')
         request = MagicMock()
         kwargs = {'kwargs': {'pk': other_user.profile.id}}
         mocked_kwargs = PropertyMock(return_value=kwargs)

@@ -1,9 +1,6 @@
-import base64
-import hashlib
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
-from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
@@ -129,9 +126,7 @@ class User(
 
 class Profile(models.Model):
     user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        related_name='profile',
+        User, on_delete=models.CASCADE, related_name='profile',
     )
     nickname = models.CharField(
         'Nick',
