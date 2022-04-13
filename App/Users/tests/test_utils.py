@@ -3,8 +3,8 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.serializers import ValidationError
 
 from Users.factories.user import UserFactory
-from Users.utils import generate_user_verification_token
 from Users.utils import check_e164_format
+from Users.utils import generate_user_verification_token
 from Users.utils import verify_user_query_token
 
 

@@ -13,6 +13,7 @@ from Users.models import Profile
 from Users.models import User
 from Users.utils import generate_user_verification_token
 
+
 ENDPOINT = '/api/users'
 
 
