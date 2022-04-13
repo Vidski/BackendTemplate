@@ -25,7 +25,7 @@ class TestProfileSerializer:
             'gender': profile.gender,
             'preferred_language': profile.preferred_language,
             'birth_date': profile.birth_date,
-            'is_adult': profile.is_adult()
+            'is_adult': profile.is_adult(),
         }
         actual_data = ProfileSerializer(profile).data
         assert actual_data == expected_data
