@@ -73,9 +73,9 @@ class User(
         unique=True,
         error_messages={'unique': 'This email already exists.'},
     )
-    first_name = models.CharField('First name', blank=False, max_length=50)
-    last_name = models.CharField('Last name', blank=False, max_length=50)
-    phone_number = PhoneNumberField('Phone number', blank=True, max_length=22)
+    first_name = models.CharField('First name', null=False, max_length=50)
+    last_name = models.CharField('Last name', null=False, max_length=50)
+    phone_number = PhoneNumberField('Phone number', null=True, max_length=22)
     is_verified = models.BooleanField('Verified', default=False)
     is_premium = models.BooleanField('Premium', default=False)
     is_admin = models.BooleanField('Admin', default=False)
@@ -132,20 +132,18 @@ class Profile(models.Model):
         'Nick',
         unique=True,
         error_messages={'unique': 'This nickname already exists.'},
-        blank=True,
         null=True,
         max_length=50,
     )
-    bio = models.TextField('Bio', blank=True)
+    bio = models.TextField('Bio', null=True)
     image = models.ImageField(
-        'Profile image', upload_to=image_file_upload, blank=True, null=True,
+        'Profile image', upload_to=image_file_upload, null=True,
     )
     gender = models.CharField(
         'Gender',
         max_length=1,
         choices=GenderChoices.choices,
         default=GenderChoices.NOT_SAID,
-        blank=True,
         null=True,
     )
     preferred_language = models.CharField(
@@ -153,11 +151,10 @@ class Profile(models.Model):
         max_length=2,
         choices=PreferredLanguageChoices.choices,
         default=PreferredLanguageChoices.OTHER,
-        blank=True,
         null=True,
     )
     birth_date = models.DateField(
-        'Birth date', blank=True, null=True, auto_now_add=False
+        'Birth date', null=True, auto_now_add=False
     )
     created_at = models.DateTimeField('Creation date', auto_now_add=True)
     updated_at = models.DateTimeField('Update date', auto_now=True)
