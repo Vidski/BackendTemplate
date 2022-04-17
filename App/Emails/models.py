@@ -38,7 +38,7 @@ class AbstractEmailClass(models.Model):
             now = timezone.now()
             five_minutes_from_now = now + timezone.timedelta(minutes=5)
             self.programed_send_date = five_minutes_from_now
-        super(Email, self).save(*args, **kwargs)
+        super(AbstractEmailClass, self).save(*args, **kwargs)
 
     def get_emails(self):
         if self.to_all_users and not self.is_test:
