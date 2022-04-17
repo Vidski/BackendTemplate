@@ -5,6 +5,7 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 
 from App.utils import log_information
+from Emails.choices import CommentType
 from Users.models import User
 
 
@@ -13,30 +14,20 @@ class Block(models.Model):
     Block model used on email as block content
     """
 
-    title = models.CharField(max_length=100, blank=True)
-    content = models.TextField(blank=True)
+    title = models.CharField(max_length=100, null=True)
+    content = models.TextField(null=True)
     show_link = models.BooleanField(default=False)
-    link_text = models.CharField(max_length=100, blank=True)
-    link = models.URLField(max_length=100, blank=True)
+    link_text = models.CharField(max_length=100, null=True)
+    link = models.URLField(max_length=100, null=True)
 
     def __str__(self):
         return f'{self.id} | {self.title}'
 
 
-class Email(models.Model):
-    """
-    Email model
-    """
+class AbstractEmailClass(models.Model):
+    class Meta:
+        abstract = True
 
-    subject = models.CharField(max_length=100)
-    header = models.CharField(max_length=100, blank=True)
-    blocks = models.ManyToManyField(Block, related_name='blocks', blank=False)
-    is_test = models.BooleanField(default=False)
-    to_all_users = models.BooleanField(default=False)
-    to = models.TextField(blank=True)
-    programed_send_date = models.DateTimeField(blank=True, null=True)
-    sent_date = models.DateTimeField(blank=True, null=True)
-    was_sent = models.BooleanField(default=False, editable=False)
 
     def __str__(self):
         return f'{self.id} | {self.subject}'
@@ -85,3 +76,37 @@ class Email(models.Model):
         self.was_sent = True
         self.save()
         log_information('sent', self)
+
+class Email(AbstractEmailClass):
+    """
+    Email model
+    """
+
+    subject = models.CharField(max_length=100)
+    header = models.CharField(max_length=100, null=True)
+    blocks = models.ManyToManyField(Block, related_name='%(class)s_blocks')
+    is_test = models.BooleanField(default=False)
+    to_all_users = models.BooleanField(default=False)
+    to = models.TextField(null=True)
+    programed_send_date = models.DateTimeField(null=True)
+    sent_date = models.DateTimeField(null=True)
+    was_sent = models.BooleanField(default=False, editable=False)
+
+
+class Suggestion(AbstractEmailClass):
+    """
+    Suggestion model
+    """
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='suggestion',
+    )
+    subject = models.CharField(
+        max_length=100,
+        choices=CommentType.choices,
+        default=CommentType.SUGGESTION
+    )
+    header = models.CharField(max_length=100, null=True)
+    blocks = models.ManyToManyField(Block, related_name='%(class)s_blocks')
+    to = models.TextField(null=True, )
+    sent_date = models.DateTimeField(null=True)
+    was_sent = models.BooleanField(default=False, editable=False)
