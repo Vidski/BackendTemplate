@@ -70,7 +70,7 @@ class TestUserSignUpEndpoint:
         assert response.data['first_name'] == data['first_name']
         assert response.data['last_name'] == data['last_name']
         assert response.data['email'] == data['email']
-        assert response.data['phone_number'] == ''
+        assert response.data['phone_number'] == None
         assert response.data['is_verified'] == False
         assert response.data['is_admin'] == False
         assert response.data['is_premium'] == False
@@ -98,7 +98,7 @@ class TestUserSignUpEndpoint:
         assert response.data['first_name'] == data['first_name']
         assert response.data['last_name'] == data['last_name']
         assert response.data['email'] == data['email']
-        assert response.data['phone_number'] == ''
+        assert response.data['phone_number'] == None
         assert response.data['is_verified'] == False
         assert response.data['is_admin'] == False
         assert response.data['is_premium'] == False
