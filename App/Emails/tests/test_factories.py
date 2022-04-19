@@ -13,6 +13,7 @@ from Emails.factories.email import VerifyEmailFactory
 from Emails.factories.email import get_subject_for_suggestion
 from Emails.models import Block
 from Emails.models import Email
+from Emails.models import Suggestion
 from Users.factories.user import UserFactory
 from Users.utils import generate_user_verification_token
 
@@ -110,13 +111,13 @@ class TestEmailFactories:
 
     def test_get_subject_for_suggestion_returns_subject(self):
         content = 'I found a bug'
-        type = 'Error'
+        type = 'ERROR'
         subject = get_subject_for_suggestion(type, content)
         assert subject == f'{type} || {content}'
 
     def test_get_subject_for_suggestion_returns_subject_without_vertical(self):
         content = 'I found a bug ||'
-        type = 'Error'
+        type = 'ERROR'
         subject = get_subject_for_suggestion(type, content)
         assert subject == f'{type} || I found a bug '
 
@@ -135,30 +136,27 @@ class TestEmailFactories:
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
         with pytest.raises(ValueError):
-            SuggestionEmailFactory(type=type, content=content, instance=user)
+            SuggestionEmailFactory(type=type, content=content, user=user)
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
 
     def test_suggestion_email_factor_creates_email_with_block(self):
         user = UserFactory()
         content = 'I found a bug'
-        type = 'Error'
-        assert Email.objects.count() == 0
+        type = 'ERROR'
+        assert Suggestion.objects.count() == 0
         assert Block.objects.count() == 0
         email = SuggestionEmailFactory(
-            type=type, content=content, instance=user
+            type=type, content=content, user=user
         )
-        assert Email.objects.count() == 1
+        assert Suggestion.objects.count() == 1
         assert Block.objects.count() == 1
-        assert email.subject == 'Error'
+        assert email.subject == 'ERROR'
         assert email.header == (
-            f'Error {settings.SUGGESTIONS_EMAIL_HEADER} {user.id}'
+            f'ERROR {settings.SUGGESTIONS_EMAIL_HEADER} {user.id}'
         )
-        assert email.is_test is False
-        assert email.to_all_users is False
         assert email.to == settings.SUGGESTIONS_EMAIL
-        assert email.programed_send_date is not None
-        assert email.blocks is not None
+        assert email.blocks.all() is not None
         block = email.blocks.first()
         assert email.header == block.title
         assert block.content == content

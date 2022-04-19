@@ -3,11 +3,14 @@ from django.conf import settings
 from django.utils import timezone
 from django_rest_passwordreset.models import ResetPasswordToken
 
+from Emails.choices import CommentType
 from Emails.factories.block import BlockFactory
 from Emails.factories.block import ResetPasswordBlockFactory
 from Emails.factories.block import SuggestionBlockFactory
 from Emails.factories.block import VerifyEmailBlockFactory
 from Emails.models import Email
+from Emails.models import Suggestion
+from Users.factories.user import UserFactory
 from Users.models import User
 
 
@@ -72,24 +75,26 @@ class VerifyEmailFactory(EmailFactory):
         self.blocks.add(block)
 
 
-class SuggestionEmailFactory(EmailFactory):
+class SuggestionEmailFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Suggestion
+
     class Params:
         type = None
         content = None
-        instance = None
 
     subject = factory.LazyAttribute(
         lambda object: get_subject_for_suggestion(object.type, object.content)
     )
-    header = factory.LazyAttribute(
-        lambda object: (
-            f'{object.type}'
-            + f' {settings.SUGGESTIONS_EMAIL_HEADER}'
-            + f' {object.instance.id}'
-        )
-    )
     to = settings.SUGGESTIONS_EMAIL
-    programed_send_date = None
+
+    @factory.post_generation
+    def header (self, create, extracted, **kwargs):
+        self.header = (
+            f'{self.subject.split("||")[0][:-1]}'
+            + f' {settings.SUGGESTIONS_EMAIL_HEADER}'
+            + f' {self.user.id}'
+        )
 
     @factory.post_generation
     def blocks(self, create, extracted, **kwargs):
@@ -102,7 +107,7 @@ class SuggestionEmailFactory(EmailFactory):
         self.blocks.add(block)
 
 
-def get_subject_for_suggestion(type, content):
-    if type not in settings.SUGGESTION_TYPES:
+def get_subject_for_suggestion(suggestion_type, content):
+    if suggestion_type not in CommentType.names:
         raise ValueError('Type not allowed')
-    return f'{type} || {content.replace("||", "")}'
+    return f'{suggestion_type} || {content.replace("||", "")}'
