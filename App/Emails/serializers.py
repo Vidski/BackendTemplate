@@ -1,7 +1,7 @@
 from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 
-from Emails.models import Email
+from Emails.models import Suggestion
 
 
 class SuggestionEmailSerializer(serializers.Serializer):
@@ -18,4 +18,4 @@ class SuggestionEmailSerializer(serializers.Serializer):
     )
 
     class Meta:
-        model = Email
+        model = Suggestion
