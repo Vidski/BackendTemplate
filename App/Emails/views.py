@@ -6,6 +6,7 @@ from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from Emails.choices import CommentType
 from Emails.factories.email import SuggestionEmailFactory as SuggestionEmail
 from Emails.serializers import SuggestionEmailSerializer
 from Users.models import User
@@ -24,11 +25,11 @@ class EmailViewSet(viewsets.ViewSet):
     )
     def suggestion(self, request):
         type = request.data.get('type')
-        if type not in settings.SUGGESTION_TYPES:
+        if type.upper() not in CommentType.names:
             raise ParseError('Invalid type of suggestion')
         content = request.data.get('content')
         user = User.objects.get(id=request.user.id)
-        email = SuggestionEmail(type=type, content=content, instance=user)
+        email = SuggestionEmail(type=type, content=content, user=user)
         email.send()
         data = SuggestionEmailSerializer(email).data
         return Response(data=data, status=CREATED)
