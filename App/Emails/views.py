@@ -33,3 +33,11 @@ class SuggestionViewSet(viewsets.ViewSet):
         suggestion.send()
         data = SuggestionEmailSerializer(suggestion).data
         return Response(data=data, status=CREATED)
+
+    @action(detail=True, methods=['post'], permission_classes=PERMISSIONS)
+    def read(self, request, pk=None):
+        suggestion = get_object_or_404(Suggestion, pk=pk)
+        suggestion.was_read = True
+        suggestion.save()
+        data = SuggestionEmailSerializer(suggestion).data
+        return Response(data=data, status=status.HTTP_200_OK)

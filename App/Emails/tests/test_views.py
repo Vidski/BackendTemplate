@@ -65,3 +65,38 @@ class TestSuggestionViews:
         assert expected_error_message in response.data['detail']
         assert len(mail.outbox) == 0
         assert email_count == 0
+
+@pytest.mark.django_db
+class TestReadSuggestionViews:
+
+    ACTION = 'read'
+
+    def test_read_suggestion_fails_as_unauthenticate_user(self, client):
+        user = UserFaker()
+        type = 'ERROR'
+        content = 'Error found'
+        suggestion = SuggestionEmailFactory(
+            type=type, content=content, user=user
+        )
+        pk = suggestion.pk
+        url = f'{BASE_ENDPOINT}/{pk}/{self.ACTION}/'
+        response = client.post(url, format='json')
+        assert response.status_code == 401
+
+
+    def test_suggestion_creates_email_as_authenticate_user(self, client):
+        normal_user = VerifiedUserFaker()
+        client.force_authenticate(user=normal_user)
+        user = UserFaker()
+        type = 'ERROR'
+        content = 'Error found'
+        suggestion = SuggestionEmailFactory(
+            type=type, content=content, user=user
+        )
+        assert suggestion.was_read == False
+        pk = suggestion.pk
+        url = f'{BASE_ENDPOINT}/{pk}/{self.ACTION}/'
+        response = client.post(url, format='json')
+        assert response.status_code == 200
+        suggestion.refresh_from_db()
+        assert suggestion.was_read == True
