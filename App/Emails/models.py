@@ -97,8 +97,8 @@ class Suggestion(AbstractEmailClass):
     """
     Suggestion model
     """
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name='suggestion',
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='suggestion', unique=False
     )
     subject = models.CharField(
         max_length=100,
