@@ -11,6 +11,7 @@ class SuggestionEmailSerializer(serializers.Serializer):
 
     email_id = serializers.IntegerField(source='id')
     was_sent = serializers.BooleanField()
+    was_read = serializers.BooleanField()
     subject = serializers.CharField()
     header = serializers.CharField()
     blocks = serializers.SlugRelatedField(
