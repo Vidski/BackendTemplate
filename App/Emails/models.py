@@ -107,7 +107,11 @@ class Suggestion(AbstractEmailClass):
     )
     header = models.CharField(max_length=100, null=True)
     blocks = models.ManyToManyField(Block, related_name='%(class)s_blocks')
-    to = models.TextField(null=True, )
+    to = models.CharField(
+        max_length=100,
+        null=False,
+        default=settings.SUGGESTIONS_EMAIL
+    )
     sent_date = models.DateTimeField(null=True)
     was_sent = models.BooleanField(default=False, editable=False)
     was_read = models.BooleanField(default=False)
