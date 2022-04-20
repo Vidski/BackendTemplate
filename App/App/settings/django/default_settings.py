@@ -196,6 +196,7 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 SUGGESTIONS_EMAIL = ''
 SUGGESTIONS_EMAIL_HEADER = 'from user with id:'
 EMAIL_GREETING = 'Hi,'
+SUGGESTIONS_EMAIL_LINK_TEXT = 'Mark as read'
 
 # Reset email settings
 RESET_PASSWORD_EMAIL_SUBJECT = 'Reset your password'
