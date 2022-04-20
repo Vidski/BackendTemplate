@@ -1,5 +1,6 @@
 import pytest
 from django.conf import settings
+from django.db.utils import IntegrityError
 from django_rest_passwordreset.models import ResetPasswordToken
 
 from Emails.factories.block import BlockFactory
@@ -121,47 +122,6 @@ class TestEmailFactories:
         subject = get_subject_for_suggestion(type, content)
         assert subject == f'{type} || I found a bug '
 
-    def test_suggestion_email_factory_raises_exception_without_params(self):
-        assert Email.objects.count() == 0
-        assert Block.objects.count() == 0
-        with pytest.raises(ValueError):
-            SuggestionEmailFactory()
-        assert Email.objects.count() == 0
-        assert Block.objects.count() == 0
-
-    def test_suggestion_email_factory_raises_exception_due_wrong_type(self):
-        user = UserFactory()
-        content = 'I found a bug'
-        type = 'wrong_suggestion_type'
-        assert Email.objects.count() == 0
-        assert Block.objects.count() == 0
-        with pytest.raises(ValueError):
-            SuggestionEmailFactory(type=type, content=content, user=user)
-        assert Email.objects.count() == 0
-        assert Block.objects.count() == 0
-
-    def test_suggestion_email_factor_creates_email_with_block(self):
-        user = UserFactory()
-        content = 'I found a bug'
-        type = 'ERROR'
-        assert Suggestion.objects.count() == 0
-        assert Block.objects.count() == 0
-        email = SuggestionEmailFactory(
-            type=type, content=content, user=user
-        )
-        assert Suggestion.objects.count() == 1
-        assert Block.objects.count() == 1
-        assert email.subject == 'ERROR'
-        assert email.header == (
-            f'ERROR {settings.SUGGESTIONS_EMAIL_HEADER} {user.id}'
-        )
-        assert email.to == settings.SUGGESTIONS_EMAIL
-        assert email.blocks.all() is not None
-        block = email.blocks.first()
-        assert email.header == block.title
-        assert block.content == content
-        assert block.show_link is False
-
 
 @pytest.mark.django_db
 class TestBlockFactories:
@@ -223,3 +183,49 @@ class TestBlockFactories:
         assert block.title is not None
         assert block.content is not None
         assert block.show_link is False
+
+
+@pytest.mark.django_db
+class TestSuggestionFactory:
+    def test_suggestion_email_factory_raises_exception_without_user(self):
+        type = 'ERROR'
+        assert Suggestion.objects.count() == 0
+        assert Block.objects.count() == 0
+        with pytest.raises(IntegrityError):
+            SuggestionEmailFactory(type=type)
+
+    def test_suggestion_email_factory_raises_exception_due_wrong_type(self):
+        user = UserFactory()
+        content = 'I found a bug'
+        type = 'wrong_suggestion_type'
+        assert Suggestion.objects.count() == 0
+        assert Block.objects.count() == 0
+        with pytest.raises(ValueError):
+            SuggestionEmailFactory(type=type, content=content, user=user)
+        assert Suggestion.objects.count() == 0
+        assert Block.objects.count() == 0
+
+    def test_suggestion_email_factor_creates_email_with_block(self):
+        user = UserFactory()
+        content = 'I found a bug'
+        type = 'ERROR'
+        assert Suggestion.objects.count() == 0
+        assert Block.objects.count() == 0
+        suggestion = SuggestionEmailFactory(
+            type=type, content=content, user=user
+        )
+        assert Suggestion.objects.count() == 1
+        assert Block.objects.count() == 1
+        assert suggestion.subject == 'ERROR'
+        assert suggestion.header == (
+            f'ERROR {settings.SUGGESTIONS_EMAIL_HEADER} {user.id}'
+        )
+        assert suggestion.to == settings.SUGGESTIONS_EMAIL
+        assert suggestion.blocks.all() is not None
+        block = suggestion.blocks.first()
+        assert suggestion.header == block.title
+        assert block.content == content
+        assert block.show_link is True
+        assert block.link_text == settings.SUGGESTIONS_EMAIL_LINK_TEXT
+        expected_link = f'{settings.URL}/api/suggestions/{suggestion.id}/read/'
+        assert block.link == expected_link

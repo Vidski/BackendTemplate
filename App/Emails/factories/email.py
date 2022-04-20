@@ -80,8 +80,8 @@ class SuggestionEmailFactory(factory.django.DjangoModelFactory):
         model = Suggestion
 
     class Params:
-        type = None
-        content = None
+        type = ''
+        content = ''
 
     subject = factory.LazyAttribute(
         lambda object: get_subject_for_suggestion(object.type, object.content)
@@ -103,7 +103,13 @@ class SuggestionEmailFactory(factory.django.DjangoModelFactory):
         content = subject_splitted[1][1:]
         self.subject = type
         self.save()
-        block = SuggestionBlockFactory(title=self.header, content=content)
+        block = SuggestionBlockFactory(
+            title=self.header,
+            content=content,
+            show_link=True,
+            link_text=settings.SUGGESTIONS_EMAIL_LINK_TEXT,
+            link=f'{settings.URL}/api/suggestions/{self.id}/read/'
+        )
         self.blocks.add(block)
 
 
