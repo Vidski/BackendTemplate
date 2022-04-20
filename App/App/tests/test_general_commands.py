@@ -7,6 +7,7 @@ from django.test import TestCase
 
 from App.management.commands.populate_db import Command as PopulateCommand
 from Emails.models import Email
+from Emails.models import Suggestion
 from Users.factories.user import UserFactory
 from Users.models import Profile
 from Users.models import User
@@ -45,11 +46,22 @@ class TestPopulateCommand(TestCase):
         assert User.objects.all().count() == 2
         assert Profile.objects.all().count() == 2
 
+    def test_create_fake_suggestions(self):
+        command = PopulateCommand()
+        users = [UserFactory(), UserFactory()]
+        assert User.objects.all().count() == 2
+        assert Suggestion.objects.all().count() == 0
+        command.create_fake_suggestions(users)
+        assert User.objects.all().count() == 2
+        assert Suggestion.objects.all().count() == 2
+
     def test_command(self):
         assert User.objects.all().count() == 0
         assert Email.objects.all().count() == 0
         assert Profile.objects.all().count() == 0
+        assert Suggestion.objects.all().count() == 0
         call_command(COMMAND, '-i', '5')
         assert User.objects.all().count() == 5
         assert Email.objects.all().count() == 5
         assert Profile.objects.all().count() == 5
+        assert Suggestion.objects.all().count() == 5

@@ -5,6 +5,7 @@ from django.core.management.base import BaseCommand
 from tqdm import tqdm
 from tqdm import trange as progress
 
+from Emails.factories.email import SuggestionEmailFactory
 from Emails.factories.email import VerifyEmailFactory
 from Users.factories.profile import ProfileFactory
 from Users.factories.user import UserFactory
@@ -34,6 +35,7 @@ class Command(BaseCommand):
         users = self.create_fake_users(instances)
         self.create_fake_verify_emails(users)
         self.create_fake_profiles(users)
+        self.create_fake_suggestions(users)
 
     def create_fake_users(self, instances):
         self.stdout.write('Creating fake users')
@@ -57,5 +59,15 @@ class Command(BaseCommand):
         with tqdm(total=len(users)) as progress_bar:
             for user in users:
                 ProfileFactory(user=user)
+                progress_bar.update(1)
+        self.stdout.write('Fake profiles created')
+
+    def create_fake_suggestions(self, users):
+        self.stdout.write('Creating fake suggestions')
+        type = 'SUGGESTION'
+        content = 'This is a fake suggestion'
+        with tqdm(total=len(users)) as progress_bar:
+            for user in users:
+                SuggestionEmailFactory(type=type, content=content, user=user)
                 progress_bar.update(1)
         self.stdout.write('Fake profiles created')
