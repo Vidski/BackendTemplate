@@ -2,6 +2,7 @@ import pytest
 from django.conf import settings
 from django.db.utils import IntegrityError
 from django_rest_passwordreset.models import ResetPasswordToken
+from rest_framework.exceptions import ParseError
 
 from Emails.factories.block import BlockFactory
 from Emails.factories.block import ResetPasswordBlockFactory
@@ -104,24 +105,6 @@ class TestEmailFactories:
         assert generate_user_verification_token(user) in block.link
         assert f'{user.id}' in block.link
 
-    def test_get_subject_for_suggestion_raises_an_exception(self):
-        content = 'I found a bug'
-        type = 'wrong_suggestion_type'
-        with pytest.raises(ValueError):
-            get_subject_for_suggestion(type, content)
-
-    def test_get_subject_for_suggestion_returns_subject(self):
-        content = 'I found a bug'
-        type = 'ERROR'
-        subject = get_subject_for_suggestion(type, content)
-        assert subject == f'{type} || {content}'
-
-    def test_get_subject_for_suggestion_returns_subject_without_vertical(self):
-        content = 'I found a bug ||'
-        type = 'ERROR'
-        subject = get_subject_for_suggestion(type, content)
-        assert subject == f'{type} || I found a bug '
-
 
 @pytest.mark.django_db
 class TestBlockFactories:
@@ -200,7 +183,7 @@ class TestSuggestionFactory:
         type = 'wrong_suggestion_type'
         assert Suggestion.objects.count() == 0
         assert Block.objects.count() == 0
-        with pytest.raises(ValueError):
+        with pytest.raises(ParseError):
             SuggestionEmailFactory(type=type, content=content, user=user)
         assert Suggestion.objects.count() == 0
         assert Block.objects.count() == 0
@@ -229,3 +212,21 @@ class TestSuggestionFactory:
         assert block.link_text == settings.SUGGESTIONS_EMAIL_LINK_TEXT
         expected_link = f'{settings.URL}/api/suggestions/{suggestion.id}/read/'
         assert block.link == expected_link
+
+    def test_get_subject_for_suggestion_raises_an_exception(self):
+        content = 'I found a bug'
+        type = 'wrong_suggestion_type'
+        with pytest.raises(ParseError):
+            get_subject_for_suggestion(type, content)
+
+    def test_get_subject_for_suggestion_returns_subject(self):
+        content = 'I found a bug'
+        type = 'ERROR'
+        subject = get_subject_for_suggestion(type, content)
+        assert subject == f'{type} || {content}'
+
+    def test_get_subject_for_suggestion_returns_subject_without_vertical(self):
+        content = 'I found a bug ||'
+        type = 'ERROR'
+        subject = get_subject_for_suggestion(type, content)
+        assert subject == f'{type} || I found a bug '

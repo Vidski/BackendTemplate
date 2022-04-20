@@ -2,6 +2,7 @@ import factory
 from django.conf import settings
 from django.utils import timezone
 from django_rest_passwordreset.models import ResetPasswordToken
+from rest_framework.exceptions import ParseError
 
 from Emails.choices import CommentType
 from Emails.factories.block import BlockFactory
@@ -10,7 +11,6 @@ from Emails.factories.block import SuggestionBlockFactory
 from Emails.factories.block import VerifyEmailBlockFactory
 from Emails.models import Email
 from Emails.models import Suggestion
-from Users.factories.user import UserFactory
 from Users.models import User
 
 
@@ -115,5 +115,5 @@ class SuggestionEmailFactory(factory.django.DjangoModelFactory):
 
 def get_subject_for_suggestion(suggestion_type, content):
     if suggestion_type not in CommentType.names:
-        raise ValueError('Type not allowed')
+        raise ParseError('Type not allowed')
     return f'{suggestion_type} || {content.replace("||", "")}'
