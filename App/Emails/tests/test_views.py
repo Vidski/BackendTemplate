@@ -2,11 +2,10 @@ import pytest
 from django.core import mail
 from rest_framework.test import APIClient
 
+from Emails.factories.email import SuggestionEmailFactory
 from Emails.models import Suggestion
+from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker
-
-
-ENDPOINT = '/api/emails/suggestion/'
 
 
 @pytest.fixture(scope='function')
@@ -14,12 +13,19 @@ def client():
     return APIClient()
 
 
+BASE_ENDPOINT = '/api/suggestions'
+
+
 @pytest.mark.django_db
 class TestSuggestionViews:
+
+    ACTION = 'submit'
+    ENDPOINT = f'{BASE_ENDPOINT}/{ACTION}/'
+
     def test_suggestion_fails_as_unauthenticate_user(self, client):
         assert len(mail.outbox) == 0
         data = {'type': 'Error', 'content': 'Error found'}
-        response = client.post(ENDPOINT, data, format='json')
+        response = client.post(self.ENDPOINT, data, format='json')
         assert response.status_code == 401
         assert len(mail.outbox) == 0
 
@@ -30,14 +36,16 @@ class TestSuggestionViews:
         assert email_count == 0
         data = {'type': 'ERROR', 'content': 'Error found'}
         client.force_authenticate(user=normal_user)
-        response = client.post(ENDPOINT, data, format='json')
+        response = client.post(self.ENDPOINT, data, format='json')
         email_count = Suggestion.objects.all().count()
         expected_header = f'ERROR from user with id: {normal_user.id}'
         assert response.status_code == 201
         assert True == response.data['was_sent']
         assert 'ERROR' == response.data['subject']
         assert expected_header == response.data['header']
-        assert ['Error found'] == response.data['blocks']
+        block = Suggestion.objects.first().blocks.first()
+        assert [block.id] == response.data['blocks']
+        assert 'Error found' == response.data['content']
         assert len(mail.outbox) == 0
         assert email_count == 1
 
@@ -50,7 +58,7 @@ class TestSuggestionViews:
         assert email_count == 0
         data = {'type': 'Wrong', 'content': 'Error found'}
         client.force_authenticate(user=normal_user)
-        response = client.post(ENDPOINT, data, format='json')
+        response = client.post(self.ENDPOINT, data, format='json')
         email_count = Suggestion.objects.all().count()
         expected_error_message = 'Invalid type of suggestion'
         assert response.status_code == 400

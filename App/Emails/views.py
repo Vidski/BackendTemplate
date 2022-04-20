@@ -1,4 +1,4 @@
-from django.conf import settings
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -8,6 +8,7 @@ from rest_framework.response import Response
 
 from Emails.choices import CommentType
 from Emails.factories.email import SuggestionEmailFactory as SuggestionEmail
+from Emails.models import Suggestion
 from Emails.serializers import SuggestionEmailSerializer
 from Users.models import User
 
@@ -15,21 +16,20 @@ from Users.models import User
 CREATED = status.HTTP_201_CREATED
 
 
-class EmailViewSet(viewsets.ViewSet):
+class SuggestionViewSet(viewsets.ViewSet):
     """
     API endpoint that allows users to create a suggestion email
     """
+    PERMISSIONS = [IsAuthenticated]
 
-    @action(
-        detail=False, methods=['post'], permission_classes=[IsAuthenticated]
-    )
-    def suggestion(self, request):
+    @action(detail=False, methods=['post'], permission_classes=PERMISSIONS)
+    def submit(self, request):
         type = request.data.get('type')
         if type.upper() not in CommentType.names:
             raise ParseError('Invalid type of suggestion')
         content = request.data.get('content')
         user = User.objects.get(id=request.user.id)
-        email = SuggestionEmail(type=type, content=content, user=user)
-        email.send()
-        data = SuggestionEmailSerializer(email).data
+        suggestion = SuggestionEmail(type=type, content=content, user=user)
+        suggestion.send()
+        data = SuggestionEmailSerializer(suggestion).data
         return Response(data=data, status=CREATED)
