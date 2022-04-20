@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 
 from Emails.factories.block import BlockFactory
 from Emails.factories.email import EmailFactory
+from Emails.factories.email import SuggestionEmailFactory
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 
@@ -135,6 +136,31 @@ class TestEmailModel:
         email.send()
         assert email.was_sent is True
         assert len(mail.outbox) == 1
+
+
+@pytest.mark.django_db
+class TestSuggestionModel:
+    """
+    As all the functions are an abstract class inherit in the Email model, we
+    only test the attributes of this model, as all the functions are tested
+    """
+    def test_email_attributes(self):
+        type = "ERROR"
+        user = UserFaker()
+        content = "This is the content"
+        email = SuggestionEmailFactory(type=type, content=content, user=user)
+        dict_keys = email.__dict__.keys()
+        attributes = [attribute for attribute in dict_keys]
+        assert 'user_id' in attributes
+        assert 'subject' in attributes
+        assert 'header' in attributes
+        assert 'is_test' not in attributes
+        assert 'to_all_users' not in attributes
+        assert 'to' in attributes
+        assert 'programed_send_date' not in attributes
+        assert 'sent_date' in attributes
+        assert 'was_sent' in attributes
+        assert 'was_read' in attributes
 
 
 @pytest.mark.django_db
