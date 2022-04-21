@@ -32,8 +32,8 @@ class AbstractEmailClass(models.Model):
         return f'{self.id} | {self.subject}'
 
     def get_emails(self):
-        is_test = getattr(self, "is_test", None)
-        if getattr(self, "to_all_users", None) and not is_test:
+        is_test = getattr(self, 'is_test', None)
+        if getattr(self, 'to_all_users', None) and not is_test:
             return [f'{user.email}' for user in User.objects.all()]
         if is_test:
             return [f'{settings.TEST_EMAIL}']
@@ -69,6 +69,7 @@ class AbstractEmailClass(models.Model):
         self.save()
         log_information('sent', self)
 
+
 class Email(AbstractEmailClass):
     """
     Email model
@@ -97,20 +98,19 @@ class Suggestion(AbstractEmailClass):
     """
     Suggestion model
     """
+
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='suggestion', unique=False
     )
     subject = models.CharField(
         max_length=100,
         choices=CommentType.choices,
-        default=CommentType.SUGGESTION
+        default=CommentType.SUGGESTION,
     )
     header = models.CharField(max_length=100, null=True)
     blocks = models.ManyToManyField(Block, related_name='%(class)s_blocks')
     to = models.CharField(
-        max_length=100,
-        null=False,
-        default=settings.SUGGESTIONS_EMAIL
+        max_length=100, null=False, default=settings.SUGGESTIONS_EMAIL
     )
     sent_date = models.DateTimeField(null=True)
     was_sent = models.BooleanField(default=False, editable=False)

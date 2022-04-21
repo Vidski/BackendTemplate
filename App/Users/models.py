@@ -153,9 +153,7 @@ class Profile(models.Model):
         default=PreferredLanguageChoices.OTHER,
         null=True,
     )
-    birth_date = models.DateField(
-        'Birth date', null=True, auto_now_add=False
-    )
+    birth_date = models.DateField('Birth date', null=True, auto_now_add=False)
     created_at = models.DateTimeField('Creation date', auto_now_add=True)
     updated_at = models.DateTimeField('Update date', auto_now=True)
 

@@ -20,6 +20,7 @@ class SuggestionViewSet(viewsets.ViewSet):
     """
     API endpoint that allows users to create a suggestion email
     """
+
     PERMISSIONS = [IsAuthenticated]
 
     @action(detail=False, methods=['post'], permission_classes=PERMISSIONS)

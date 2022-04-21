@@ -89,7 +89,7 @@ class SuggestionEmailFactory(factory.django.DjangoModelFactory):
     to = settings.SUGGESTIONS_EMAIL
 
     @factory.post_generation
-    def header (self, create, extracted, **kwargs):
+    def header(self, create, extracted, **kwargs):
         self.header = (
             f'{self.subject.split("||")[0][:-1]}'
             + f' {settings.SUGGESTIONS_EMAIL_HEADER}'
@@ -108,7 +108,7 @@ class SuggestionEmailFactory(factory.django.DjangoModelFactory):
             content=content,
             show_link=True,
             link_text=settings.SUGGESTIONS_EMAIL_LINK_TEXT,
-            link=f'{settings.URL}/api/suggestions/{self.id}/read/'
+            link=f'{settings.URL}/api/suggestions/{self.id}/read/',
         )
         self.blocks.add(block)
 

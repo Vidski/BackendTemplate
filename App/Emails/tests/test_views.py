@@ -66,6 +66,7 @@ class TestSuggestionViews:
         assert len(mail.outbox) == 0
         assert email_count == 0
 
+
 @pytest.mark.django_db
 class TestReadSuggestionViews:
 
@@ -82,7 +83,6 @@ class TestReadSuggestionViews:
         url = f'{BASE_ENDPOINT}/{pk}/{self.ACTION}/'
         response = client.post(url, format='json')
         assert response.status_code == 401
-
 
     def test_suggestion_creates_email_as_authenticate_user(self, client):
         normal_user = VerifiedUserFaker()

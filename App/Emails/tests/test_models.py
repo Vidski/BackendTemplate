@@ -144,10 +144,11 @@ class TestSuggestionModel:
     As all the functions are an abstract class inherit in the Email model, we
     only test the attributes of this model, as all the functions are tested
     """
+
     def test_email_attributes(self):
-        type = "ERROR"
+        type = 'ERROR'
         user = UserFaker()
-        content = "This is the content"
+        content = 'This is the content'
         email = SuggestionEmailFactory(type=type, content=content, user=user)
         dict_keys = email.__dict__.keys()
         attributes = [attribute for attribute in dict_keys]
