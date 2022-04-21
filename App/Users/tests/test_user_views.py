@@ -172,7 +172,7 @@ class TestUserListEndpoint:
         client.force_authenticate(user=admin_user)
         response = client.get(f'{ENDPOINT}/', format='json')
         assert response.status_code == 200
-        assert len(response.data) == 1
+        assert len(response.data['results']) == 1
 
 
 @pytest.mark.django_db

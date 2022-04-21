@@ -7,6 +7,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from App.pagination import ListResultsSetPagination
 from App.permissions import IsActionAllowed
 from App.permissions import IsAdmin
 from App.permissions import IsProfileOwner
@@ -39,6 +40,7 @@ class UserViewSet(viewsets.GenericViewSet):
     normal_user_permissions = IsAuthenticated & IsVerified & IsUserOwner
     admin_user_permissions = IsAuthenticated & IsAdmin
     permission_classes = [normal_user_permissions | admin_user_permissions]
+    pagination_class = ListResultsSetPagination
 
     def list(self, request):
         """
@@ -47,9 +49,14 @@ class UserViewSet(viewsets.GenericViewSet):
         if not request.user.is_admin:
             raise PermissionDenied("You don't have permission")
         users = self.queryset.order_by('-created_at')
-        serializer = UserSerializer(users, many=True)
-        data = serializer.data
-        return Response(data, status=SUCCESS)
+        page = self.paginate_queryset(users)
+        if page is not None:
+            serializer = UserSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        else:
+            serializer = UserSerializer(users, many=True)
+            data = serializer.data
+            return Response(data, status=SUCCESS)
 
     def retrieve(self, request, pk=None):
         """
