@@ -44,7 +44,7 @@ class TestBlockFakers:
         assert block.link == 'test.com'
 
 @pytest.mark.django_db
-class TestBlockFakers:
+class TestSuggestionFakers:
     def test_block_faker_creates_block(self):
         assert Block.objects.count() == 0
         assert Suggestion.objects.count() == 0
