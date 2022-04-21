@@ -10,7 +10,7 @@ EQUALS = is equivalent to
 SETTINGS_FLAG = --settings=App.settings.django.${SETTINGS}_settings
 TEST_SETTINGS = SETTINGS=test
 SETTINGS_FLAG_TEXT = --settings=App.settings.django.<SETTINGS>_settings
-PYTEST_SETTINGS = --reuse-db --ds=App.settings.django.test_settings -W ignore::django.utils.deprecation.RemovedInDjango41Warning
+PYTEST_SETTINGS = --reuse-db --ds=App.settings.django.test_settings -W ignore::django.utils.deprecation.RemovedInDjango41Warning -p no:cacheprovider
 COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
 COVERAGE_WITH_HTML_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html
 
