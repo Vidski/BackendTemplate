@@ -35,7 +35,7 @@ class UserViewSet(viewsets.GenericViewSet):
     API endpoint that allows to interact with User model
     """
 
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('-created_at')
     serializer_class = UserSerializer
     normal_user_permissions = IsAuthenticated & IsVerified & IsUserOwner
     admin_user_permissions = IsAuthenticated & IsAdmin
@@ -48,15 +48,13 @@ class UserViewSet(viewsets.GenericViewSet):
         """
         if not request.user.is_admin:
             raise PermissionDenied("You don't have permission")
-        users = self.queryset.order_by('-created_at')
-        page = self.paginate_queryset(users)
+        page = self.paginate_queryset(self.queryset)
         if page is not None:
             serializer = UserSerializer(page, many=True)
             return self.get_paginated_response(serializer.data)
-        else:
-            serializer = UserSerializer(users, many=True)
-            data = serializer.data
-            return Response(data, status=SUCCESS)
+        serializer = UserSerializer(self.queryset, many=True)
+        data = serializer.data
+        return Response(data, status=SUCCESS)
 
     def retrieve(self, request, pk=None):
         """
