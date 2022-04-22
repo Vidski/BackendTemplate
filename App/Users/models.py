@@ -75,7 +75,14 @@ class User(
     )
     first_name = models.CharField('First name', null=False, max_length=50)
     last_name = models.CharField('Last name', null=False, max_length=50)
-    phone_number = PhoneNumberField('Phone number', null=True, max_length=22)
+    phone_number = PhoneNumberField(
+        'Phone number',
+        null=True,
+        blank=True,
+        max_length=22,
+        unique=True,
+        error_messages={'unique': 'This number already exists.'},
+    )
     is_verified = models.BooleanField('Verified', default=False)
     is_premium = models.BooleanField('Premium', default=False)
     is_admin = models.BooleanField('Admin', default=False)

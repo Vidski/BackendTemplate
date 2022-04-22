@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('email', models.EmailField(error_messages={'unique': 'This email already exists.'}, max_length=254, unique=True, verbose_name='Email address')),
                 ('first_name', models.CharField(max_length=50, verbose_name='First name')),
                 ('last_name', models.CharField(max_length=50, verbose_name='Last name')),
-                ('phone_number', phonenumber_field.modelfields.PhoneNumberField(max_length=22, null=True, region=None, verbose_name='Phone number')),
+                ('phone_number', phonenumber_field.modelfields.PhoneNumberField(blank=True, error_messages={'unique': 'This number already exists.'}, max_length=22, null=True, region=None, unique=True, verbose_name='Phone number')),
                 ('is_verified', models.BooleanField(default=False, verbose_name='Verified')),
                 ('is_premium', models.BooleanField(default=False, verbose_name='Premium')),
                 ('is_admin', models.BooleanField(default=False, verbose_name='Admin')),
