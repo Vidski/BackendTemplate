@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 
-from App.settings.jazzmin_settings import *
+from App.settings.jet_settings import *
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -29,8 +29,9 @@ URL = ''
 FRONTEND_URL = ''
 
 SPECIAL_APPS = [
-    'jazzmin',
-]  # Jazzmin needs to charge before the admin app
+    'jet.dashboard',
+    'jet',
+]  # Jet needs to charge before the admin app
 
 DJANGO_APPS = [
     'django.contrib.admin',

@@ -25,12 +25,13 @@ from drf_spectacular.views import SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.views import TokenRefreshView
 
-from App.views import CustomView
-
 
 urlpatterns = [
+    # Django JET URLS
+    path('jet/', include('jet.urls', 'jet')),
+    # Django JET dashboard URLS
+    path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),
     path('admin/', admin.site.urls),
-    path('home/admin/', admin.site.admin_view(CustomView.as_view())),
     path('api/', include(('Users.urls', 'users'), namespace='users')),
     path('api/', include(('Emails.urls', 'emails'), namespace='emails')),
     path(
