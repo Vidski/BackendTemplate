@@ -11,6 +11,23 @@ from Users.models import Profile
 from Users.models import User
 
 
+# Sets the admin logo
+logo_url = 'http://localhost:8000/static/logo.png'
+admin.site.site_header = format_html(
+    '<img src={url} height=50 width=50>', url=logo_url
+)
+
+
+# Sets the admin 'view site' url
+site_url = settings.FRONTEND_URL
+admin.site.site_url = site_url
+
+
+# Sets the global admin titles
+admin.site.site_title = settings.APP_NAME
+admin.site.index_title = 'Home'
+
+
 # remove these lines if you want these models on admin
 admin.site.unregister(Group)
 admin.site.unregister(ResetPasswordToken)
