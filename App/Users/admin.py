@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
@@ -23,7 +24,7 @@ class UserAdmin(BaseUserAdmin):
     list_display_links = ('id', 'email')
     list_filter = ('is_admin', 'is_verified', 'is_premium')
     fieldsets = (
-        (None, {'fields': ('id', 'email', 'password')}),
+        ('General', {'fields': ('id', 'email', 'password')}),
         (
             'Personal info',
             {'fields': ('first_name', 'last_name', 'phone_number')},
@@ -37,14 +38,13 @@ class UserAdmin(BaseUserAdmin):
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
         (
-            None,
+            'General',
             {
                 'classes': ('wide',),
                 'fields': (
                     'email',
                     'first_name',
                     'last_name',
-                    'phone_number',
                     'password1',
                     'password2',
                 ),
@@ -61,7 +61,7 @@ class ProfileAdmin(admin.ModelAdmin):
     list_display_links = ('nickname',)
     list_filter = ('gender', 'birth_date')
     fieldsets = (
-        (None, {'fields': ('user',)}),
+        ('User', {'fields': ('user',)}),
         ('Personal info', {'fields': ('image', 'birth_date', 'gender')},),
         ('Account info', {'fields': ('nickname', 'bio')}),
     )
