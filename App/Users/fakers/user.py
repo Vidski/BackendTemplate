@@ -1,3 +1,5 @@
+import factory
+
 from Users.factories.user import UserFactory
 
 
@@ -8,6 +10,7 @@ class UserFaker(UserFactory):
 
 class VerifiedUserFaker(UserFaker):
     email = 'normalverifieduser@appname.me'
+    phone_number = factory.Faker('msisdn')
     is_verified = True
 
 
