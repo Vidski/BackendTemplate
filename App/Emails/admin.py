@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from Emails.models import Block
 from Emails.models import Email
+from Emails.models import Suggestion
 
 
 class BlockAdmin(admin.ModelAdmin):
@@ -48,5 +49,29 @@ class EmailAdmin(admin.ModelAdmin):
     ordering = ('to_all_users', 'is_test', 'was_sent', 'sent_date', 'to')
 
 
+class SuggestionAdmin(admin.ModelAdmin):
+    model = Suggestion
+    list_display = (
+        'id',
+        'user',
+        'get_subject_display',
+        'was_sent',
+        'was_read',
+    )
+    list_filter = ('subject', 'user', 'was_read', 'was_sent')
+
+    fieldsets = (
+        ('Content', {'fields': ('id', 'user', 'subject', 'header')}),
+        ('Blocks', {'fields': ('blocks',)}),
+        ('Configuration', {'fields': ('to', 'was_read', 'was_sent')},),
+        ('Sent information', {'fields': ('sent_date',)}),
+    )
+    # list_display_links = ('id', 'subject')
+    readonly_fields = ['id', 'was_sent', 'sent_date']
+    # search_fields = ('to', 'id', 'subject', 'programed_send_date')
+    # ordering = ('to_all_users', 'is_test', 'was_sent', 'sent_date', 'to')
+
+
 admin.site.register(Email, EmailAdmin)
 admin.site.register(Block, BlockAdmin)
+admin.site.register(Suggestion, SuggestionAdmin)
