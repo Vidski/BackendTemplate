@@ -174,7 +174,9 @@ class TestUserListEndpoint:
         assert response.status_code == 200
         assert len(response.data['results']) == 1
 
-    def test_list_users_is_successful_as_an_admin_user_paginating(self, client):
+    def test_list_users_is_successful_as_an_admin_user_paginating(
+        self, client
+    ):
         user = UserFaker()
         admin_user = AdminFaker()
         client.force_authenticate(user=admin_user)
