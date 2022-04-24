@@ -69,5 +69,35 @@ JET_SIDE_MENU_ITEMS = [
                 'url_blank': True
             },
         ]
-    }
+    },
+    {
+        'label': ('Others'),
+        'items': [
+            {
+                'label': 'Grafana',
+                'url': 'http://localhost:3000/',
+                'url_blank': True
+            },
+            {
+                'label': 'Prometheus',
+                'url': 'http://localhost:9090/',
+                'url_blank': True
+            },
+            {
+                'label': 'RabbitMQ',
+                'url': 'http://localhost:15672/',
+                'url_blank': True
+            },
+            {
+                'label': 'Flower',
+                'url': 'http://localhost:5555/',
+                'url_blank': True
+            },
+            {
+                'label': 'CloudBeaver',
+                'url': 'http://localhost:8081/',
+                'url_blank': True
+            },
+        ],
+    },
 ]
