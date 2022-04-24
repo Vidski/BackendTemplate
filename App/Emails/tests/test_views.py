@@ -2,7 +2,7 @@ import pytest
 from django.core import mail
 from rest_framework.test import APIClient
 
-from Emails.factories.email import SuggestionEmailFactory
+from Emails.factories.suggestion import SuggestionEmailFactory
 from Emails.models import Suggestion
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker

@@ -6,7 +6,7 @@ from django.template.loader import render_to_string
 
 from Emails.factories.block import BlockFactory
 from Emails.factories.email import EmailFactory
-from Emails.factories.email import SuggestionEmailFactory
+from Emails.factories.suggestion import SuggestionEmailFactory
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 

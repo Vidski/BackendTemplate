@@ -5,8 +5,8 @@ from django.core.management.base import BaseCommand
 from tqdm import tqdm
 from tqdm import trange as progress
 
-from Emails.factories.email import SuggestionEmailFactory
 from Emails.factories.email import VerifyEmailFactory
+from Emails.factories.suggestion import SuggestionEmailFactory
 from Users.factories.profile import ProfileFactory
 from Users.factories.user import UserFactory
 

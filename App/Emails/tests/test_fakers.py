@@ -3,7 +3,7 @@ from django.conf import settings
 
 from Emails.fakers.block import BlockTestFaker
 from Emails.fakers.email import EmailTestFaker
-from Emails.fakers.email import SuggestionErrorFaker
+from Emails.fakers.suggestion import SuggestionErrorFaker
 from Emails.models import Block
 from Emails.models import Email
 from Emails.models import Suggestion

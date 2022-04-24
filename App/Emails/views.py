@@ -7,7 +7,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from Emails.choices import CommentType
-from Emails.factories.email import SuggestionEmailFactory as SuggestionEmail
+from Emails.factories.suggestion import (
+    SuggestionEmailFactory as SuggestionEmail,
+)
 from Emails.models import Suggestion
 from Emails.serializers import SuggestionEmailSerializer
 from Users.models import User

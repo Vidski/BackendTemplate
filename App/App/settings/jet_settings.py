@@ -1,5 +1,6 @@
 from django.utils.html import format_html
 
+
 """
 JET Documentation: https://django-jet-reboot.readthedocs.io/
 """
