@@ -1,9 +1,6 @@
-import io
-import sys
-from contextlib import redirect_stdout
-
+import pytest
 from django.core.management import call_command
-from django.test import TestCase
+from django.test import override_settings
 
 from App.management.commands.populate_db import Command as PopulateCommand
 from Emails.models import Email
@@ -16,11 +13,17 @@ from Users.models import User
 COMMAND = 'populate_db'
 
 
-class TestPopulateCommand(TestCase):
-    def setUp(self):
-        User.objects.all().delete()
-        Email.objects.all().delete()
-        Profile.objects.all().delete()
+@pytest.mark.django_db
+class TestPopulateCommand:
+    @override_settings(ENVIRONMENT_NAME='production')
+    def test_populate_db_command_fails_on_non_dev_mode(self, caplog):
+        caplog.clear()
+        call_command(COMMAND, '-i', '5')
+        message = (
+            'This command creates fake data do NOT run '
+            + 'this in production environments'
+        )
+        assert [message] == [record.message for record in caplog.records]
 
     def test_create_fake_users(self):
         command = PopulateCommand()
