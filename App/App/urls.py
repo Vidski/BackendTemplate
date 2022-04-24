@@ -62,7 +62,7 @@ urlpatterns = [
         r'media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}
     ),
     path(
-        "favicon.ico",
-        RedirectView.as_view(url=staticfiles_storage.url("favicon.ico")),
+        'favicon.ico',
+        RedirectView.as_view(url=staticfiles_storage.url('favicon.ico')),
     ),
 ]

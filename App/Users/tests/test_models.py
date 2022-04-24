@@ -62,6 +62,7 @@ class TestUserModel:
         assert user.has_module_perms('Emails') == False
         assert user.has_module_perms('Logs') == False
 
+
 @pytest.mark.django_db
 class TestProfileModel:
     def test_model_has_attributes(self):
