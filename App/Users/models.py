@@ -115,9 +115,6 @@ class User(
         else:
             return object.user.id == self.id
 
-    def has_module_perms(self, app_label):
-        return True
-
     def verify(self):
         self.is_verified = True
         self.save()

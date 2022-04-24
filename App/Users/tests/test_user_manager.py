@@ -24,12 +24,17 @@ class TestUsersManagers:
     def test_create_user_fails_with_email_and_without_password(self):
         User = get_user_model()
         with pytest.raises(TypeError):
-            User.objects.create_user(email='email@test.com', password="")
+            User.objects.create_user(email='email@test.com', password='')
 
-    def test_create_user_fails_with_email_without_password(self):
+    def test_create_user_fails_without_email_with_all_data(self):
         User = get_user_model()
-        with pytest.raises(TypeError):
-            User.objects.create_user(email='', password='foo')
+        with pytest.raises(ValueError):
+            User.objects.create_user(
+                email=None,
+                first_name='test_name',
+                last_name='test_last_name',
+                password='test_password',
+            )
 
     def test_create_superuser(self):
         User = get_user_model()
