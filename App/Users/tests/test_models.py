@@ -4,6 +4,7 @@ from Users.factories.profile import ProfileFactory
 from Users.factories.user import UserFactory
 from Users.fakers.profile import AdultProfileFaker
 from Users.fakers.profile import KidProfileFaker
+from Users.fakers.user import AdminFaker
 from Users.utils import generate_user_verification_token
 
 
@@ -49,6 +50,17 @@ class TestUserModel:
         has_permission = user.has_permission(user)
         assert has_permission == True
 
+    def test_has_module_perms_as_admin(self):
+        user = AdminFaker()
+        assert user.has_module_perms('Users') == True
+        assert user.has_module_perms('Emails') == True
+        assert user.has_module_perms('Logs') == True
+
+    def test_has_module_perms_as_not_admin(self):
+        user = UserFactory()
+        assert user.has_module_perms('Users') == False
+        assert user.has_module_perms('Emails') == False
+        assert user.has_module_perms('Logs') == False
 
 @pytest.mark.django_db
 class TestProfileModel:

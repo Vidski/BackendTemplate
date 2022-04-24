@@ -106,7 +106,7 @@ class User(
     def create_profile(self):
         Profile.objects.create(user=self)
 
-    def has_perm(self, perm, obj=None):
+    def has_perm(self, permission, object=None):
         return self.is_admin
 
     def has_permission(self, object=None):
@@ -114,6 +114,9 @@ class User(
             return object.id == self.id
         else:
             return object.user.id == self.id
+
+    def has_module_perms(self, app_label):
+        return self.is_admin
 
     def verify(self):
         self.is_verified = True
