@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.staticfiles.storage import staticfiles_storage
 from django.urls import include
 from django.urls import path
 from django.urls import re_path
+from django.views.generic.base import RedirectView
 from django.views.static import serve
 from drf_spectacular.views import SpectacularAPIView
 from drf_spectacular.views import SpectacularRedocView
@@ -58,5 +60,9 @@ urlpatterns = [
     path("", include('django_prometheus.urls'), name='django-prometheus'),
     re_path(
         r'media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}
+    ),
+    path(
+        "favicon.ico",
+        RedirectView.as_view(url=staticfiles_storage.url("favicon.ico")),
     ),
 ]
