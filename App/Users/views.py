@@ -25,7 +25,6 @@ from Users.utils import verify_user_query_token
 
 SUCCESS = status.HTTP_200_OK
 CREATED = status.HTTP_201_CREATED
-UPDATED = status.HTTP_202_ACCEPTED
 DELETED = status.HTTP_204_NO_CONTENT
 NOT_FOUND = status.HTTP_404_NOT_FOUND
 
@@ -74,7 +73,7 @@ class UserViewSet(viewsets.GenericViewSet):
         user = serializer.update(instance, request.data)
         data = UserSerializer(user).data
         log_information('updated', user)
-        return Response(data, status=UPDATED)
+        return Response(data, status=SUCCESS)
 
     def destroy(self, request, pk=None):
         """
@@ -120,7 +119,7 @@ class UserViewSet(viewsets.GenericViewSet):
         user.verify()
         data = {'user': UserLoginSerializer(user).data}
         log_information('verified', user)
-        return JsonResponse(data, status=UPDATED)
+        return JsonResponse(data, status=SUCCESS)
 
 
 class ProfileViewSet(viewsets.ModelViewSet):

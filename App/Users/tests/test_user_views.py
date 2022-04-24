@@ -286,7 +286,7 @@ class TestUserUpdateEndpoint:
         response = client.put(
             f'{ENDPOINT}/{normal_user.id}/', data, format='json'
         )
-        assert response.status_code == 202
+        assert response.status_code == 200
         normal_user.refresh_from_db()
         assert normal_user.email == data['email']
         assert normal_user.phone_number == data['phone_number']
@@ -379,7 +379,7 @@ class TestUserUpdateEndpoint:
         response = client.put(
             f'{ENDPOINT}/{normal_user.id}/', data, format='json'
         )
-        assert response.status_code == 202
+        assert response.status_code == 200
         normal_user.refresh_from_db()
         assert normal_user.check_password(data['password']) is True
 
@@ -402,7 +402,7 @@ class TestUserUpdateEndpoint:
         response = client.put(
             f'{ENDPOINT}/{normal_user.id}/', data, format='json'
         )
-        assert response.status_code == 202
+        assert response.status_code == 200
         normal_user.refresh_from_db()
         assert normal_user.email == data['email']
         assert normal_user.phone_number == data['phone_number']
@@ -433,7 +433,7 @@ class TestUserUpdateEndpoint:
         response = client.put(
             f'{ENDPOINT}/{normal_user.id}/', data, format='json'
         )
-        assert response.status_code == 202
+        assert response.status_code == 200
         normal_user.refresh_from_db()
         assert normal_user.email == data['email']
         assert normal_user.phone_number == data['phone_number']
@@ -533,7 +533,7 @@ class TestUserVerifyEndpoint:
         response = client.get(
             f'{ENDPOINT}/{normal_user.id}/verify/?token={token}'
         )
-        assert response.status_code == 202
+        assert response.status_code == 200
         normal_user.refresh_from_db()
         assert normal_user.is_verified is True
         assert Profile.objects.count() == 1
