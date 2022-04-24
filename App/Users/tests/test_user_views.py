@@ -174,6 +174,23 @@ class TestUserListEndpoint:
         assert response.status_code == 200
         assert len(response.data['results']) == 1
 
+    def test_list_users_is_successful_as_an_admin_user_paginating(self, client):
+        user = UserFaker()
+        admin_user = AdminFaker()
+        client.force_authenticate(user=admin_user)
+        url = f'{ENDPOINT}/?page=1&page_size=1'
+        response = client.get(url, format='json')
+        assert response.status_code == 200
+        assert len(response.data['results']) == 1
+        admin_name = admin_user.first_name
+        assert response.data['results'][0]['first_name'] == admin_name
+        url = f'{ENDPOINT}/?page=2&page_size=1'
+        response = client.get(url, format='json')
+        assert response.status_code == 200
+        assert len(response.data['results']) == 1
+        admin_name = user.first_name
+        assert response.data['results'][0]['first_name'] == admin_name
+
 
 @pytest.mark.django_db
 class TestUserGetEndpoint:

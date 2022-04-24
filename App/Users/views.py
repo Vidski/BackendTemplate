@@ -45,15 +45,9 @@ class UserViewSet(viewsets.GenericViewSet):
         """
         API endpoint that allows to list all users
         """
-        if not request.user.is_admin:
-            raise PermissionDenied("You don't have permission")
         page = self.paginate_queryset(self.queryset)
-        if page is not None:
-            serializer = UserSerializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = UserSerializer(self.queryset, many=True)
-        data = serializer.data
-        return Response(data, status=SUCCESS)
+        serializer = UserSerializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
     def retrieve(self, request, pk=None):
         """
