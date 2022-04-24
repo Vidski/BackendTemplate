@@ -21,7 +21,7 @@ class TestUserFakers:
         assert User.objects.count() == 1
         assert user.name is not None
         assert user.email == 'normaluser@appname.me'
-        assert user.phone_number is not '+1123123123'
+        assert str(user.phone_number) == '+1123123123'
         assert user.password is not None
         assert user.check_password('password') is True
         assert user.is_admin is False
@@ -33,7 +33,7 @@ class TestUserFakers:
         assert User.objects.count() == 1
         assert user.name is not None
         assert user.email == 'normalverifieduser@appname.me'
-        assert user.phone_number is not '+1123123123'
+        assert str(user.phone_number)[0] == '+'
         assert user.password is not None
         assert user.check_password('password') is True
         assert user.is_admin is False
@@ -45,7 +45,7 @@ class TestUserFakers:
         assert User.objects.count() == 1
         assert user.name is not None
         assert user.email == 'adminuser@appname.me'
-        assert user.phone_number is not '+1123123124'
+        assert str(user.phone_number) == '+1123123124'
         assert user.password is not None
         assert user.check_password('password') is True
         assert user.is_admin is True
