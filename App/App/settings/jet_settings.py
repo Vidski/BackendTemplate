@@ -61,14 +61,14 @@ JET_SIDE_MENU_ITEMS = [
             {
                 'label': format_html(swagger_label_with_icon),
                 'url': '/docs/swagger/',
-                'url_blank': True
+                'url_blank': True,
             },
             {
                 'label': format_html(redoc_label_with_icon),
                 'url': '/docs/redoc/',
-                'url_blank': True
+                'url_blank': True,
             },
-        ]
+        ],
     },
     {
         'label': ('Others'),
@@ -76,27 +76,27 @@ JET_SIDE_MENU_ITEMS = [
             {
                 'label': 'Grafana',
                 'url': 'http://localhost:3000/',
-                'url_blank': True
+                'url_blank': True,
             },
             {
                 'label': 'Prometheus',
                 'url': 'http://localhost:9090/',
-                'url_blank': True
+                'url_blank': True,
             },
             {
                 'label': 'RabbitMQ',
                 'url': 'http://localhost:15672/',
-                'url_blank': True
+                'url_blank': True,
             },
             {
                 'label': 'Flower',
                 'url': 'http://localhost:5555/',
-                'url_blank': True
+                'url_blank': True,
             },
             {
                 'label': 'CloudBeaver',
                 'url': 'http://localhost:8081/',
-                'url_blank': True
+                'url_blank': True,
             },
         ],
     },

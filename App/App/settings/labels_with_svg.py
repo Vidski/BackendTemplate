@@ -112,7 +112,7 @@ swagger_label_with_icon = (
 )
 
 redoc_label_with_icon = (
-   f'<svg xmlns="http://www.w3.org/2000/svg" version="1.0" {icon_dimensions} vi'
+    f'<svg xmlns="http://www.w3.org/2000/svg" version="1.0" {icon_dimensions} vi'
     + 'ewBox="0 0 100.000000 100.000000" preserveAspectRatio="xMidYMid meet"><g'
     + ' xmlns="http://www.w3.org/2000/svg" transform="translate(0.000000,100.00'
     + '0000) scale(0.100000,-0.100000)" fill="#000000" stroke="none"><path d="M'
