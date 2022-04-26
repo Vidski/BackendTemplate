@@ -66,10 +66,10 @@ class SuggestionAdmin(admin.ModelAdmin):
         ('Configuration', {'fields': ('to', 'was_read', 'was_sent')},),
         ('Sent information', {'fields': ('sent_date',)}),
     )
-    # list_display_links = ('id', 'subject')
+    list_display_links = ('id', 'user')
     readonly_fields = ['id', 'was_sent', 'sent_date']
-    # search_fields = ('to', 'id', 'subject', 'programed_send_date')
-    # ordering = ('to_all_users', 'is_test', 'was_sent', 'sent_date', 'to')
+    search_fields = ('id', 'user')
+    ordering = ('was_sent', 'was_read')
 
 
 admin.site.register(Email, EmailAdmin)

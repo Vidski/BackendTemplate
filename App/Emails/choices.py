@@ -2,7 +2,7 @@ from django.db import models
 
 
 class CommentType(models.TextChoices):
-    SUGGESTION = ('S', 'Suggestion')
-    BUG = ('B', 'Bug')
-    ERROR = ('E', 'Error')
-    OTHER = ('O', 'Other')
+    SUGGESTION = ('S', 'SUGGESTION')
+    BUG = ('B', 'BUG')
+    ERROR = ('E', 'ERROR')
+    OTHER = ('O', 'OTHER')
