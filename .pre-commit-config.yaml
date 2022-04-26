@@ -9,6 +9,7 @@ repos:
         entry: oitnb
         args: [--icons, --line-length=79, --check]
         files: ^App/
+        exclude: ^migrations/
         require_serial: true
         additional_dependencies: ['oitnb==0.2.2']
         always_run: false
@@ -21,6 +22,7 @@ repos:
         entry: isort
         args: [--known-local-folder=App/, --skip-glob=**/migrations/*, --lai=2, --sl, --check]
         files: ^App/
+        exclude: ^migrations/
         require_serial: true
         additional_dependencies: ['isort==5.10.1']
         always_run: false
