@@ -58,12 +58,29 @@ class TestPopulateCommand:
         assert User.objects.all().count() == 2
         assert Suggestion.objects.all().count() == 2
 
-    def test_command(self):
+    def test_create_admin_user(self):
+        command = PopulateCommand()
+        assert User.objects.filter(is_admin=True).count() == 0
+        command.create_admin_user()
+        assert User.objects.filter(is_admin=True).count() == 1
+
+    def test_command_without_admin_flag(self):
         assert User.objects.all().count() == 0
         assert Email.objects.all().count() == 0
         assert Profile.objects.all().count() == 0
         assert Suggestion.objects.all().count() == 0
         call_command(COMMAND, '-i', '5')
+        assert User.objects.all().count() == 6
+        assert Email.objects.all().count() == 5
+        assert Profile.objects.all().count() == 5
+        assert Suggestion.objects.all().count() == 5
+
+    def test_command_with_admin_flag_in_false(self):
+        assert User.objects.all().count() == 0
+        assert Email.objects.all().count() == 0
+        assert Profile.objects.all().count() == 0
+        assert Suggestion.objects.all().count() == 0
+        call_command(COMMAND, '-i', '5', '-n')
         assert User.objects.all().count() == 5
         assert Email.objects.all().count() == 5
         assert Profile.objects.all().count() == 5

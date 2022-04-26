@@ -20,22 +20,29 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('-i', '--instances', type=int, default=50)
+        parser.add_argument(
+            '-n', '--no-admin', dest='admin', action='store_false'
+        )
+        parser.set_defaults(admin=True)
 
     def handle(self, *args, **options):
-        instances = options['instances']
         if settings.ENVIRONMENT_NAME in ['dev', 'local', 'test']:
-            self.populate(instances)
+            instances = options['instances']
+            create_admin = options['admin']
+            self.populate(instances, create_admin)
         else:
             logger.critical(
                 'This command creates fake data do NOT run this in'
                 + ' production environments'
             )
 
-    def populate(self, instances):
+    def populate(self, instances, create_admin):
         users = self.create_fake_users(instances)
         self.create_fake_verify_emails(users)
         self.create_fake_profiles(users)
         self.create_fake_suggestions(users)
+        if create_admin:
+            self.create_admin_user()
 
     def create_fake_users(self, instances):
         self.stdout.write('Creating fake users')
@@ -71,3 +78,13 @@ class Command(BaseCommand):
                 SuggestionEmailFactory(type=type, content=content, user=user)
                 progress_bar.update(1)
         self.stdout.write('Fake profiles created')
+
+    def create_admin_user(self):
+        self.stdout.write('Creating admin user')
+        UserFactory(
+            is_admin=True,
+            email='admin@admin.com',
+            password='adminpassword',
+            is_verified=True,
+        )
+        self.stdout.write('Admin user created')
