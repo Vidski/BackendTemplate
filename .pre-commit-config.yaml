@@ -1,5 +1,5 @@
 fail_fast: true
-exclude: ^migrations/
+exclude: /migrations/*
 repos:
   - repo: local # Use a local repository
     hooks:
@@ -9,7 +9,7 @@ repos:
         entry: oitnb
         args: [--icons, --line-length=79, --check,  --exclude=/migrations/*]
         files: ^App/
-        exclude: ^migrations/
+        exclude: /migrations/*
         require_serial: true
         additional_dependencies: ['oitnb==0.2.2']
         always_run: false
@@ -22,7 +22,7 @@ repos:
         entry: isort
         args: [--known-local-folder=App/, --skip-glob=**/migrations/*, --lai=2, --sl, --check]
         files: ^App/
-        exclude: ^migrations/
+        exclude: /migrations/*
         require_serial: true
         additional_dependencies: ['isort==5.10.1']
         always_run: false
