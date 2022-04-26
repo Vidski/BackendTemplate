@@ -72,7 +72,7 @@ class TestPopulateCommand:
         call_command(COMMAND, '-i', '5')
         assert User.objects.all().count() == 6
         assert Email.objects.all().count() == 5
-        assert Profile.objects.all().count() == 5
+        assert Profile.objects.all().count() == 6
         assert Suggestion.objects.all().count() == 5
 
     def test_command_with_admin_flag_in_false(self):
