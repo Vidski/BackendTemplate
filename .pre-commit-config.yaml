@@ -11,18 +11,19 @@ repos:
         files: ^App/
         require_serial: true
         additional_dependencies: ['oitnb==0.2.2']
-        always_run: true
+        always_run: false
         language: python
         language_version: python3
 
       - id: imports
         name: Sort imports
         description: Isort your imports, so you don't have to
-        entry: isort .
+        entry: isort
         args: [--known-local-folder=App/, --skip-glob=**/migrations/*, --lai=2, --sl, --check]
         files: ^App/
         require_serial: true
         additional_dependencies: ['isort==5.10.1']
-        always_run: true
+        always_run: false
         language: python
         language_version: python3
+        verbose: true
