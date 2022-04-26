@@ -7,7 +7,7 @@ repos:
         name: Lint code
         description: Orange is the new black code linter
         entry: oitnb
-        args: [--icons, --line-length=79, --check]
+        args: [--icons, --line-length=79, --check,  --exclude=/migrations/*]
         files: ^App/
         exclude: ^migrations/
         require_serial: true
