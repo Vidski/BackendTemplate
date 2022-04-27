@@ -171,10 +171,10 @@ class TestBlockFactories:
 @pytest.mark.django_db
 class TestSuggestionFactory:
     def test_suggestion_email_factory_raises_exception_without_user(self):
-        type = 'ERROR'
+        type = 'Wrong Type'
         assert Suggestion.objects.count() == 0
         assert Block.objects.count() == 0
-        with pytest.raises(IntegrityError):
+        with pytest.raises(ParseError):
             SuggestionEmailFactory(type=type)
 
     def test_suggestion_email_factory_raises_exception_due_wrong_type(self):

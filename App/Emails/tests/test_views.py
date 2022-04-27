@@ -2,6 +2,7 @@ import pytest
 from django.core import mail
 from rest_framework.test import APIClient
 
+from Emails.choices import CommentType
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Emails.models import Suggestion
 from Users.fakers.user import UserFaker
@@ -17,7 +18,7 @@ BASE_ENDPOINT = '/api/suggestions'
 
 
 @pytest.mark.django_db
-class TestSuggestionViews:
+class TestSubmitSuggestionViews:
 
     ACTION = 'submit'
     ENDPOINT = f'{BASE_ENDPOINT}/{ACTION}/'
@@ -34,7 +35,8 @@ class TestSuggestionViews:
         email_count = Suggestion.objects.all().count()
         assert len(mail.outbox) == 0
         assert email_count == 0
-        data = {'type': 'ERROR', 'content': 'Error found'}
+        type = CommentType.ERROR.label
+        data = {'type': type, 'content': 'Error found'}
         client.force_authenticate(user=normal_user)
         response = client.post(self.ENDPOINT, data, format='json')
         email_count = Suggestion.objects.all().count()
@@ -46,7 +48,7 @@ class TestSuggestionViews:
         block = Suggestion.objects.first().blocks.first()
         assert [block.id] == response.data['blocks']
         assert 'Error found' == response.data['content']
-        assert len(mail.outbox) == 0
+        assert len(mail.outbox) == 1
         assert email_count == 1
 
     def test_suggestion_fails_as_authenticate_user_because_wrong_type(
@@ -74,7 +76,7 @@ class TestReadSuggestionViews:
 
     def test_read_suggestion_fails_as_unauthenticate_user(self, client):
         user = UserFaker()
-        type = 'ERROR'
+        type = CommentType.ERROR.value
         content = 'Error found'
         suggestion = SuggestionEmailFactory(
             type=type, content=content, user=user
@@ -88,7 +90,7 @@ class TestReadSuggestionViews:
         normal_user = VerifiedUserFaker()
         client.force_authenticate(user=normal_user)
         user = UserFaker()
-        type = 'ERROR'
+        type = CommentType.ERROR.value
         content = 'Error found'
         suggestion = SuggestionEmailFactory(
             type=type, content=content, user=user

@@ -1,6 +1,7 @@
 import pytest
 from django.conf import settings
 
+from Emails.choices import CommentType
 from Emails.fakers.block import BlockTestFaker
 from Emails.fakers.email import EmailTestFaker
 from Emails.fakers.suggestion import SuggestionErrorFaker
@@ -46,13 +47,13 @@ class TestBlockFakers:
 
 @pytest.mark.django_db
 class TestSuggestionFakers:
-    def test_block_faker_creates_block(self):
+    def test_suggestion_faker_creates_suggestion(self):
         assert Block.objects.count() == 0
         assert Suggestion.objects.count() == 0
         suggestion = SuggestionErrorFaker()
         assert Block.objects.count() == 1
         assert Suggestion.objects.count() == 1
-        assert suggestion.subject == 'Test subject'
+        assert suggestion.subject == CommentType.SUGGESTION.value
         assert suggestion.header == 'Test header'
         assert suggestion.to == f'{settings.SUGGESTIONS_EMAIL}'
         assert suggestion.blocks.first() is not None
