@@ -5,6 +5,7 @@ from django.core.management.base import BaseCommand
 from tqdm import tqdm
 from tqdm import trange as progress
 
+from Emails.choices import CommentType
 from Emails.factories.email import VerifyEmailFactory
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Users.factories.profile import ProfileFactory
@@ -71,7 +72,7 @@ class Command(BaseCommand):
 
     def create_fake_suggestions(self, users):
         self.stdout.write('Creating fake suggestions')
-        type = 'SUGGESTION'
+        type = CommentType.SUGGESTION.value
         content = 'This is a fake suggestion'
         with tqdm(total=len(users)) as progress_bar:
             for user in users:
