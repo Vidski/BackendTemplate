@@ -105,7 +105,7 @@ class Suggestion(AbstractEmailClass):
     subject = models.CharField(
         max_length=100,
         choices=CommentType.choices,
-        default=CommentType.SUGGESTION,
+        default=CommentType.SUGGESTION.value,
     )
     header = models.CharField(max_length=100, null=True)
     blocks = models.ManyToManyField(Block, related_name='%(class)s_blocks')

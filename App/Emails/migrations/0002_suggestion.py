@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('subject', models.CharField(choices=[('S', 'SUGGESTION'), ('B', 'BUG'), ('E', 'ERROR'), ('O', 'OTHER')], default='S', max_length=100)),
                 ('header', models.CharField(max_length=100, null=True)),
-                ('to', models.CharField(default='', max_length=100)),
+                ('to', models.CharField(default='test@suggestion.email', max_length=100)),
                 ('sent_date', models.DateTimeField(null=True)),
                 ('was_sent', models.BooleanField(default=False, editable=False)),
                 ('was_read', models.BooleanField(default=False)),
