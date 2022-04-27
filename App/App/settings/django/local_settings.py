@@ -50,6 +50,7 @@ EMAIL_PORT = ''
 
 # Email settings
 TEST_EMAIL = 'test@ing.email'
+SUGGESTIONS_EMAIL = 'test@suggestion.email'
 
 # Verify email settings
 VERIFY_EMAIL_URL = f'{URL}/api/users'
