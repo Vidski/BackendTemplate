@@ -19,7 +19,18 @@ repos:
         name: Sort imports
         description: Isort your imports, so you don't have to
         entry: isort
-        args: [--known-local-folder=App/, --skip-glob='**/migrations/*', --lai=2, --sl, --check, --diff, --use-parentheses]
+        args: [
+          --known-local-folder=App/,
+          --skip-glob='**/migrations/*',
+          --lai=2,
+          --sl,
+          --check,
+          --diff,
+          --use-parentheses,
+          --trailing-comma
+          --force-grid-wrap=0,
+          --multi-line=3
+        ]
         files: ^App/
         exclude: /migrations/*
         require_serial: true
