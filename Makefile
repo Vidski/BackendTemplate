@@ -13,6 +13,8 @@ SETTINGS_FLAG_TEXT = --settings=App.settings.django.<SETTINGS>_settings
 PYTEST_SETTINGS = --reuse-db --ds=App.settings.django.test_settings -W ignore::django.utils.deprecation.RemovedInDjango41Warning -p no:cacheprovider
 COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
 COVERAGE_WITH_HTML_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html
+OITNB_SETTINGS = --exclude /migrations/* --icons --line-length=79
+ISORT_SETTINGS = --skip-glob=**/migrations/* --lai=2 --sl --use-parentheses --trailing-comma --force-grid-wrap=0 --multi-line=3
 
 up:
 	${DOCKER_FILE} up
@@ -106,17 +108,17 @@ logs:
 database:
 	${DOCKER_FILE} exec database mysql -u${DBUSER} -p${DBPASSWORD}
 
-format:
-	${COMMAND} "oitnb . --exclude /migrations/* --icons --line-length=79"
+lint:
+	${COMMAND} "oitnb . ${OITNB_SETTINGS}"
 
-check-format:
-	${COMMAND} "oitnb --check . --exclude /migrations/* --icons --line-length=79"
+check-lint:
+	${COMMAND} "oitnb --check . ${OITNB_SETTINGS}"
 
-sort-imports:
-	${COMMAND} "isort . --skip-glob=**/migrations/* --lai=2 --sl"
+order-imports:
+	${COMMAND} "isort . ${ISORT_SETTINGS}"
 
 check-imports-order:
-	${COMMAND} "isort . --skip-glob=**/migrations/* --lai=2 --sl --check"
+	${COMMAND} "isort . ${ISORT_SETTINGS} --check"
 
 help:
 	@echo ""
@@ -226,17 +228,17 @@ help:
 	@echo " • database: Open a mysql shell"
 	@echo "   ↳ ${EQUALS} < ${DOCKER_FILE} exec database mysql -u<DBUSER> -p<DBPASSWORD> >"
 	@echo ""
-	@echo " • format: Format the code"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} 'oitnb . --exclude /migrations/* --icons --line-length=79' >"
+	@echo " • lint: Format the code"
+	@echo "   ↳ ${EQUALS} < ${COMMAND} 'oitnb . ${OITNB_SETTINGS}' >"
 	@echo ""
-	@echo " • check-format: Check the code for formatting"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} 'oitnb --check . --exclude /migrations/* --icons --line-length=79' >"
+	@echo " • check-lint: Check the code for formatting"
+	@echo "   ↳ ${EQUALS} < ${COMMAND} 'oitnb --check . ${OITNB_SETTINGS}' >"
 	@echo ""
-	@echo " • sort-imports: Sort the imports according PEP 8 and PEP 328"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} 'isort . --skip-glob=**/migrations/* --lai=2 --sl' >"
+	@echo " • order-imports: Sort the imports according PEP 8 and PEP 328"
+	@echo "   ↳ ${EQUALS} < ${COMMAND} 'isort . ${ISORT_SETTINGS}' >"
 	@echo ""
 	@echo " • check-imports-order: Check the order of the imports according PEP 8 and PEP 328"
-	@echo "   ↳ ${EQUALS} < ${COMMAND} 'isort . --skip-glob=**/migrations/* --lai=2 --sl --check' >"
+	@echo "   ↳ ${EQUALS} < ${COMMAND} 'isort . ${ISORT_SETTINGS} --check' >"
 	@echo ""
 	@echo " • help: Show this help"
 	@echo ""
