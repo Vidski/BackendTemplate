@@ -46,6 +46,7 @@ class SuggestionEmailFactory(factory.django.DjangoModelFactory):
 
 
 def get_subject_for_suggestion(suggestion_type, content):
-    if suggestion_type not in CommentType.names:
+    valid_types = CommentType.values + CommentType.labels
+    if suggestion_type not in valid_types:
         raise ParseError('Type not allowed')
     return f'{suggestion_type} || {content.replace("||", "")}'
