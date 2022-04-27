@@ -54,7 +54,7 @@ class SuggestionAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'user',
-        'get_subject_display',
+        'subject',
         'was_sent',
         'was_read',
     )
