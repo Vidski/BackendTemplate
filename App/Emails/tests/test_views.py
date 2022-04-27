@@ -35,7 +35,7 @@ class TestSubmitSuggestionViews:
         email_count = Suggestion.objects.all().count()
         assert len(mail.outbox) == 0
         assert email_count == 0
-        type = CommentType.ERROR.label
+        type = CommentType.ERROR.value
         data = {'type': type, 'content': 'Error found'}
         client.force_authenticate(user=normal_user)
         response = client.post(self.ENDPOINT, data, format='json')
@@ -62,7 +62,7 @@ class TestSubmitSuggestionViews:
         client.force_authenticate(user=normal_user)
         response = client.post(self.ENDPOINT, data, format='json')
         email_count = Suggestion.objects.all().count()
-        expected_error_message = 'Invalid type of suggestion'
+        expected_error_message = 'Type not allowed'
         assert response.status_code == 400
         assert expected_error_message in response.data['detail']
         assert len(mail.outbox) == 0

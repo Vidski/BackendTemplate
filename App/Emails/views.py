@@ -2,13 +2,12 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from Emails.choices import CommentType
-from Emails.factories.suggestion import \
-    SuggestionEmailFactory as SuggestionEmail
+from Emails.factories.suggestion import (
+    SuggestionEmailFactory as SuggestionEmail,
+)
 from Emails.models import Suggestion
 from Emails.serializers import SuggestionEmailSerializer
 from Users.models import User
@@ -27,8 +26,6 @@ class SuggestionViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['post'], permission_classes=PERMISSIONS)
     def submit(self, request):
         type = request.data.get('type')
-        if type.upper() not in CommentType.names:
-            raise ParseError('Invalid type of suggestion')
         content = request.data.get('content')
         user = User.objects.get(id=request.user.id)
         suggestion = SuggestionEmail(type=type, content=content, user=user)
