@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name='Suggestion',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('subject', models.CharField(choices=[('S', 'SUGGESTION'), ('B', 'BUG'), ('E', 'ERROR'), ('O', 'OTHER')], default='S', max_length=100)),
+                ('subject', models.CharField(choices=[('SUGGESTION', 'Suggestion'), ('BUG', 'Bug'), ('ERROR', 'Error'), ('OTHER', 'Other')], default='SUGGESTION', max_length=100)),
                 ('header', models.CharField(max_length=100, null=True)),
                 ('to', models.CharField(default='test@suggestion.email', max_length=100)),
                 ('sent_date', models.DateTimeField(null=True)),
