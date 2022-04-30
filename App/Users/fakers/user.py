@@ -4,7 +4,7 @@ from Users.factories.user import UserFactory
 
 
 class UserFaker(UserFactory):
-    phone_number = '+1123123123'
+    phone_number = factory.Faker('msisdn')
 
 
 class VerifiedUserFaker(UserFaker):
@@ -13,6 +13,6 @@ class VerifiedUserFaker(UserFaker):
 
 
 class AdminFaker(UserFactory):
-    phone_number = '+1123123124'
+    phone_number = factory.Faker('msisdn')
     is_admin = True
     is_verified = True
