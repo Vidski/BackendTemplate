@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from App.pagination import ListResultsSetPagination
 from Emails.factories.suggestion import (
     SuggestionEmailFactory as SuggestionEmail,
 )
@@ -16,12 +17,14 @@ from Users.models import User
 CREATED = status.HTTP_201_CREATED
 
 
-class SuggestionViewSet(viewsets.ViewSet):
+class SuggestionViewSet(viewsets.GenericViewSet):
     """
     API endpoint that allows users to create a suggestion email
     """
 
     PERMISSIONS = [IsAuthenticated]
+    queryset = Suggestion.objects.all()
+    pagination_class = ListResultsSetPagination
 
     @action(detail=False, methods=['post'], permission_classes=PERMISSIONS)
     def submit(self, request):
@@ -40,3 +43,11 @@ class SuggestionViewSet(viewsets.ViewSet):
         suggestion.save()
         data = SuggestionEmailSerializer(suggestion).data
         return Response(data=data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['get'], permission_classes=PERMISSIONS)
+    def user(self, request):
+        user_id = request.GET.get('user_id', request.user.id)
+        suggestions = Suggestion.objects.filter(user_id=user_id)
+        page = self.paginate_queryset(suggestions)
+        data = SuggestionEmailSerializer(page, many=True).data
+        return self.get_paginated_response(data)
