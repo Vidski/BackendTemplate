@@ -5,6 +5,7 @@ from mock import PropertyMock
 from App.permissions import IsActionAllowed
 from App.permissions import IsAdmin
 from App.permissions import IsProfileOwner
+from App.permissions import IsSameUserId
 from App.permissions import IsUserOwner
 from App.permissions import IsVerified
 from Users.fakers.user import AdminFaker
@@ -73,6 +74,37 @@ class TestIsUserOwnerPermission:
         type(request).user = mocked_requester
         type(request).parser_context = mocked_kwargs
         assert IsUserOwner().has_permission(request, None) is True
+
+
+@pytest.mark.django_db
+class TestIsSameUserId:
+    def test_returns_false_if_user_id_in_url_is_not_the_requester_id(self):
+        user = VerifiedUserFaker()
+        requester = VerifiedUserFaker()
+        request = MagicMock()
+        kwargs = {'user_id': user.id}
+        mocked_url_kwargs = PropertyMock(return_value=kwargs)
+        type(request).GET = mocked_url_kwargs
+        mocked_requester = PropertyMock(return_value=requester)
+        type(request).user = mocked_requester
+        assert IsSameUserId().has_permission(request, None) is False
+
+    def test_returns_true_if_user_id_in_url_is_the_requester_id(self):
+        requester = VerifiedUserFaker()
+        request = MagicMock()
+        kwargs = {'user_id': requester.id}
+        mocked_url_kwargs = PropertyMock(return_value=kwargs)
+        type(request).GET = mocked_url_kwargs
+        mocked_requester = PropertyMock(return_value=requester)
+        type(request).user = mocked_requester
+        assert IsSameUserId().has_permission(request, None) is True
+
+    def test_returns_true_without_user_id_in_url(self):
+        requester = VerifiedUserFaker()
+        request = MagicMock()
+        mocked_requester = PropertyMock(return_value=requester)
+        type(request).user = mocked_requester
+        assert IsSameUserId().has_permission(request, None) is True
 
 
 @pytest.mark.django_db

@@ -32,6 +32,16 @@ class IsUserOwner(BasePermission):
         return request.user.has_permission(user)
 
 
+class IsSameUserId(BasePermission):
+    message = "You don't have permission"
+
+    def has_permission(self, request, view):
+        url_user_id = request.GET.get('user_id', None)
+        if not url_user_id or not isinstance(url_user_id, int):
+            return True
+        return request.user.id == url_user_id
+
+
 class IsProfileOwner(DjangoObjectPermissions):
     message = "You don't have permission"
 
