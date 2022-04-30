@@ -17,7 +17,7 @@ from Users.models import User
 class TestUserFakers:
     def test_user_faker(self):
         assert User.objects.count() == 0
-        user = UserFaker()
+        user = UserFaker(email='normaluser@appname.me')
         assert User.objects.count() == 1
         assert user.name is not None
         assert user.email == 'normaluser@appname.me'
@@ -29,7 +29,7 @@ class TestUserFakers:
 
     def test_verified_user_faker(self):
         assert User.objects.count() == 0
-        user = VerifiedUserFaker()
+        user = VerifiedUserFaker(email='normalverifieduser@appname.me')
         assert User.objects.count() == 1
         assert user.name is not None
         assert user.email == 'normalverifieduser@appname.me'
@@ -41,7 +41,7 @@ class TestUserFakers:
 
     def test_admin_user_faker(self):
         assert User.objects.count() == 0
-        user = AdminFaker()
+        user = AdminFaker(email='adminuser@appname.me')
         assert User.objects.count() == 1
         assert user.name is not None
         assert user.email == 'adminuser@appname.me'
