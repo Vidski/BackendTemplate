@@ -17,7 +17,7 @@ class TestEmailUtils:
         assert len(mail.outbox) == 0
         send_email(email_type, user)
         emails = Email.objects.all().count()
-        assert emails == 1
+        assert emails == 0
         assert len(mail.outbox) == 1
 
     def test_reset_password_verify_email(self):
@@ -29,5 +29,5 @@ class TestEmailUtils:
         assert len(mail.outbox) == 0
         send_email(email_type, instance)
         emails = Email.objects.all().count()
-        assert emails == 1
+        assert emails == 0
         assert len(mail.outbox) == 1
