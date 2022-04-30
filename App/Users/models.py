@@ -171,7 +171,7 @@ class Profile(models.Model):
         if not self.birth_date:
             return None
         adultness = datetime.now() - relativedelta(years=18)
-        return datetime.strptime(self.birth_date, '%Y-%m-%d') < adultness
+        return self.birth_date < adultness.date()
 
 
 @receiver(reset_password_token_created)
