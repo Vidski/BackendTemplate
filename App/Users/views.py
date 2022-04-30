@@ -123,10 +123,11 @@ class ProfileViewSet(viewsets.ModelViewSet):
     create and destroy will be triggered when verify/delete the user instance
     """
 
-    queryset = Profile.objects.all()
+    queryset = Profile.objects.all().order_by('-created_at')
     lookup_url_kwarg = 'pk'
     serializer_class = ProfileSerializer
     normal_user_permissions = IsVerified & IsProfileOwner & IsActionAllowed
     admin_user_permissions = IsAdmin
     permissions = normal_user_permissions | admin_user_permissions
     permission_classes = [IsAuthenticated & permissions]
+    pagination_class = ListResultsSetPagination

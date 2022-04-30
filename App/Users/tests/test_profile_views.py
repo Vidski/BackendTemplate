@@ -49,7 +49,8 @@ class TestProfileListEndpoint:
         client.force_authenticate(user=user)
         response = client.get(f'{ENDPOINT}/', format='json')
         assert response.status_code == 200
-        assert len(response.data) == Profile.objects.count()
+        assert len(response.data['results']) == Profile.objects.count()
+        assert response.data['count'] == Profile.objects.count()
 
 
 @pytest.mark.django_db
