@@ -87,10 +87,22 @@ class TestReadSuggestionViews:
         response = client.post(url, format='json')
         assert response.status_code == 401
 
-    def test_suggestion_creates_email_as_authenticate_user(self, client):
-        normal_user = VerifiedUserFaker()
-        client.force_authenticate(user=normal_user)
+    def test_read_suggestion_fails_as_unverified_user(self, client):
         user = UserFaker()
+        client.force_authenticate(user=user)
+        type = CommentType.ERROR.value
+        content = 'Error found'
+        suggestion = SuggestionEmailFactory(
+            type=type, content=content, user=user
+        )
+        pk = suggestion.pk
+        url = f'{BASE_ENDPOINT}/{pk}/{self.ACTION}/'
+        response = client.post(url, format='json')
+        assert response.status_code == 403
+
+    def test_suggestion_is_read_as_admin(self, client):
+        user = AdminFaker()
+        client.force_authenticate(user=user)
         type = CommentType.ERROR.value
         content = 'Error found'
         suggestion = SuggestionEmailFactory(
