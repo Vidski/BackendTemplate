@@ -37,7 +37,7 @@ class IsSameUserId(BasePermission):
 
     def has_permission(self, request, view):
         url_user_id = request.GET.get('user_id', None)
-        if not url_user_id or not isinstance(url_user_id, int):
+        if not url_user_id or not isinstance(url_user_id, str):
             return True
         return request.user.id == url_user_id
 

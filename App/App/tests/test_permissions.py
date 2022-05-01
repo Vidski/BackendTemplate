@@ -82,7 +82,7 @@ class TestIsSameUserId:
         user = VerifiedUserFaker()
         requester = VerifiedUserFaker()
         request = MagicMock()
-        kwargs = {'user_id': user.id}
+        kwargs = {'user_id': f'{user.id}'}
         mocked_url_kwargs = PropertyMock(return_value=kwargs)
         type(request).GET = mocked_url_kwargs
         mocked_requester = PropertyMock(return_value=requester)
@@ -104,6 +104,8 @@ class TestIsSameUserId:
         request = MagicMock()
         mocked_requester = PropertyMock(return_value=requester)
         type(request).user = mocked_requester
+        mocked_url_kwargs = PropertyMock(return_value={})
+        type(request).GET = mocked_url_kwargs
         assert IsSameUserId().has_permission(request, None) is True
 
 
