@@ -6,6 +6,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from App.pagination import ListResultsSetPagination
+from App.permissions import IsAdmin
+from App.permissions import IsSameUserId
 from Emails.factories.suggestion import (
     SuggestionEmailFactory as SuggestionEmail,
 )
@@ -23,7 +25,8 @@ class SuggestionViewSet(viewsets.GenericViewSet):
     """
 
     PERMISSIONS = [IsAuthenticated]
-    queryset = Suggestion.objects.all()
+    LIST_PERMISSIONS = [IsAuthenticated & (IsAdmin | IsSameUserId)]
+    queryset = Suggestion.objects.all().order_by('-id')
     pagination_class = ListResultsSetPagination
 
     @action(detail=False, methods=['post'], permission_classes=PERMISSIONS)
@@ -44,7 +47,7 @@ class SuggestionViewSet(viewsets.GenericViewSet):
         data = SuggestionEmailSerializer(suggestion).data
         return Response(data=data, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['get'], permission_classes=PERMISSIONS)
+    @action(detail=False, methods=['get'], permission_classes=LIST_PERMISSIONS)
     def user(self, request):
         user_id = request.GET.get('user_id', request.user.id)
         suggestions = Suggestion.objects.filter(user_id=user_id)
