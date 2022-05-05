@@ -233,9 +233,10 @@ class TestUserLoginSerializer:
         serializer = UserLoginSerializer()
         data = {'email': 'normaluser@appname.me', 'password': 'password'}
         serializer.validate(data)
-        actual_user, token = serializer.create(data)
-        assert actual_user == user
-        assert token is not None
+        data = serializer.create(data)
+        assert data['user'] == user
+        assert data['token'] is not None
+        assert data['refresh_token'] is not None
 
 
 @pytest.mark.django_db

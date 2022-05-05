@@ -5,6 +5,7 @@ from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from rest_framework.validators import UniqueValidator
+from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from Emails.utils import send_email
@@ -186,8 +187,13 @@ class UserLoginSerializer(UserAuthSerializer):
     def create(self, data):
         user = self.context['user']
         refresh = RefreshToken.for_user(user)
-        token = refresh.access_token
-        return {'user': user, 'token': str(token)}
+        refresh_token = refresh.access_token
+        token = AccessToken.for_user(user)
+        return {
+            'user': user,
+            'refresh_token': str(refresh_token),
+            'token': str(token),
+        }
 
     class Meta:
         model = User

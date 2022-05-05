@@ -97,8 +97,9 @@ class UserViewSet(viewsets.GenericViewSet):
         """
         serializer = UserLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user, token = serializer.save()
-        data = {'user': UserLoginSerializer(user).data, 'token': token}
+        data = serializer.save()
+        user = data['user']
+        data['user'] = UserLoginSerializer(user).data
         log_information('logged in', user)
         return JsonResponse(data, status=SUCCESS)
 
