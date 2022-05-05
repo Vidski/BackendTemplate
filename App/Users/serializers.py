@@ -187,7 +187,7 @@ class UserLoginSerializer(UserAuthSerializer):
         user = self.context['user']
         refresh = RefreshToken.for_user(user)
         token = refresh.access_token
-        return user, str(token)
+        return {'user': user, 'token': str(token)}
 
     class Meta:
         model = User
