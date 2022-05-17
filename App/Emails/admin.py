@@ -29,11 +29,10 @@ class EmailAdmin(admin.ModelAdmin):
         'id',
         'subject',
         'to',
-        'to_all_users',
         'is_test',
         'was_sent',
     )
-    list_filter = ('to', 'to_all_users', 'is_test', 'was_sent')
+    list_filter = ('to', 'is_test', 'was_sent')
     fieldsets = (
         ('Content', {'fields': ('id', 'subject', 'header', 'to')}),
         ('Blocks', {'fields': ('blocks',)}),
@@ -46,7 +45,7 @@ class EmailAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'subject')
     readonly_fields = ['id', 'was_sent', 'sent_date']
     search_fields = ('to', 'id', 'subject', 'programed_send_date')
-    ordering = ('to_all_users', 'is_test', 'was_sent', 'sent_date', 'to')
+    ordering = ('is_test', 'was_sent', 'sent_date', 'to')
 
 
 class SuggestionAdmin(admin.ModelAdmin):
