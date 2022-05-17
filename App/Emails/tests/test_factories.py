@@ -1,5 +1,6 @@
 import pytest
 from django.conf import settings
+from django.db import transaction
 from django.db.utils import IntegrityError
 from django_rest_passwordreset.models import ResetPasswordToken
 from rest_framework.exceptions import ParseError
@@ -31,7 +32,6 @@ class TestEmailFactories:
         assert email.subject == 'Test subject'
         assert email.header == 'Test header'
         assert email.is_test is False
-        assert email.to_all_users is False
         assert email.to is not None
         assert email.programed_send_date is not None
         assert email.blocks is not None
@@ -61,8 +61,7 @@ class TestEmailFactories:
         assert email.subject == settings.RESET_PASSWORD_EMAIL_SUBJECT
         assert email.header == settings.RESET_PASSWORD_EMAIL_HEADER
         assert email.is_test is False
-        assert email.to_all_users is False
-        assert email.to == user.email
+        assert email.to == user
         assert email.programed_send_date is not None
         assert email.blocks is not None
         block = email.blocks.first()
@@ -76,8 +75,9 @@ class TestEmailFactories:
     def test_verify_email_factory_raises_exception(self):
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
-        with pytest.raises(AttributeError):
-            VerifyEmailFactory()
+        with pytest.raises(IntegrityError):
+            with transaction.atomic():
+                VerifyEmailFactory()
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
 
@@ -91,8 +91,7 @@ class TestEmailFactories:
         assert email.subject == settings.VERIFY_EMAIL_SUBJECT
         assert email.header == settings.VERIFY_EMAIL_HEADER
         assert email.is_test is False
-        assert email.to_all_users is False
-        assert email.to == user.email
+        assert email.to == user
         assert email.programed_send_date is not None
         assert email.blocks is not None
         block = email.blocks.first()
