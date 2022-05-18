@@ -55,7 +55,6 @@ class TestSuggestionFakers:
         assert Suggestion.objects.count() == 1
         assert suggestion.subject == CommentType.SUGGESTION.value
         assert suggestion.header == 'Test header'
-        assert suggestion.to == f'{settings.SUGGESTIONS_EMAIL}'
         assert suggestion.blocks.first() is not None
         block = suggestion.blocks.first()
         assert block.title == 'test'

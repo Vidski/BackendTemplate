@@ -202,7 +202,6 @@ class TestSuggestionFactory:
         assert suggestion.header == (
             f'ERROR {settings.SUGGESTIONS_EMAIL_HEADER} {user.id}'
         )
-        assert suggestion.to == settings.SUGGESTIONS_EMAIL
         assert suggestion.blocks.all() is not None
         block = suggestion.blocks.first()
         assert suggestion.header == block.title

@@ -133,7 +133,6 @@ class TestSuggestionModel:
         assert 'subject' in attributes
         assert 'header' in attributes
         assert 'is_test' not in attributes
-        assert 'to' in attributes
         assert 'programed_send_date' not in attributes
         assert 'sent_date' in attributes
         assert 'was_sent' in attributes
