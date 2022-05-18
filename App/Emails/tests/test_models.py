@@ -8,6 +8,7 @@ from Emails.factories.block import BlockFactory
 from Emails.factories.email import EmailFactory
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Users.fakers.user import AdminFaker
+from Users.fakers.user import EmailTestUserFaker
 from Users.fakers.user import UserFaker
 
 
@@ -20,8 +21,7 @@ class TestEmailModel:
         assert 'subject' in attributes
         assert 'header' in attributes
         assert 'is_test' in attributes
-        assert 'to_all_users' in attributes
-        assert 'to' in attributes
+        assert 'to_id' in attributes
         assert 'programed_send_date' in attributes
         assert 'sent_date' in attributes
         assert 'was_sent' in attributes
@@ -32,21 +32,23 @@ class TestEmailModel:
         assert str(email) == expected_str
 
     def test_save(self):
+        user = UserFaker()
         email = EmailFactory.build()
         email.programed_send_date = None
-        email.to = 'email@test.com, email2@test.com'
+        email.to = user
         email.is_test = False
         assert email.programed_send_date is None
-        assert email.to == 'email@test.com, email2@test.com'
+        assert email.to == user
         assert email.is_test is False
         email.save()
         assert email.programed_send_date is not None
-        assert email.to == 'email@test.com, email2@test.com'
+        assert email.to == user
 
     def test_saving_an_email_without_date(self):
+        user = UserFaker()
         email = EmailFactory.build()
         email.programed_send_date = None
-        email.to = 'email@test.com, email2@test.com'
+        email.to = user
         email.is_test = False
         assert email.programed_send_date is None
         assert email.is_test is False
@@ -54,55 +56,30 @@ class TestEmailModel:
         assert email.programed_send_date is not None
 
     def test_saving_an_email_with_emails(self):
+        user = UserFaker()
         email = EmailFactory.build()
-        email.to = 'email@test.com, email2@test.com'
+        email.to = user
         email.is_test = False
-        assert email.to == 'email@test.com, email2@test.com'
+        assert email.to == user
         assert email.is_test is False
         email.save()
-        assert email.to == 'email@test.com, email2@test.com'
+        assert email.to == user
 
     def test_saving_an_email_with_emails_as_test(self):
+        user = UserFaker()
         email = EmailFactory.build()
-        email.to = 'email@test.com, email2@test.com'
+        email.to = user
         email.is_test = True
-        assert email.to == 'email@test.com, email2@test.com'
+        assert email.to == user
         assert email.is_test is True
         email.save()
-        assert email.to == f'{settings.TEST_EMAIL}'
-
-    def test_saving_an_email_with_emails_to_all_users(self):
-        admin_user = AdminFaker()
-        normal_user = UserFaker()
-        email = EmailFactory.build()
-        email.to = 'email@test.com, email2@test.com'
-        email.is_test = False
-        email.to_all_users = True
-        assert email.to == 'email@test.com, email2@test.com'
-        assert email.is_test is False
-        assert email.to_all_users is True
-        email.save()
-        assert email.to == f'{admin_user}, {normal_user}'
-
-    def test_get_emails_with_emails(self):
-        email = EmailFactory(to='email@test.com, email2@test.com')
-        assert email.to == 'email@test.com, email2@test.com'
+        assert email.to == EmailTestUserFaker()
 
     def test_get_emails_with_emails_as_test(self):
-        email = EmailFactory(
-            to='email@test.com, email2@test.com', is_test=True
-        )
-        assert email.to == f'{settings.TEST_EMAIL}'
-
-    def test_get_emails_with_emails_to_all_users(self):
-        admin_user = AdminFaker()
-        normal_user = UserFaker()
-        email = EmailFactory(
-            to='email@test.com, email2@test.com',
-            is_test=False,
-            to_all_users=True,
-        )
-        assert email.to == f'{admin_user}, {normal_user}'
+        user = UserFaker()
+        email = EmailFactory(to=user, is_test=True)
+        assert email.to == EmailTestUserFaker()
+        assert user != EmailTestUserFaker()
 
     def test_get_emails_data_with_blocks(self):
         block = BlockFactory()
@@ -156,7 +133,6 @@ class TestSuggestionModel:
         assert 'subject' in attributes
         assert 'header' in attributes
         assert 'is_test' not in attributes
-        assert 'to_all_users' not in attributes
         assert 'to' in attributes
         assert 'programed_send_date' not in attributes
         assert 'sent_date' in attributes

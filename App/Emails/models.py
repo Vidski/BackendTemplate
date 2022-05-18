@@ -4,6 +4,7 @@ from django.utils import timezone
 
 from Emails.abstracts import AbstractEmailClass
 from Emails.choices import CommentType
+from Users.fakers.user import EmailTestUserFaker
 from Users.models import User
 
 
@@ -39,9 +40,11 @@ class Email(AbstractEmailClass):
     )
 
     def get_emails(self):
-        return self.to.email
+        return [self.to.email]
 
     def save(self, *args, **kwargs):
+        if self.is_test:
+            self.to = EmailTestUserFaker()
         if self.programed_send_date is None:
             now = timezone.now()
             five_minutes_from_now = now + timezone.timedelta(minutes=5)
