@@ -8,7 +8,6 @@ from Emails.factories.block import ResetPasswordBlockFactory
 from Emails.factories.block import VerifyEmailBlockFactory
 from Emails.models import Email
 from Users.factories.user import UserFactory
-from Users.models import User
 
 
 class EmailFactory(factory.django.DjangoModelFactory):
