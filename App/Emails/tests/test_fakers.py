@@ -8,6 +8,7 @@ from Emails.fakers.suggestion import SuggestionErrorFaker
 from Emails.models import Block
 from Emails.models import Email
 from Emails.models import Suggestion
+from Users.models import User
 
 
 @pytest.mark.django_db
@@ -21,8 +22,7 @@ class TestEmailFakers:
         assert email.subject == 'Test subject'
         assert email.header == 'Test header'
         assert email.is_test == True
-        assert email.to == f'{settings.TEST_EMAIL}'
-        assert email.to_all_users == False
+        assert isinstance(email.to, User)
         assert email.blocks.first() is not None
         block = email.blocks.first()
         assert block.title == 'test'
