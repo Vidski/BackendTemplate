@@ -2,8 +2,8 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
-from Emails.abstracts import AbstractEmailClass
 from Emails.choices import CommentType
+from Emails.models.abstracts import AbstractEmailClass
 from Users.fakers.user import EmailTestUserFaker
 from Users.models import User
 
@@ -29,12 +29,8 @@ class Email(AbstractEmailClass):
     """
 
     subject = models.CharField(max_length=100)
-    header = models.CharField(max_length=100, null=True)
-    blocks = models.ManyToManyField(Block, related_name='%(class)s_blocks')
     is_test = models.BooleanField(default=False)
     programed_send_date = models.DateTimeField(null=True)
-    sent_date = models.DateTimeField(null=True)
-    was_sent = models.BooleanField(default=False, editable=False)
     to = models.ForeignKey(
         User, on_delete=models.CASCADE, null=False, related_name='to_user'
     )
@@ -65,10 +61,6 @@ class Suggestion(AbstractEmailClass):
         choices=CommentType.choices,
         default=CommentType.SUGGESTION.value,
     )
-    header = models.CharField(max_length=100, null=True)
-    blocks = models.ManyToManyField(Block, related_name='%(class)s_blocks')
-    sent_date = models.DateTimeField(null=True)
-    was_sent = models.BooleanField(default=False, editable=False)
     was_read = models.BooleanField(default=False)
 
     def get_emails(self):

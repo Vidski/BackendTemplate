@@ -14,9 +14,9 @@ from Emails.factories.email import ResetEmailFactory
 from Emails.factories.email import VerifyEmailFactory
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Emails.factories.suggestion import get_subject_for_suggestion
-from Emails.models import Block
-from Emails.models import Email
-from Emails.models import Suggestion
+from Emails.models.models import Block
+from Emails.models.models import Email
+from Emails.models.models import Suggestion
 from Users.factories.user import UserFactory
 from Users.utils import generate_user_verification_token
 

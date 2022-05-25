@@ -5,9 +5,9 @@ from Emails.choices import CommentType
 from Emails.fakers.block import BlockTestFaker
 from Emails.fakers.email import EmailTestFaker
 from Emails.fakers.suggestion import SuggestionErrorFaker
-from Emails.models import Block
-from Emails.models import Email
-from Emails.models import Suggestion
+from Emails.models.models import Block
+from Emails.models.models import Email
+from Emails.models.models import Suggestion
 from Users.models import User
 
 

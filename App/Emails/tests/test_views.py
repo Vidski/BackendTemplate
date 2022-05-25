@@ -4,7 +4,7 @@ from rest_framework.test import APIClient
 
 from Emails.choices import CommentType
 from Emails.factories.suggestion import SuggestionEmailFactory
-from Emails.models import Suggestion
+from Emails.models.models import Suggestion
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker

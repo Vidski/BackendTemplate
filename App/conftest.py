@@ -1,7 +1,7 @@
 import pytest
 
-from Emails.models import Block
-from Emails.models import Email
+from Emails.models.models import Block
+from Emails.models.models import Email
 from Users.models import Profile
 from Users.models import User
 

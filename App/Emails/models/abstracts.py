@@ -9,7 +9,7 @@ from django.utils import timezone
 from App.utils import log_information
 
 
-class AbstractEmailClass(models.Model):
+class AbstractEmailFunctionClass(models.Model):
     class Meta:
         abstract = True
 
@@ -48,3 +48,12 @@ class AbstractEmailClass(models.Model):
         self.was_sent = True
         self.save()
         log_information('sent', self)
+
+
+class AbstractEmailClass(AbstractEmailFunctionClass):
+    header = models.CharField(max_length=100, null=True)
+    sent_date = models.DateTimeField(null=True)
+    was_sent = models.BooleanField(default=False, editable=False)
+    blocks = models.ManyToManyField(
+        'Emails.Block', related_name='%(class)s_blocks'
+    )
