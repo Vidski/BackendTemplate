@@ -36,7 +36,12 @@ class Email(AbstractEmailClass):
     )
 
     def get_emails(self):
-        return [self.to.email]
+        emails_in_blacklist = BlackList.objects.all().values_list(
+            'email', flat=True
+        )
+        if self.to.email not in emails_in_blacklist:
+            return [self.to.email]
+        self.delete()
 
     def save(self, *args, **kwargs):
         if self.is_test:
@@ -50,7 +55,7 @@ class Email(AbstractEmailClass):
 
 class Suggestion(AbstractEmailClass):
     """
-    Suggestion model
+    Suggestion model, emails that will be sent to admin suggestions email
     """
 
     user = models.ForeignKey(
@@ -65,3 +70,24 @@ class Suggestion(AbstractEmailClass):
 
     def get_emails(self):
         return [settings.SUGGESTIONS_EMAIL]
+
+
+class Notification(AbstractEmailClass):
+    """
+    Notification model, it creates an email for each user with this data
+    """
+
+    subject = models.CharField(max_length=100)
+    is_test = models.BooleanField(default=False)
+    programed_send_date = models.DateTimeField(null=True)
+
+    def send(self):
+        pass
+
+
+class BlackList(models.Model):
+    """
+    BlackList model, if an email is in this list, it will not be sent
+    """
+
+    email = models.EmailField(unique=True)
