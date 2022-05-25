@@ -114,10 +114,10 @@ lint:
 check-lint:
 	${COMMAND} "oitnb --check . ${OITNB_SETTINGS}"
 
-order-imports:
+sort-imports:
 	${COMMAND} "isort . ${ISORT_SETTINGS}"
 
-check-imports-order:
+check-sort-imports:
 	${COMMAND} "isort . ${ISORT_SETTINGS} --check"
 
 help:
@@ -234,10 +234,10 @@ help:
 	@echo " • check-lint: Check the code for formatting"
 	@echo "   ↳ ${EQUALS} < ${COMMAND} 'oitnb --check . ${OITNB_SETTINGS}' >"
 	@echo ""
-	@echo " • order-imports: Sort the imports according PEP 8 and PEP 328"
+	@echo " • sort-imports: Sort the imports according PEP 8 and PEP 328"
 	@echo "   ↳ ${EQUALS} < ${COMMAND} 'isort . ${ISORT_SETTINGS}' >"
 	@echo ""
-	@echo " • check-imports-order: Check the order of the imports according PEP 8 and PEP 328"
+	@echo " • check-sort-imports: Check the order of the imports according PEP 8 and PEP 328"
 	@echo "   ↳ ${EQUALS} < ${COMMAND} 'isort . ${ISORT_SETTINGS} --check' >"
 	@echo ""
 	@echo " • help: Show this help"
