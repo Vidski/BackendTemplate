@@ -9,6 +9,4 @@ def send_email(email_type, instance):
     elif email_type == 'reset_password':
         email = ResetEmailFactory(instance=instance)
     email.send()
-    email.blocks.all().delete()
-    email.delete()
     log_email_action(email_type, instance)
