@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
@@ -36,12 +37,7 @@ class Email(AbstractEmailClass):
     )
 
     def get_emails(self):
-        emails_in_blacklist = BlackList.objects.all().values_list(
-            'email', flat=True
-        )
-        if self.to.email not in emails_in_blacklist:
-            return [self.to.email]
-        self.delete()
+        return [self.to.email]
 
     def save(self, *args, **kwargs):
         if self.is_test:
@@ -82,7 +78,22 @@ class Notification(AbstractEmailClass):
     programed_send_date = models.DateTimeField(null=True)
 
     def send(self):
-        pass
+        if self.is_test:
+            self.create_email(EmailTestUserFaker())
+        for user in User.objects.all():
+            self.create_email(user)
+
+    def create_email(self, to):
+        email_factory = apps.get_model('Emails', 'Blacklist')
+        email_factory(
+            to=to,
+            subject=self.subject,
+            header=self.header,
+            is_test=self.is_test,
+            programed_send_date=self.programed_send_date,
+            sent_date=None,
+            blocks=self.blocks,
+        )
 
 
 class BlackList(models.Model):

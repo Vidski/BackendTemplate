@@ -1,5 +1,6 @@
 from abc import abstractmethod
 
+from django.apps import apps
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.db import models
@@ -41,13 +42,22 @@ class AbstractEmailFunctionClass(models.Model):
         email.fail_silently = False
         return email
 
+    def check_if_email_is_in_blacklist(self):
+        blacklist = apps.get_model('Emails', 'Blacklist')
+        is_email_in_blacklist = blacklist.objects.filter(
+            email__in=self.get_emails()
+        ).exists()
+        return is_email_in_blacklist
+
     def send(self):
-        email = self.get_email_object()
-        email.send()
-        self.sent_date = timezone.now()
-        self.was_sent = True
-        self.save()
-        log_information('sent', self)
+        is_email_in_blacklist = self.check_if_email_is_in_blacklist()
+        if not is_email_in_blacklist:
+            email = self.get_email_object()
+            email.send()
+            self.sent_date = timezone.now()
+            self.was_sent = True
+            self.save()
+            log_information('sent', self)
 
 
 class AbstractEmailClass(AbstractEmailFunctionClass):
