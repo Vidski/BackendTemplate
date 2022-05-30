@@ -18,9 +18,7 @@ class EmailFactory(factory.django.DjangoModelFactory):
     header = factory.Faker('word')
     is_test = False
     to = factory.SubFactory(UserFactory)
-    programed_send_date = factory.Faker(
-        'date_time', tzinfo=timezone.get_current_timezone()
-    )
+    programed_send_date = timezone.now() + timezone.timedelta(minutes=10)
     sent_date = factory.Faker(
         'date_time', tzinfo=timezone.get_current_timezone()
     )
