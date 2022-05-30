@@ -19,7 +19,7 @@ class AbstractEmailFunctionClass(models.Model):
 
     @abstractmethod
     def get_emails(self):
-        pass
+        raise ValueError('Abstract method, must be implemented in child class')
 
     def get_email_data(self):
         return {

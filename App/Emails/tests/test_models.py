@@ -8,13 +8,18 @@ from django.utils import timezone
 from Emails.factories.block import BlockFactory
 from Emails.factories.email import EmailFactory
 from Emails.factories.suggestion import SuggestionEmailFactory
-from Emails.models.abstracts import AbstractEmailFunctionClass
+from Emails.models.abstracts import AbstractEmailClass
 from Users.fakers.user import EmailTestUserFaker
 from Users.fakers.user import UserFaker
 
 
 @pytest.mark.django_db
 class TestEmailModel:
+    def test_get_emails_abstract_class_fails(self):
+        abstract = AbstractEmailClass()
+        with pytest.raises(ValueError):
+            abstract.get_emails()
+
     def test_email_attributes(self):
         email = EmailFactory()
         dict_keys = email.__dict__.keys()
