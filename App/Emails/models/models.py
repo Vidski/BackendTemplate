@@ -1,5 +1,6 @@
 from django.apps import apps
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
@@ -39,13 +40,19 @@ class Email(AbstractEmailClass):
     def get_emails(self):
         return [self.to.email]
 
+    def set_programed_send_date(self):
+        programmed_date = self.programed_send_date
+        if programmed_date and programmed_date <= timezone.now():
+            message = 'Programed send date must be future'
+            raise ValidationError(message, code='invalid')
+        if not programmed_date:
+            five_minutes_ahead = timezone.now() + timezone.timedelta(minutes=5)
+            self.programed_send_date = five_minutes_ahead
+
     def save(self, *args, **kwargs):
         if self.is_test:
             self.to = EmailTestUserFaker()
-        if self.programed_send_date is None:
-            now = timezone.now()
-            five_minutes_from_now = now + timezone.timedelta(minutes=5)
-            self.programed_send_date = five_minutes_from_now
+        self.set_programed_send_date()
         super(Email, self).save(*args, **kwargs)
 
 
