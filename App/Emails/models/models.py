@@ -1,9 +1,9 @@
-from django.apps import apps
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
+from Emails import factories
 from Emails.choices import CommentType
 from Emails.models.abstracts import AbstractEmailClass
 from Users.fakers.user import EmailTestUserFaker
@@ -86,20 +86,20 @@ class Notification(AbstractEmailClass):
 
     def send(self):
         if self.is_test:
-            self.create_email(EmailTestUserFaker())
-        for user in User.objects.all():
-            self.create_email(user)
+            self.create_email(to=EmailTestUserFaker())
+        else:
+            for user in User.objects.all():
+                self.create_email(user)
 
     def create_email(self, to):
-        email_factory = apps.get_model('Emails', 'Blacklist')
-        email_factory(
+        factories.email.EmailFactory(
             to=to,
             subject=self.subject,
             header=self.header,
             is_test=self.is_test,
             programed_send_date=self.programed_send_date,
             sent_date=None,
-            blocks=self.blocks,
+            blocks=self.blocks.all(),
         )
 
 
