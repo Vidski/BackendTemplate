@@ -5,6 +5,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils import timezone
 
+from Emails.factories.blacklist import BlackListFactory
 from Emails.factories.block import BlockFactory
 from Emails.factories.email import EmailFactory
 from Emails.factories.suggestion import SuggestionEmailFactory
@@ -126,6 +127,15 @@ class TestEmailModel:
         email.send()
         assert email.was_sent is True
         assert len(mail.outbox) == 1
+
+    def test_send_email_fails_because_is_in_blacklist(self):
+        assert len(mail.outbox) == 0
+        email = EmailFactory()
+        BlackListFactory(email=email.to.email)
+        with pytest.raises(ValueError):
+            email.send()
+        assert email.was_sent is False
+        assert len(mail.outbox) == 0
 
 
 @pytest.mark.django_db

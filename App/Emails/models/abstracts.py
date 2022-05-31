@@ -58,6 +58,8 @@ class AbstractEmailFunctionClass(models.Model):
             self.was_sent = True
             self.save()
             log_information('sent', self)
+        else:
+            raise ValueError('Email is in blacklist')
 
 
 class AbstractEmailClass(AbstractEmailFunctionClass):
