@@ -210,19 +210,27 @@ class TestNotificationModel:
     def test_send_notification_with_is_test_attribute_as_true(self):
         assert Email.objects.all().count() == 0
         notification = NotificationFactory(is_test=True)
+        assert notification.sent_date is None
+        assert notification.was_sent is False
         notification.send()
         assert Email.objects.all().count() == 1
         assert Email.objects.first().to == EmailTestUserFaker()
+        assert notification.sent_date is not None
+        assert notification.was_sent is True
 
     def test_send_notification_with_is_test_attribute_as_false(self):
         assert Email.objects.all().count() == 0
         first_user = UserFaker()
         second_user = UserFaker()
         notification = NotificationFactory(is_test=False)
+        assert notification.sent_date is None
+        assert notification.was_sent is False
         notification.send()
         assert Email.objects.all().count() == 2
         assert Email.objects.first().to == first_user
         assert Email.objects.last().to == second_user
+        assert notification.sent_date is not None
+        assert notification.was_sent is True
 
     def test_create_email(self):
         notification = NotificationFactory()
