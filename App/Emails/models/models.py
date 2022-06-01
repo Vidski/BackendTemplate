@@ -90,6 +90,9 @@ class Notification(AbstractEmailClass):
         else:
             for user in User.objects.all():
                 self.create_email(user)
+        self.sent_date = timezone.now()
+        self.was_sent = True
+        self.save()
 
     def create_email(self, to):
         factories.email.EmailFactory(
