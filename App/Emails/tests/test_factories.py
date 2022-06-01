@@ -12,10 +12,12 @@ from Emails.factories.block import VerifyEmailBlockFactory
 from Emails.factories.email import EmailFactory
 from Emails.factories.email import ResetEmailFactory
 from Emails.factories.email import VerifyEmailFactory
+from Emails.factories.notification import NotificationFactory
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Emails.factories.suggestion import get_subject_for_suggestion
 from Emails.models.models import Block
 from Emails.models.models import Email
+from Emails.models.models import Notification
 from Emails.models.models import Suggestion
 from Users.factories.user import UserFactory
 from Users.utils import generate_user_verification_token
@@ -228,3 +230,47 @@ class TestSuggestionFactory:
         type = 'ERROR'
         subject = get_subject_for_suggestion(type, content)
         assert subject == f'{type} || I found a bug '
+
+
+@pytest.mark.django_db
+class TestNotificationFactory:
+    def test_notification_factory_creates_notification_with_block(self):
+        assert Notification.objects.count() == 0
+        assert Block.objects.count() == 0
+        notification = NotificationFactory(
+            subject='Test subject', header='Test header',
+        )
+        assert Notification.objects.count() == 1
+        assert Block.objects.count() == 1
+        assert notification.subject == 'Test subject'
+        assert notification.header == 'Test header'
+        assert notification.is_test is False
+        assert notification.programed_send_date is not None
+        assert notification.blocks is not None
+        block = notification.blocks.first()
+        assert block.title is not None
+        assert block.content is not None
+        assert block.show_link is not None
+        assert block.link_text is not None
+        assert block.link is not None
+
+    def test_notification_factory_creates_notification_with_custom_block(self):
+        assert Notification.objects.count() == 0
+        assert Block.objects.count() == 0
+        block = BlockFactory()
+        notification = NotificationFactory(
+            subject='Test subject', header='Test header', blocks=[block]
+        )
+        assert Notification.objects.count() == 1
+        assert Block.objects.count() == 1
+        assert notification.subject == 'Test subject'
+        assert notification.header == 'Test header'
+        assert notification.is_test is False
+        assert notification.programed_send_date is not None
+        assert notification.blocks is not None
+        block = notification.blocks.first()
+        assert block.title is not None
+        assert block.content is not None
+        assert block.show_link is not None
+        assert block.link_text is not None
+        assert block.link is not None
