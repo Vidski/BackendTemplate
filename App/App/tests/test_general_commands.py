@@ -3,8 +3,8 @@ from django.core.management import call_command
 from django.test import override_settings
 
 from App.management.commands.populate_db import Command as PopulateCommand
-from Emails.models import Email
-from Emails.models import Suggestion
+from Emails.models.models import Email
+from Emails.models.models import Suggestion
 from Users.factories.user import UserFactory
 from Users.models import Profile
 from Users.models import User

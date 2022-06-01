@@ -62,6 +62,10 @@ class TestUserModel:
         assert user.has_module_perms('Emails') == False
         assert user.has_module_perms('Logs') == False
 
+    def test_str_user(self):
+        user = UserFactory()
+        assert str(user) == f'{user.email}'
+
 
 @pytest.mark.django_db
 class TestProfileModel:

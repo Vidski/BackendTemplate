@@ -2,7 +2,7 @@ from celery import shared_task
 from django.utils import timezone
 
 from App.celery.worker import app
-from Emails.models import Email
+from Emails.models.models import Email
 
 
 SECONDS = 10.0

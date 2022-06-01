@@ -1,8 +1,10 @@
 from django.utils.html import format_html
 
+from App.settings.labels_with_svg import black_list_with_icon
 from App.settings.labels_with_svg import block_label_with_icon
 from App.settings.labels_with_svg import email_label_with_icon
 from App.settings.labels_with_svg import log_label_with_icon
+from App.settings.labels_with_svg import notification_with_icon
 from App.settings.labels_with_svg import profile_label_with_icon
 from App.settings.labels_with_svg import redoc_label_with_icon
 from App.settings.labels_with_svg import suggestion_label_with_icon
@@ -45,7 +47,12 @@ JET_SIDE_MENU_ITEMS = [
                 'label': format_html(suggestion_label_with_icon),
             },
             {'name': 'email', 'label': format_html(email_label_with_icon)},
+            {
+                'name': 'notification',
+                'label': format_html(notification_with_icon),
+            },
             {'name': 'block', 'label': format_html(block_label_with_icon)},
+            {'name': 'blacklist', 'label': format_html(black_list_with_icon)},
         ],
     },
     {

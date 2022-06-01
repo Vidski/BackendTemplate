@@ -1,5 +1,6 @@
 import pytest
 from django.conf import settings
+from django.db import transaction
 from django.db.utils import IntegrityError
 from django_rest_passwordreset.models import ResetPasswordToken
 from rest_framework.exceptions import ParseError
@@ -11,11 +12,13 @@ from Emails.factories.block import VerifyEmailBlockFactory
 from Emails.factories.email import EmailFactory
 from Emails.factories.email import ResetEmailFactory
 from Emails.factories.email import VerifyEmailFactory
+from Emails.factories.notification import NotificationFactory
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Emails.factories.suggestion import get_subject_for_suggestion
-from Emails.models import Block
-from Emails.models import Email
-from Emails.models import Suggestion
+from Emails.models.models import Block
+from Emails.models.models import Email
+from Emails.models.models import Notification
+from Emails.models.models import Suggestion
 from Users.factories.user import UserFactory
 from Users.utils import generate_user_verification_token
 
@@ -31,7 +34,6 @@ class TestEmailFactories:
         assert email.subject == 'Test subject'
         assert email.header == 'Test header'
         assert email.is_test is False
-        assert email.to_all_users is False
         assert email.to is not None
         assert email.programed_send_date is not None
         assert email.blocks is not None
@@ -61,8 +63,7 @@ class TestEmailFactories:
         assert email.subject == settings.RESET_PASSWORD_EMAIL_SUBJECT
         assert email.header == settings.RESET_PASSWORD_EMAIL_HEADER
         assert email.is_test is False
-        assert email.to_all_users is False
-        assert email.to == user.email
+        assert email.to == user
         assert email.programed_send_date is not None
         assert email.blocks is not None
         block = email.blocks.first()
@@ -76,8 +77,9 @@ class TestEmailFactories:
     def test_verify_email_factory_raises_exception(self):
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
-        with pytest.raises(AttributeError):
-            VerifyEmailFactory()
+        with pytest.raises(IntegrityError):
+            with transaction.atomic():
+                VerifyEmailFactory()
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
 
@@ -91,8 +93,7 @@ class TestEmailFactories:
         assert email.subject == settings.VERIFY_EMAIL_SUBJECT
         assert email.header == settings.VERIFY_EMAIL_HEADER
         assert email.is_test is False
-        assert email.to_all_users is False
-        assert email.to == user.email
+        assert email.to == user
         assert email.programed_send_date is not None
         assert email.blocks is not None
         block = email.blocks.first()
@@ -203,7 +204,6 @@ class TestSuggestionFactory:
         assert suggestion.header == (
             f'ERROR {settings.SUGGESTIONS_EMAIL_HEADER} {user.id}'
         )
-        assert suggestion.to == settings.SUGGESTIONS_EMAIL
         assert suggestion.blocks.all() is not None
         block = suggestion.blocks.first()
         assert suggestion.header == block.title
@@ -230,3 +230,47 @@ class TestSuggestionFactory:
         type = 'ERROR'
         subject = get_subject_for_suggestion(type, content)
         assert subject == f'{type} || I found a bug '
+
+
+@pytest.mark.django_db
+class TestNotificationFactory:
+    def test_notification_factory_creates_notification_with_block(self):
+        assert Notification.objects.count() == 0
+        assert Block.objects.count() == 0
+        notification = NotificationFactory(
+            subject='Test subject', header='Test header',
+        )
+        assert Notification.objects.count() == 1
+        assert Block.objects.count() == 1
+        assert notification.subject == 'Test subject'
+        assert notification.header == 'Test header'
+        assert notification.is_test is False
+        assert notification.programed_send_date is not None
+        assert notification.blocks is not None
+        block = notification.blocks.first()
+        assert block.title is not None
+        assert block.content is not None
+        assert block.show_link is not None
+        assert block.link_text is not None
+        assert block.link is not None
+
+    def test_notification_factory_creates_notification_with_custom_block(self):
+        assert Notification.objects.count() == 0
+        assert Block.objects.count() == 0
+        block = BlockFactory()
+        notification = NotificationFactory(
+            subject='Test subject', header='Test header', blocks=[block]
+        )
+        assert Notification.objects.count() == 1
+        assert Block.objects.count() == 1
+        assert notification.subject == 'Test subject'
+        assert notification.header == 'Test header'
+        assert notification.is_test is False
+        assert notification.programed_send_date is not None
+        assert notification.blocks is not None
+        block = notification.blocks.first()
+        assert block.title is not None
+        assert block.content is not None
+        assert block.show_link is not None
+        assert block.link_text is not None
+        assert block.link is not None

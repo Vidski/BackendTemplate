@@ -4,7 +4,7 @@ from rest_framework.exceptions import ParseError
 
 from Emails.choices import CommentType
 from Emails.factories.block import SuggestionBlockFactory
-from Emails.models import Suggestion
+from Emails.models.models import Suggestion
 
 
 class SuggestionEmailFactory(factory.django.DjangoModelFactory):
@@ -18,7 +18,6 @@ class SuggestionEmailFactory(factory.django.DjangoModelFactory):
     subject = factory.LazyAttribute(
         lambda object: get_subject_for_suggestion(object.type, object.content)
     )
-    to = settings.SUGGESTIONS_EMAIL
 
     @factory.post_generation
     def header(self, create, extracted, **kwargs):

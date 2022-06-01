@@ -2,7 +2,7 @@ import pytest
 from django.core import mail
 from django_rest_passwordreset.models import ResetPasswordToken
 
-from Emails.models import Email
+from Emails.models.models import Email
 from Emails.utils import send_email
 from Users.fakers.user import UserFaker
 
@@ -17,7 +17,7 @@ class TestEmailUtils:
         assert len(mail.outbox) == 0
         send_email(email_type, user)
         emails = Email.objects.all().count()
-        assert emails == 0
+        assert emails == 1
         assert len(mail.outbox) == 1
 
     def test_reset_password_verify_email(self):
@@ -29,5 +29,5 @@ class TestEmailUtils:
         assert len(mail.outbox) == 0
         send_email(email_type, instance)
         emails = Email.objects.all().count()
-        assert emails == 0
+        assert emails == 1
         assert len(mail.outbox) == 1
