@@ -129,3 +129,6 @@ Pipfile.lock
 
 # Media files
 media/
+
+# VSCode
+.vscode/
