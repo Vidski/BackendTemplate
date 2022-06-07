@@ -1,10 +1,6 @@
 name: Code format checker CI
 
-on:
-  push:
-    branches: [ master, dev ]
-  pull_request:
-    branches: [ master, dev ]
+on: [push]
 
 jobs:
   lint:
