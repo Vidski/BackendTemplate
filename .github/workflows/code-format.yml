@@ -6,7 +6,7 @@ jobs:
   lint:
 
     runs-on: ubuntu-latest
-    container: { image: python:3.9.10 }
+
     steps:
     - name: Setup container
       run: /usr/local/bin/python -m pip install --upgrade pip
