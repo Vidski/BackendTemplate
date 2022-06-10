@@ -9,4 +9,6 @@ jobs:
 
     steps:
     - name: Setup container
-      run: pip install --upgrade pip
+      run: |
+        pip install --upgrade pip
+        make test
