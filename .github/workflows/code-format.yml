@@ -12,7 +12,7 @@ jobs:
       working-directory: ./
       run: |
         pip install --upgrade pip
-        ll
-        ll -a
+        ls
+        ls -a
         pwd
         make test
