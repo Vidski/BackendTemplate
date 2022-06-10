@@ -9,7 +9,6 @@ jobs:
 
     steps:
     - name: Setup container
-      working-directory: ./
       run: |
         pip install --upgrade pip
         ls
