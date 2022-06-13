@@ -14,4 +14,8 @@ jobs:
         ls
         ls -a
         pwd
+        cd /home/runner/work/BackendTemplate
+        pwd
+        ls
+        ls -a
         make test
