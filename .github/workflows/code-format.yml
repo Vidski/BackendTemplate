@@ -13,11 +13,5 @@ jobs:
     - name: Setup container
       run: |
         pip install --upgrade pip
-        ls
-        ls -a
-        pwd
-        cd /home/runner/work/BackendTemplate
-        pwd
-        ls
         ls -a
         make test
