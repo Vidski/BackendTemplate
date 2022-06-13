@@ -13,5 +13,6 @@ jobs:
         pip install --upgrade pip
         ls
         ls -a
+        ll -a
         pwd
         make test
