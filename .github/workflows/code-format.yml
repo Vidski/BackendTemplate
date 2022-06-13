@@ -14,5 +14,5 @@ jobs:
       run: |
         pip install --upgrade pip
         ls -a
-        make up
+        make upd
         make test
