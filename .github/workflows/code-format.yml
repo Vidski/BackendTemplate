@@ -10,17 +10,17 @@ jobs:
     steps:
     
     - uses: actions/checkout@v3
-    - name: Setup container
+    - name: 🐳 Setup container
       run: make upd
-    - name: Wait for the environment to get up
+    - name: ⏳ Wait for the environment to get up
       run: |
         while ! docker exec database mysqladmin --user=user --password=password --host "127.0.0.1" ping --silent &> /dev/null ; do
             echo "Waiting for database connection..."
             sleep 1
         done
-    - name: Check lint
+    - name: 📝 Check lint
       run: make check-lint
-    - name: Check imports order
+    - name: 🔢 Check imports order
       run: make check-sort-imports
-    - name: Test
+    - name: ✅ Test
       run: make test
