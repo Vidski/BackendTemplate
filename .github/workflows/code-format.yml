@@ -16,7 +16,11 @@ jobs:
       run: |
         while ! docker exec database mysqladmin --user=user --password=password --host "127.0.0.1" ping --silent &> /dev/null ; do
             echo "Waiting for database connection..."
-            sleep 2
+            sleep 1
         done
+    - name: Check lint
+      run: make check-lint
+    - name: Check imports order
+      run: make check-sort-imports
     - name: Test
       run: make test
