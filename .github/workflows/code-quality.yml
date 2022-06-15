@@ -6,6 +6,7 @@ on:
       - 'master'
       - 'staging'
       - 'dev' 
+      - 'create-github-actions'
   pull_request:
     branches:    
       - 'master'
@@ -16,10 +17,11 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - name: 🔀 Checkout
+      uses: actions/checkout@v3
     - name: 📝 Check lint
       run: pip3 install oitnb==0.2.2 && make check-lint-local
-    - name: 🔢 Check imports order
+    - name: 🆎 Check imports order
       run: pip3 install isort==5.10.1 && make check-sort-imports-local
     - name: 🐳 Setup container
       run: make upd
@@ -27,3 +29,5 @@ jobs:
       run: make wait-db
     - name: ✅ Test
       run: make test
+    - name: 🎉 Congratulations
+      run: echo "Everything is okay! 🎉"
