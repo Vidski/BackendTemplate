@@ -4,19 +4,16 @@ on: [push]
 
 jobs:
   lint:
-
     runs-on: ubuntu-latest
-
     steps:
-    
     - uses: actions/checkout@v3
-    - name: 🐳 Setup container
-      run: make upd
-    - name: ⏳ Wait for the environment to get up
-      run: make wait-db
     - name: 📝 Check lint
       run: make check-lint
     - name: 🔢 Check imports order
       run: make check-sort-imports
+    - name: 🐳 Setup container
+      run: make upd
+    - name: ⏳ Wait for the environment to get up
+      run: make wait-db
     - name: ✅ Test
-      run: make fast-test
+      run: make test
