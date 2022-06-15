@@ -14,11 +14,9 @@ on:
       - 'dev'
 
 jobs:
-  lint:
+  format:
     runs-on: ubuntu-latest
     steps:
-    - name: 🔀 Checkout
-      uses: actions/checkout@v3
     - name: 📝 Check lint
       run: pip3 install oitnb==0.2.2 && make check-lint-local
     - name: 🆎 Check imports order
