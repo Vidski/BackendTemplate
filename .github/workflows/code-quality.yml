@@ -13,11 +13,7 @@ jobs:
     - name: 🐳 Setup container
       run: make upd
     - name: ⏳ Wait for the environment to get up
-      run: |
-        while ! docker exec database mysqladmin --user=user --password=password --host "127.0.0.1" ping --silent &> /dev/null ; do
-            echo "Waiting for database connection..."
-            sleep 1
-        done
+      run: make wait-db
     - name: 📝 Check lint
       run: make check-lint
     - name: 🔢 Check imports order
