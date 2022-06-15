@@ -1,6 +1,16 @@
 name: Code quality checker CI
 
-on: [push]
+on:
+  push:
+    branches:    
+      - 'master'
+      - 'staging'
+      - 'dev' 
+  pull_request:
+    branches:    
+      - 'master'
+      - 'staging'
+      - 'dev'
 
 jobs:
   lint:
