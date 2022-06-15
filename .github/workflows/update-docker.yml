@@ -1,10 +1,16 @@
-name: Docker Image CI
+name: Update docker CI
 
 on:
   push:
-    branches: [ master, dev ]
+    branches:
+      - 'master'
+      - 'staging'
+      - 'dev'
   pull_request:
-    branches: [ master, dev ]
+    branches:
+      - 'master'
+      - 'staging'
+      - 'dev'
 
 jobs:
 
