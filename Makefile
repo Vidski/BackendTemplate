@@ -14,8 +14,8 @@ SETTINGS_FLAG_TEXT = --settings=App.settings.django.<SETTINGS>_settings
 PYTEST_SETTINGS = --reuse-db --ds=App.settings.django.test_settings -W ignore::django.utils.deprecation.RemovedInDjango41Warning -p no:cacheprovider
 COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
 COVERAGE_WITH_HTML_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html
-OITNB_SETTINGS = --exclude /migrations/* --icons --line-length=79
-ISORT_SETTINGS = --skip-glob=**/migrations/* --lai=2 --sl --use-parentheses --trailing-comma --force-grid-wrap=0 --multi-line=3
+OITNB_SETTINGS = --exclude="/migrations/*" --icons --line-length=79
+ISORT_SETTINGS = --known-local-folder=App/ --skip-glob="**/migrations/*" --skip-glob="**/.env/*" --lai=2 --sl --use-parentheses --trailing-comma --force-grid-wrap=0 --multi-line=3
 PING_DB = docker exec database mysqladmin --user=user --password=password --host ${HOST} ping
 SHELL := /bin/bash
 
@@ -117,11 +117,17 @@ lint:
 check-lint:
 	${COMMAND} "oitnb --check . ${OITNB_SETTINGS}"
 
+check-lint-local:
+	oitnb --check . ${OITNB_SETTINGS}
+
 sort-imports:
 	${COMMAND} "isort . ${ISORT_SETTINGS}"
 
 check-sort-imports:
 	${COMMAND} "isort . ${ISORT_SETTINGS} --check"
+
+check-sort-imports-local:
+	isort . ${ISORT_SETTINGS} --check
 
 wait-db:
 	while [[ @true ]] ; do \
