@@ -2,6 +2,7 @@ ENV ?= Local
 SETTINGS ?= $(shell echo $(ENV) | tr '[:upper:]' '[:lower:]')
 DBUSER ?= user
 DBPASSWORD ?= password
+HOST ?= "127.0.0.1"
 COMMAND = docker exec -i django-app bash -c
 MANAGE = python manage.py
 DOCKER_FILE = docker-compose -f ./Docker/${ENV}/docker-compose.yml
@@ -15,6 +16,7 @@ COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
 COVERAGE_WITH_HTML_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html
 OITNB_SETTINGS = --exclude /migrations/* --icons --line-length=79
 ISORT_SETTINGS = --skip-glob=**/migrations/* --lai=2 --sl --use-parentheses --trailing-comma --force-grid-wrap=0 --multi-line=3
+PING_DB = docker exec database mysqladmin --user=user --password=password --host ${HOST} ping
 
 up:
 	${DOCKER_FILE} up
@@ -119,6 +121,14 @@ sort-imports:
 
 check-sort-imports:
 	${COMMAND} "isort . ${ISORT_SETTINGS} --check"
+
+wait-db:
+	while [[ @true ]] ; do \
+		if ${PING_DB} --silent &> /dev/null; then\
+			echo "Database is up!" && break ; \
+		fi ; \
+		echo "Waiting for the database to be up" && sleep 1 ; \
+	done
 
 help:
 	@echo ""
