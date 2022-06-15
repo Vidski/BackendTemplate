@@ -1,4 +1,4 @@
-name: Code format checker CI
+name: Code quality checker CI
 
 on: [push]
 
@@ -7,14 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: 🔍 Install linter
-      run: pip3 install oitnb==0.2.2
     - name: 📝 Check lint
-      run: make check-lint-local
-    - name: 📖 Install sorter
-      run: pip3 install isort==5.10.1
+      run: pip3 install oitnb==0.2.2 && make check-lint-local
     - name: 🔢 Check imports order
-      run: make check-sort-imports-local
+      run: pip3 install isort==5.10.1 && make check-sort-imports-local
     - name: 🐳 Setup container
       run: make upd
     - name: ⏳ Wait for the environment to get up
