@@ -17,6 +17,7 @@ COVERAGE_WITH_HTML_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html
 OITNB_SETTINGS = --exclude /migrations/* --icons --line-length=79
 ISORT_SETTINGS = --skip-glob=**/migrations/* --lai=2 --sl --use-parentheses --trailing-comma --force-grid-wrap=0 --multi-line=3
 PING_DB = docker exec database mysqladmin --user=user --password=password --host ${HOST} ping
+SHELL := /bin/bash
 
 up:
 	${DOCKER_FILE} up
