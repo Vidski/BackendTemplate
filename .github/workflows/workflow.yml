@@ -17,7 +17,8 @@ jobs:
   Lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - name: 🔀 Checkout
+      uses: actions/checkout@v3
     - name: 📥 Download oitnb
       run: pip3 install oitnb==0.2.2
     - name: 📝 Check lint
@@ -31,7 +32,8 @@ jobs:
     needs: [Lint]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - name: 🔀 Checkout
+      uses: actions/checkout@v3
     - name: 🐳 Set up container
       run: make upd
     - name: ⏳ Wait for the environment to get up
@@ -43,7 +45,8 @@ jobs:
     needs: [Testing]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - name: 🔀 Checkout
+      uses: actions/checkout@v3
     - name: 🖥️ Set up QEMU
       uses: docker/setup-qemu-action@v2
     - name: ⌨️ Set up Docker Buildx
@@ -57,7 +60,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         context: .
-        file: ./Docker/Local
+        file: ./Docker/Local/Dockerfile
         push: true
         tags: |
           ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:latest,
@@ -67,7 +70,8 @@ jobs:
     needs: [Docker]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - name: 🔀 Checkout
+      uses: actions/checkout@v3
     - name: 🚁 Deploy on PRE
       if: ${{ github.base_ref == 'create-github-actions' }}
       run: echo "🚁 Deploy on PRE"
