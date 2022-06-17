@@ -65,7 +65,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    # - name: 🚁 Deploy on PRE
+    - name: 🚁 Deploy on PRE
+      if: ${{ github.base_ref == 'create-github-actions' }}
+      run: echo "🚁 Deploy on PRE"
     # - name: 🛫 Deploy on Staging
     # - name: 🚀 Deploy on Production
 
