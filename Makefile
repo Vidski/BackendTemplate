@@ -19,6 +19,9 @@ ISORT_SETTINGS = --known-local-folder=App/ --skip-glob="**/migrations/*" --skip-
 PING_DB = docker exec database mysqladmin --user=user --password=password --host ${HOST} ping
 SHELL := /bin/bash
 
+all:
+	@make up
+
 up:
 	${DOCKER_FILE} up
 
@@ -130,7 +133,7 @@ check-sort-imports-local:
 	isort . ${ISORT_SETTINGS} --check
 
 wait-db:
-	while [[ @true ]] ; do \
+	@while [[ @true ]] ; do \
 		if ${PING_DB} --silent &> /dev/null; then\
 			echo "Database is up!" && break ; \
 		fi ; \
