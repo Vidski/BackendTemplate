@@ -28,6 +28,7 @@ jobs:
       run:  make check-sort-imports-local
 
   Testing:
+    needs: [Lint]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
