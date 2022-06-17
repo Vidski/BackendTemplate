@@ -60,9 +60,9 @@ jobs:
         file: ./Docker/Local
         push: true
         tags: |
-          ${{ secrets.DOCKERHUB_USERNAME }}/|
-          ${{ secrets.DOCKERHUB_REPONAME }}:latest, |
-          ${{ secrets.DOCKERHUB_USERNAME }}/|
+          ${{ secrets.DOCKERHUB_USERNAME }}/
+          ${{ secrets.DOCKERHUB_REPONAME }}:latest,
+          ${{ secrets.DOCKERHUB_USERNAME }}/
           ${{ secrets.DOCKERHUB_REPONAME }}:${{ github.run_number}}
 
   Deploy:
