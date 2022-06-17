@@ -2,7 +2,8 @@ ENV ?= Local
 SETTINGS ?= $(shell echo $(ENV) | tr '[:upper:]' '[:lower:]')
 DBUSER ?= user
 DBPASSWORD ?= password
-COMMAND = docker exec -it django-app bash -c
+HOST ?= "127.0.0.1"
+COMMAND = docker exec -i django-app bash -c
 MANAGE = python manage.py
 DOCKER_FILE = docker-compose -f ./Docker/${ENV}/docker-compose.yml
 DOCKER_FILE_TEXT = docker-compose -f ./Docker/<ENV>/docker-compose.yml
@@ -13,8 +14,13 @@ SETTINGS_FLAG_TEXT = --settings=App.settings.django.<SETTINGS>_settings
 PYTEST_SETTINGS = --reuse-db --ds=App.settings.django.test_settings -W ignore::django.utils.deprecation.RemovedInDjango41Warning -p no:cacheprovider
 COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
 COVERAGE_WITH_HTML_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html
-OITNB_SETTINGS = --exclude /migrations/* --icons --line-length=79
-ISORT_SETTINGS = --skip-glob=**/migrations/* --lai=2 --sl --use-parentheses --trailing-comma --force-grid-wrap=0 --multi-line=3
+OITNB_SETTINGS = --exclude="/migrations/*" --icons --line-length=79
+ISORT_SETTINGS = --known-local-folder=App/ --skip-glob="**/migrations/*" --skip-glob="**/.env/*" --lai=2 --sl --use-parentheses --trailing-comma --force-grid-wrap=0 --multi-line=3
+PING_DB = docker exec database mysqladmin --user=user --password=password --host ${HOST} ping
+SHELL := /bin/bash
+
+all:
+	@make up
 
 up:
 	${DOCKER_FILE} up
@@ -114,11 +120,25 @@ lint:
 check-lint:
 	${COMMAND} "oitnb --check . ${OITNB_SETTINGS}"
 
+check-lint-local:
+	oitnb --check . ${OITNB_SETTINGS}
+
 sort-imports:
 	${COMMAND} "isort . ${ISORT_SETTINGS}"
 
 check-sort-imports:
 	${COMMAND} "isort . ${ISORT_SETTINGS} --check"
+
+check-sort-imports-local:
+	isort . ${ISORT_SETTINGS} --check
+
+wait-db:
+	@while [[ @true ]] ; do \
+		if ${PING_DB} --silent &> /dev/null; then\
+			echo "Database is up!" && break ; \
+		fi ; \
+		echo "Waiting for the database to be up" && sleep 1 ; \
+	done
 
 help:
 	@echo ""
