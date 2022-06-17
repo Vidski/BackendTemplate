@@ -1,4 +1,4 @@
-name: Code quality checker CI
+name: Code quality checker
 
 on:
   push:
@@ -26,28 +26,3 @@ jobs:
       run: pip3 install isort==5.10.1
     - name: 🆎 Check imports order
       run:  make check-sort-imports-local
-    - name: 🐳 Set up container
-      run: make upd
-    - name: ⏳ Wait for the environment to get up
-      run: make wait-db
-    - name: ✅ Test
-      run: make test
-    - name: 🖥️ Set up QEMU
-      uses: docker/setup-qemu-action@v2
-    - name: ⌨️ Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-    - name: 🙍 Login to DockerHub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: 🏗️ Build and push
-      uses: docker/build-push-action@v3
-      with:
-        push: true
-        tags: user/app:latest
-    # - name: 🚁 Deploy on PRE
-    # - name: 🛫 Deploy on Staging
-    # - name: 🚀 Deploy on Production
-    - name: 🎉 Congratulations
-      run: echo "Everything is okay! 🎉"

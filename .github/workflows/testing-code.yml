@@ -1,0 +1,26 @@
+name: Testing the code
+
+on:
+  push:
+    branches:
+      - 'master'
+      - 'staging'
+      - 'dev'
+      - 'create-github-actions'
+  pull_request:
+    branches:
+      - 'master'
+      - 'staging'
+      - 'dev'
+
+jobs:
+  Code-quality:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: 🐳 Set up container
+      run: make upd
+    - name: ⏳ Wait for the environment to get up
+      run: make wait-db
+    - name: ✅ Test
+      run: make test
