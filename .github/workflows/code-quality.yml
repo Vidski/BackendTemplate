@@ -2,13 +2,13 @@ name: Code quality checker CI
 
 on:
   push:
-    branches:    
+    branches:
       - 'master'
       - 'staging'
-      - 'dev' 
+      - 'dev'
       - 'create-github-actions'
   pull_request:
-    branches:    
+    branches:
       - 'master'
       - 'staging'
       - 'dev'
