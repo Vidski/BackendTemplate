@@ -5,8 +5,6 @@ WORKDIR /
 COPY . /
 WORKDIR /Requirements
 RUN /usr/local/bin/python -m pip install --upgrade pip
-RUN ls -a
-RUN pwd
 RUN /usr/local/bin/python -m pip install -r local.txt
 WORKDIR /
 WORKDIR /App

@@ -56,9 +56,14 @@ jobs:
     - name: 🏗️ Build and push
       uses: docker/build-push-action@v3
       with:
-        context: ./Docker/Local
+        context: .
+        file: ./Docker/Local
         push: true
-        tags: user/app:latest
+        tags: |
+          ${{ secrets.DOCKERHUB_USERNAME }}/|
+          ${{ secrets.DOCKERHUB_REPONAME }}:latest, |
+          ${{ secrets.DOCKERHUB_USERNAME }}/|
+          ${{ secrets.DOCKERHUB_REPONAME }}:${{ github.run_number}}
 
   Deploy:
     needs: [Docker]
