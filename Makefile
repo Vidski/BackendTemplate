@@ -23,114 +23,114 @@ all:
 	@make up
 
 up:
-	${DOCKER_FILE} up
+	@${DOCKER_FILE} up
 
 upd:
-	${DOCKER_FILE} up -d
+	@${DOCKER_FILE} up -d
 
 stop:
-	${DOCKER_FILE} stop
+	@${DOCKER_FILE} stop
 
 ps:
-	${DOCKER_FILE} ps
+	@${DOCKER_FILE} ps
 
 bash:
-	${DOCKER_FILE} exec app /bin/bash
+	@${DOCKER_FILE} exec app /bin/bash
 
 shell:
-	${COMMAND} "${MANAGE} shell_plus ${SETTINGS_FLAG}"
+	@${COMMAND} "${MANAGE} shell_plus ${SETTINGS_FLAG}"
 
 startapp:
-	${COMMAND} "${MANAGE} startapp ${APP}"
+	@${COMMAND} "${MANAGE} startapp ${APP}"
 
 createsuperuser:
-	${COMMAND} "${MANAGE} createsuperuser"
+	@${COMMAND} "${MANAGE} createsuperuser"
 
 migrate:
-	${COMMAND} "${MANAGE} makemigrations ${SETTINGS_FLAG}"
-	${COMMAND} "${MANAGE} migrate ${SETTINGS_FLAG}"
+	@${COMMAND} "${MANAGE} makemigrations ${SETTINGS_FLAG}"
+	@${COMMAND} "${MANAGE} migrate ${SETTINGS_FLAG}"
 
 populate:
 ifeq (${INSTANCES},)
-	${COMMAND} "${MANAGE} populate_db -i 50 ${SETTINGS_FLAG}"
+	@${COMMAND} "${MANAGE} populate_db -i 50 ${SETTINGS_FLAG}"
 else
-	${COMMAND} "${MANAGE} populate_db -i $(INSTANCES) ${SETTINGS_FLAG}"
+	@${COMMAND} "${MANAGE} populate_db -i $(INSTANCES) ${SETTINGS_FLAG}"
 endif
 
 flush:
-	${COMMAND} "${MANAGE} flush ${SETTINGS_FLAG}"
+	@${COMMAND} "${MANAGE} flush ${SETTINGS_FLAG}"
 
 show_urls:
 ifeq (${GREP},)
-	${COMMAND} "${MANAGE} show_urls"
+	@${COMMAND} "${MANAGE} show_urls"
 else
-	${COMMAND} "${MANAGE} show_urls | grep ${GREP}"
+	@${COMMAND} "${MANAGE} show_urls | grep ${GREP}"
 endif
 
 recreate:
-	make flush
-	make migrate
-	make populate
+	@make flush
+	@make migrate
+	@make populate
 
-create-test-db:
-	${COMMAND} "${MANAGE} create_test_db"
+cr@eate-test-db:
+	@${COMMAND} "${MANAGE} create_test_db"
 
 test:
-	make create-test-db
+	@make create-test-db
 ifeq (${COVER}, yes)
-	${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
+	@${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
 else ifeq (${COVERHTML}, yes)
-	${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS} ${COVERAGE_WITH_HTML_SETTINGS}"
+	@${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS} ${COVERAGE_WITH_HTML_SETTINGS}"
 else ifeq (${APP},)
-	${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS}"
+	@${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS}"
 else
-	${COMMAND} "pytest ${APP} -s ${PYTEST_SETTINGS}"
+	@${COMMAND} "pytest ${APP} -s ${PYTEST_SETTINGS}"
 endif
 
 fast-test:
-	${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS} -n auto"
+	@${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS} -n auto"
 
 test-migrate:
-	${TEST_SETTINGS} make migrate
+	@${TEST_SETTINGS} make migrate
 
 test-populate:
-	${TEST_SETTINGS} make populate
+	@${TEST_SETTINGS} make populate
 
 test-flush:
-	${TEST_SETTINGS} make flush
+	@${TEST_SETTINGS} make flush
 
 test-recreate:
-	make test-flush
-	make create-test-db
-	make test-migrate
-	make test-populate
+	@make test-flush
+	@make create-test-db
+	@make test-migrate
+	@make test-populate
 
 freeze:
-	${COMMAND} "pip freeze"
+	@${COMMAND} "pip freeze"
 
 logs:
-	${DOCKER_FILE} logs -f
+	@${DOCKER_FILE} logs -f
 
 database:
-	${DOCKER_FILE} exec database mysql -u${DBUSER} -p${DBPASSWORD}
+	@${DOCKER_FILE} exec database mysql -u${DBUSER} -p${DBPASSWORD}
 
 lint:
-	${COMMAND} "oitnb . ${OITNB_SETTINGS}"
+	@${COMMAND} "oitnb . ${OITNB_SETTINGS}"
 
 check-lint:
-	${COMMAND} "oitnb --check . ${OITNB_SETTINGS}"
+	@${COMMAND} "oitnb --check . ${OITNB_SETTINGS}"
 
 check-lint-local:
-	oitnb --check . ${OITNB_SETTINGS}
+	@oitnb --check . ${OITNB_SETTINGS}
 
 sort-imports:
-	${COMMAND} "isort . ${ISORT_SETTINGS}"
+	@${COMMAND} "isort . ${ISORT_SETTINGS}"
 
 check-sort-imports:
-	${COMMAND} "isort . ${ISORT_SETTINGS} --check"
+	@${COMMAND} "isort . ${ISORT_SETTINGS} --check"
 
 check-sort-imports-local:
-	isort . ${ISORT_SETTINGS} --check
+	@isort . ${ISORT_SETTINGS} --check
 
 wait-db:
 	@while [[ @true ]] ; do \
