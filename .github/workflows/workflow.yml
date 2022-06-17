@@ -6,7 +6,6 @@ on:
       - 'master'
       - 'staging'
       - 'dev'
-      - 'create-github-actions'
   pull_request:
     branches:
       - 'master'
@@ -64,7 +63,7 @@ jobs:
         push: true
         tags: |
           ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:latest,
-          ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ github.run_number}}
+          ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ github.sha }}
 
   Deploy:
     needs: [Docker]
@@ -72,11 +71,15 @@ jobs:
     steps:
     - name: 🔀 Checkout
       uses: actions/checkout@v3
-    - name: 🚁 Deploy on PRE
-      if: ${{ github.base_ref == 'create-github-actions' }}
-      run: echo "🚁 Deploy on PRE"
+    # - name: 🚁 Deploy on PRE
+    #   if: ${{ github.base_ref == 'create-github-actions' }}
+    #   run: # Command to deploy on PRE environment
     # - name: 🛫 Deploy on Staging
+    #   if: ${{ github.base_ref == 'create-github-actions' }}
+    #   run: # Command to deploy on STAGING environment
     # - name: 🚀 Deploy on Production
+    #   if: ${{ github.base_ref == 'create-github-actions' }}
+    #   run: # Command to deploy on PRODUCTION environment
 
   Done:
     needs: [Deploy]
