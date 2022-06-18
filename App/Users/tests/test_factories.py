@@ -16,7 +16,7 @@ class TestUserFactory:
         assert user.email is not None
         assert user.phone_number is not None
         assert user.password is not None
-        assert user.check_password('password') is True
+        assert user.check_password("password") is True
         assert user.is_admin is False
         assert user.is_verified is False
 

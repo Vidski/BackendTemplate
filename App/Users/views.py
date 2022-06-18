@@ -34,7 +34,7 @@ class UserViewSet(viewsets.GenericViewSet):
     API endpoint that allows to interact with User model
     """
 
-    queryset = User.objects.all().order_by('-created_at')
+    queryset = User.objects.all().order_by("-created_at")
     serializer_class = UserSerializer
     normal_user_permissions = IsAuthenticated & IsVerified & IsUserOwner
     admin_user_permissions = IsAuthenticated & IsAdmin
@@ -66,7 +66,7 @@ class UserViewSet(viewsets.GenericViewSet):
         serializer.is_valid(request.data, request.user)
         user = serializer.update(instance, request.data)
         data = UserSerializer(user).data
-        log_information('updated', user)
+        log_information("updated", user)
         return Response(data, status=SUCCESS)
 
     def destroy(self, request, pk=None):
@@ -74,11 +74,11 @@ class UserViewSet(viewsets.GenericViewSet):
         API endpoint that allow to delete an user
         """
         instance = self.queryset.get(pk=pk)
-        log_information('deleted', instance)
+        log_information("deleted", instance)
         instance.delete()
         return Response(status=DELETED)
 
-    @action(detail=False, methods=['post'], permission_classes=[AllowAny])
+    @action(detail=False, methods=["post"], permission_classes=[AllowAny])
     def signup(self, request):
         """
         API endpoint that allows to signup
@@ -87,10 +87,10 @@ class UserViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         data = UserSignUpSerializer(user).data
-        log_information('registered', user)
+        log_information("registered", user)
         return Response(data, status=CREATED)
 
-    @action(detail=False, methods=['post'], permission_classes=[AllowAny])
+    @action(detail=False, methods=["post"], permission_classes=[AllowAny])
     def login(self, request):
         """
         API endpoint that allows to login
@@ -98,22 +98,22 @@ class UserViewSet(viewsets.GenericViewSet):
         serializer = UserLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.save()
-        user = data['user']
-        data['user'] = UserLoginSerializer(user).data
-        log_information('logged in', user)
+        user = data["user"]
+        data["user"] = UserLoginSerializer(user).data
+        log_information("logged in", user)
         return JsonResponse(data, status=SUCCESS)
 
-    @action(detail=True, methods=['get'], permission_classes=[AllowAny])
+    @action(detail=True, methods=["get"], permission_classes=[AllowAny])
     def verify(self, request, pk=None):
         """
         API endpoint that allows to verify user
         """
-        query_token = request.query_params.get('token')
+        query_token = request.query_params.get("token")
         user = self.queryset.get(pk=pk)
         verify_user_query_token(user, query_token)
         user.verify()
-        data = {'user': UserLoginSerializer(user).data}
-        log_information('verified', user)
+        data = {"user": UserLoginSerializer(user).data}
+        log_information("verified", user)
         return JsonResponse(data, status=SUCCESS)
 
 
@@ -124,8 +124,8 @@ class ProfileViewSet(viewsets.ModelViewSet):
     create and destroy will be triggered when verify/delete the user instance
     """
 
-    queryset = Profile.objects.all().order_by('-created_at')
-    lookup_url_kwarg = 'pk'
+    queryset = Profile.objects.all().order_by("-created_at")
+    lookup_url_kwarg = "pk"
     serializer_class = ProfileSerializer
     normal_user_permissions = IsVerified & IsProfileOwner & IsActionAllowed
     admin_user_permissions = IsAdmin

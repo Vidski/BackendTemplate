@@ -26,9 +26,9 @@ class UserSerializer(serializers.ModelSerializer):
         on signup method and the main validation method is executed before
         "validate" one
         """
-        email = data.get('email', None)
+        email = data.get("email", None)
         self.check_email(email, user)
-        phone_number = data.get('phone_number', None)
+        phone_number = data.get("phone_number", None)
         self.check_phone_number(phone_number, user)
         self.check_password(data, user)
         return data
@@ -41,11 +41,11 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, data):
-        instance.first_name = data.get('first_name', instance.first_name)
-        instance.last_name = data.get('last_name', instance.last_name)
-        instance.email = data.get('email', instance.email)
-        instance.phone_number = data.get('phone_number', instance.phone_number)
-        password = data.get('password', None)
+        instance.first_name = data.get("first_name", instance.first_name)
+        instance.last_name = data.get("last_name", instance.last_name)
+        instance.email = data.get("email", instance.email)
+        instance.phone_number = data.get("phone_number", instance.phone_number)
+        password = data.get("password", None)
         if password:
             instance.set_password(password)
         instance.save()
@@ -54,7 +54,7 @@ class UserSerializer(serializers.ModelSerializer):
     def check_email(self, email, user):
         user_with_email = User.objects.filter(email=email).first()
         if user_with_email and not user.has_permission(user_with_email):
-            raise ValidationError('Email is taken')
+            raise ValidationError("Email is taken")
 
     def check_phone_number(self, phone_number, user):
         check_e164_format(phone_number)
@@ -64,29 +64,29 @@ class UserSerializer(serializers.ModelSerializer):
         if user_with_phone_number and not user.has_permission(
             user_with_phone_number
         ):
-            raise ValidationError('Phone number is taken')
+            raise ValidationError("Phone number is taken")
 
     def check_password(self, data, user):
-        password = data.get('password', None)
+        password = data.get("password", None)
         if password:
-            old_password = data.get('old_password', None)
+            old_password = data.get("old_password", None)
             if not old_password:
                 raise ValidationError(
-                    'Old password is required to set a new one'
+                    "Old password is required to set a new one"
                 )
             old_password_is_valid = user.check_password(old_password) == True
             if not old_password_is_valid:
-                raise ValidationError('Wrong password')
+                raise ValidationError("Wrong password")
             password_validation.validate_password(password)
 
     class Meta:
         model = User
         fields = [
-            'first_name',
-            'phone_number',
-            'email',
-            'created_at',
-            'updated_at',
+            "first_name",
+            "phone_number",
+            "email",
+            "created_at",
+            "updated_at",
         ]
 
 
@@ -98,21 +98,21 @@ class ProfileSerializer(serializers.ModelSerializer):
     is_adult = serializers.SerializerMethodField(read_only=True)
     image = Base64ImageField(required=False)
     user_id = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all(), source='user', required=False
+        queryset=User.objects.all(), source="user", required=False
     )
 
     class Meta:
         model = Profile
         fields = [
-            'id',
-            'user_id',
-            'nickname',
-            'bio',
-            'image',
-            'gender',
-            'preferred_language',
-            'birth_date',
-            'is_adult',
+            "id",
+            "user_id",
+            "nickname",
+            "bio",
+            "image",
+            "gender",
+            "preferred_language",
+            "birth_date",
+            "is_adult",
         ]
 
     def get_is_adult(self, object):
@@ -124,18 +124,18 @@ class ProfileSerializer(serializers.ModelSerializer):
         return is_valid
 
     def check_user_field_according_requester(self, validated_data):
-        requester = self.context['request'].user
+        requester = self.context["request"].user
         if not requester.is_admin:
-            self.validated_data['user'] = self.instance.user
+            self.validated_data["user"] = self.instance.user
         else:
             self.check_profile_with_user(validated_data)
 
     def check_profile_with_user(self, validated_data):
-        user = validated_data.get('user', None)
-        user_id = getattr(user, 'id', None)
+        user = validated_data.get("user", None)
+        user_id = getattr(user, "id", None)
         profile = Profile.objects.filter(user_id=user_id)
         if profile.exists() and self.instance != profile.first():
-            raise ValidationError('User profile already exists')
+            raise ValidationError("User profile already exists")
 
 
 class UserAuthSerializer(serializers.Serializer):
@@ -171,39 +171,39 @@ class UserLoginSerializer(UserAuthSerializer):
         email, password = self.check_email_and_password(data)
         user = authenticate(email=email, password=password)
         if not user:
-            raise ValidationError('Invalid credentials')
+            raise ValidationError("Invalid credentials")
         if not user.is_verified:
-            raise ValidationError('User is not verified')
-        self.context['user'] = user
+            raise ValidationError("User is not verified")
+        self.context["user"] = user
         return data
 
     def check_email_and_password(self, data):
-        email = data.get('email')
-        password = data.get('password')
+        email = data.get("email")
+        password = data.get("password")
         if not email or not password:
-            raise ValidationError('Email and password are required')
+            raise ValidationError("Email and password are required")
         return email, password
 
     def create(self, data):
-        user = self.context['user']
+        user = self.context["user"]
         refresh = RefreshToken.for_user(user)
         refresh_token = refresh.access_token
         token = AccessToken.for_user(user)
         return {
-            'user': user,
-            'refresh_token': str(refresh_token),
-            'token': str(token),
+            "user": user,
+            "refresh_token": str(refresh_token),
+            "token": str(token),
         }
 
     class Meta:
         model = User
         fields = [
-            'first_name',
-            'last_name',
-            'phone_number',
-            'email',
-            'created_at',
-            'updated_at',
+            "first_name",
+            "last_name",
+            "phone_number",
+            "email",
+            "created_at",
+            "updated_at",
         ]
 
 
@@ -226,12 +226,12 @@ class UserSignUpSerializer(UserAuthSerializer):
         """
         Validate to create a new user
         """
-        password = data.get('password')
-        password_confirmation = data.get('password_confirmation', None)
+        password = data.get("password")
+        password_confirmation = data.get("password_confirmation", None)
         if not password_confirmation:
-            raise ValidationError('Password confirmation is required')
+            raise ValidationError("Password confirmation is required")
         if password != password_confirmation:
-            raise ValidationError('Password confirmation does not match')
+            raise ValidationError("Password confirmation does not match")
         password_validation.validate_password(password)
         return data
 
@@ -239,9 +239,9 @@ class UserSignUpSerializer(UserAuthSerializer):
         """
         Create a new user
         """
-        data.pop('password_confirmation')
-        if 'phone_number' in data:
-            data.pop('phone_number')
+        data.pop("password_confirmation")
+        if "phone_number" in data:
+            data.pop("phone_number")
         user = User.objects.create_user(**data, is_verified=False)
-        send_email('verify_email', user)
+        send_email("verify_email", user)
         return user

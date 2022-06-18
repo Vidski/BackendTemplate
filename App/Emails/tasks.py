@@ -21,8 +21,8 @@ def each_seconds():
 
 
 app.conf.beat_schedule = {
-    'send_emails': {
-        'task': 'Emails.tasks.send_emails',
-        'schedule': each_seconds(),
+    "send_emails": {
+        "task": "Emails.tasks.send_emails",
+        "schedule": each_seconds(),
     },
 }
