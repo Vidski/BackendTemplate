@@ -20,11 +20,11 @@ python3 start.py --waiting-service-name database --ip database
 """
 
 CELERY_WORKER = (
-    'celery --app=App.celery.worker.app worker '
+    'celery --app=App.celery_worker.worker.app worker '
     + '--concurrency=1 --hostname=worker@%h --loglevel=INFO'
 )
 CELERY_BEAT = (
-    'python3 -m celery --app=App.celery.worker.app beat -l debug -f'
+    'python3 -m celery --app=App.celery_worker.worker.app beat -l debug -f'
     + ' /var/log/App-celery-beat.log --pidfile=/tmp/celery-beat.pid'
 )
 DJANGO = 'python3 manage.py runserver 0.0.0.0:8000'

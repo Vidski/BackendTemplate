@@ -25,7 +25,7 @@ jobs:
     - name: 📥 Download isort
       run: pip3 install isort==5.10.1
     - name: 🆎 Check imports order
-      run:  make check-sort-imports-local
+      run:  make check-imports-local
 
   Testing:
     needs: [Lint]

@@ -1,6 +1,6 @@
 import pymysql
 
-from .celery.worker import app as celery_app
+from .celery_worker.worker import app as celery_app
 
 
 pymysql.install_as_MySQLdb()
