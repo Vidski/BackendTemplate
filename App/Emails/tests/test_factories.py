@@ -28,11 +28,14 @@ class TestEmailFactories:
     def test_email_factory_creates_email_with_block(self):
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
-        email = EmailFactory(subject='Test subject', header='Test header',)
+        email = EmailFactory(
+            subject="Test subject",
+            header="Test header",
+        )
         assert Email.objects.count() == 1
         assert Block.objects.count() == 1
-        assert email.subject == 'Test subject'
-        assert email.header == 'Test header'
+        assert email.subject == "Test subject"
+        assert email.header == "Test header"
         assert email.is_test is False
         assert email.to is not None
         assert email.programed_send_date is not None
@@ -104,7 +107,7 @@ class TestEmailFactories:
         assert block.link_text == settings.VERIFY_EMAIL_LINK_TEXT
         assert settings.VERIFY_EMAIL_URL in block.link
         assert generate_user_verification_token(user) in block.link
-        assert f'{user.id}' in block.link
+        assert f"{user.id}" in block.link
 
 
 @pytest.mark.django_db
@@ -172,7 +175,7 @@ class TestBlockFactories:
 @pytest.mark.django_db
 class TestSuggestionFactory:
     def test_suggestion_email_factory_raises_exception_without_user(self):
-        type = 'Wrong Type'
+        type = "Wrong Type"
         assert Suggestion.objects.count() == 0
         assert Block.objects.count() == 0
         with pytest.raises(ParseError):
@@ -180,8 +183,8 @@ class TestSuggestionFactory:
 
     def test_suggestion_email_factory_raises_exception_due_wrong_type(self):
         user = UserFactory()
-        content = 'I found a bug'
-        type = 'wrong_suggestion_type'
+        content = "I found a bug"
+        type = "wrong_suggestion_type"
         assert Suggestion.objects.count() == 0
         assert Block.objects.count() == 0
         with pytest.raises(ParseError):
@@ -191,8 +194,8 @@ class TestSuggestionFactory:
 
     def test_suggestion_email_factor_creates_email_with_block(self):
         user = UserFactory()
-        content = 'I found a bug'
-        type = 'ERROR'
+        content = "I found a bug"
+        type = "ERROR"
         assert Suggestion.objects.count() == 0
         assert Block.objects.count() == 0
         suggestion = SuggestionEmailFactory(
@@ -200,9 +203,9 @@ class TestSuggestionFactory:
         )
         assert Suggestion.objects.count() == 1
         assert Block.objects.count() == 1
-        assert suggestion.subject == 'ERROR'
+        assert suggestion.subject == "ERROR"
         assert suggestion.header == (
-            f'ERROR {settings.SUGGESTIONS_EMAIL_HEADER} {user.id}'
+            f"ERROR {settings.SUGGESTIONS_EMAIL_HEADER} {user.id}"
         )
         assert suggestion.blocks.all() is not None
         block = suggestion.blocks.first()
@@ -210,26 +213,26 @@ class TestSuggestionFactory:
         assert block.content == content
         assert block.show_link is True
         assert block.link_text == settings.SUGGESTIONS_EMAIL_LINK_TEXT
-        expected_link = f'{settings.URL}/api/suggestions/{suggestion.id}/read/'
+        expected_link = f"{settings.URL}/api/suggestions/{suggestion.id}/read/"
         assert block.link == expected_link
 
     def test_get_subject_for_suggestion_raises_an_exception(self):
-        content = 'I found a bug'
-        type = 'wrong_suggestion_type'
+        content = "I found a bug"
+        type = "wrong_suggestion_type"
         with pytest.raises(ParseError):
             get_subject_for_suggestion(type, content)
 
     def test_get_subject_for_suggestion_returns_subject(self):
-        content = 'I found a bug'
-        type = 'ERROR'
+        content = "I found a bug"
+        type = "ERROR"
         subject = get_subject_for_suggestion(type, content)
-        assert subject == f'{type} || {content}'
+        assert subject == f"{type} || {content}"
 
     def test_get_subject_for_suggestion_returns_subject_without_vertical(self):
-        content = 'I found a bug ||'
-        type = 'ERROR'
+        content = "I found a bug ||"
+        type = "ERROR"
         subject = get_subject_for_suggestion(type, content)
-        assert subject == f'{type} || I found a bug '
+        assert subject == f"{type} || I found a bug "
 
 
 @pytest.mark.django_db
@@ -238,12 +241,13 @@ class TestNotificationFactory:
         assert Notification.objects.count() == 0
         assert Block.objects.count() == 0
         notification = NotificationFactory(
-            subject='Test subject', header='Test header',
+            subject="Test subject",
+            header="Test header",
         )
         assert Notification.objects.count() == 1
         assert Block.objects.count() == 1
-        assert notification.subject == 'Test subject'
-        assert notification.header == 'Test header'
+        assert notification.subject == "Test subject"
+        assert notification.header == "Test header"
         assert notification.is_test is False
         assert notification.programed_send_date is not None
         assert notification.blocks is not None
@@ -259,12 +263,12 @@ class TestNotificationFactory:
         assert Block.objects.count() == 0
         block = BlockFactory()
         notification = NotificationFactory(
-            subject='Test subject', header='Test header', blocks=[block]
+            subject="Test subject", header="Test header", blocks=[block]
         )
         assert Notification.objects.count() == 1
         assert Block.objects.count() == 1
-        assert notification.subject == 'Test subject'
-        assert notification.header == 'Test header'
+        assert notification.subject == "Test subject"
+        assert notification.header == "Test header"
         assert notification.is_test is False
         assert notification.programed_send_date is not None
         assert notification.blocks is not None

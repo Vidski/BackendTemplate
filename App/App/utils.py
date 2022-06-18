@@ -11,19 +11,19 @@ def log_information(event, instance):
     """
     now = datetime.now()
     class_name = instance.__class__.__name__
-    introduction = f'{class_name}s App | {class_name}'
+    introduction = f"{class_name}s App | {class_name}"
     message = f'{introduction} "{instance.id}" {event} at {now}'
     logger.info(message)
 
 
 def log_email_action(email_type, instance):
-    if email_type == 'verify_email':
+    if email_type == "verify_email":
         logger.info(
-            'Users App | New user, verification email sent to '
-            f'{instance.email} at {datetime.now()}'
+            "Users App | New user, verification email sent to "
+            f"{instance.email} at {datetime.now()}"
         )
     else:
         logger.info(
-            'Users App | Password restore, email sent to '
-            f'{instance.user.email} at {datetime.now()}'
+            "Users App | Password restore, email sent to "
+            f"{instance.user.email} at {datetime.now()}"
         )

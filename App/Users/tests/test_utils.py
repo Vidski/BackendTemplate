@@ -12,7 +12,7 @@ from Users.utils import verify_user_query_token
 class TestUserUtils:
     def test_verify_user_query_token_raises_PermissionDenied(self):
         user = UserFactory()
-        token = 'Wrong token'
+        token = "Wrong token"
         with pytest.raises(PermissionDenied):
             verify_user_query_token(user, token)
 
@@ -28,10 +28,10 @@ class TestUserUtils:
         verify_user_query_token(user, token)
 
     def test_check_e164_format_raises_PermissionDenied(self):
-        phone_number = '000000000'
+        phone_number = "000000000"
         with pytest.raises(ValidationError):
             check_e164_format(phone_number)
 
     def test_check_e164_format_do_not_raises_PermissionDenied(self):
-        phone_number = '+00000000000'
+        phone_number = "+00000000000"
         check_e164_format(phone_number)

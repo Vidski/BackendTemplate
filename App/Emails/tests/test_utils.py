@@ -10,7 +10,7 @@ from Users.fakers.user import UserFaker
 @pytest.mark.django_db
 class TestEmailUtils:
     def test_send_email_verify_email(self):
-        email_type = 'verify_email'
+        email_type = "verify_email"
         user = UserFaker()
         emails = Email.objects.all().count()
         assert emails == 0
@@ -21,7 +21,7 @@ class TestEmailUtils:
         assert len(mail.outbox) == 1
 
     def test_reset_password_verify_email(self):
-        email_type = 'reset_password'
+        email_type = "reset_password"
         user = UserFaker()
         instance = ResetPasswordToken.objects.create(user=user)
         emails = Email.objects.all().count()

@@ -5,8 +5,8 @@ from Emails.fakers.block import BlockTestFaker
 
 
 class NotificationTestFaker(NotificationFactory):
-    subject = 'Test subject'
-    header = 'Test header'
+    subject = "Test subject"
+    header = "Test header"
     is_test = True
     programed_send_date = None
     sent_date = None

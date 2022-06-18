@@ -6,8 +6,8 @@ from Users.factories.user import UserFactory
 
 
 class EmailTestFaker(EmailFactory):
-    subject = 'Test subject'
-    header = 'Test header'
+    subject = "Test subject"
+    header = "Test header"
     is_test = True
     to = factory.SubFactory(UserFactory)
     programed_send_date = None

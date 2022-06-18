@@ -13,12 +13,12 @@ def generate_user_verification_token(user):
     """
     string_user = user.email + settings.EMAIL_VERIFICATION_TOKEN_SECRET
     hashed = hashlib.md5(string_user.encode())
-    decoded = base64.b64encode(hashed.digest()).decode('utf-8')
+    decoded = base64.b64encode(hashed.digest()).decode("utf-8")
     token = (
-        decoded.replace('\\', '-')
-        .replace('/', '_')
-        .replace('=', '')
-        .replace('+', '')
+        decoded.replace("\\", "-")
+        .replace("/", "_")
+        .replace("=", "")
+        .replace("+", "")
     )
     return token
 
@@ -37,6 +37,6 @@ def check_e164_format(phone_number):
     Checks if a phone number is in E.164 format
     example: +11234567890
     """
-    regex_format = r'^\+[0-9]\d{1,20}$'
+    regex_format = r"^\+[0-9]\d{1,20}$"
     if phone_number and not regex.match(regex_format, phone_number):
-        raise ValidationError('Phone number is not valid')
+        raise ValidationError("Phone number is not valid")

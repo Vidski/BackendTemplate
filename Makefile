@@ -19,8 +19,8 @@ IGNORE_WARNINGS = -W ignore::django.utils.deprecation.RemovedInDjango41Warning
 PYTEST_SETTINGS = --reuse-db --ds=App.settings.django.test_settings ${IGNORE_WARNINGS} -p no:cacheprovider
 COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
 COVERAGE_WITH_HTML_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html
-BLACK_SETTINGS = --config="./App/Settings/pyproject.toml"
-ISORT_SETTINGS = --settings-path="./App/Settings/pyproject.toml"
+BLACK_SETTINGS = --config="./App/settings/pyproject.toml"
+ISORT_SETTINGS = --settings-path="./App/settings/pyproject.toml"
 STYLE = {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2} ## Prints the target in a nice format
 
 

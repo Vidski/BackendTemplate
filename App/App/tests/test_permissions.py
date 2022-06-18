@@ -58,7 +58,7 @@ class TestIsUserOwnerPermission:
         user = UserFaker()
         requester = VerifiedUserFaker()
         request = MagicMock()
-        kwargs = {'kwargs': {'pk': user.id}}
+        kwargs = {"kwargs": {"pk": user.id}}
         mocked_kwargs = PropertyMock(return_value=kwargs)
         type(request).parser_context = mocked_kwargs
         mocked_requester = PropertyMock(return_value=requester)
@@ -68,7 +68,7 @@ class TestIsUserOwnerPermission:
     def test_returns_true_if_user_is_owner(self):
         requester = VerifiedUserFaker()
         request = MagicMock()
-        kwargs = {'kwargs': {'pk': requester.id}}
+        kwargs = {"kwargs": {"pk": requester.id}}
         mocked_kwargs = PropertyMock(return_value=kwargs)
         mocked_requester = PropertyMock(return_value=requester)
         type(request).user = mocked_requester
@@ -82,7 +82,7 @@ class TestIsSameUserId:
         user = VerifiedUserFaker()
         requester = VerifiedUserFaker()
         request = MagicMock()
-        kwargs = {'user_id': f'{user.id}'}
+        kwargs = {"user_id": f"{user.id}"}
         mocked_url_kwargs = PropertyMock(return_value=kwargs)
         type(request).GET = mocked_url_kwargs
         mocked_requester = PropertyMock(return_value=requester)
@@ -92,7 +92,7 @@ class TestIsSameUserId:
     def test_returns_true_if_user_id_in_url_is_the_requester_id(self):
         requester = VerifiedUserFaker()
         request = MagicMock()
-        kwargs = {'user_id': requester.id}
+        kwargs = {"user_id": requester.id}
         mocked_url_kwargs = PropertyMock(return_value=kwargs)
         type(request).GET = mocked_url_kwargs
         mocked_requester = PropertyMock(return_value=requester)
@@ -114,7 +114,7 @@ class TestIsProfileOwnerPermission:
     def test_returns_true_if_profile_is_from_user(self):
         requester = VerifiedUserFaker()
         request = MagicMock()
-        kwargs = {'kwargs': {'pk': requester.profile.id}}
+        kwargs = {"kwargs": {"pk": requester.profile.id}}
         mocked_kwargs = PropertyMock(return_value=kwargs)
         mocked_requester = PropertyMock(return_value=requester)
         type(request).user = mocked_requester
@@ -123,9 +123,9 @@ class TestIsProfileOwnerPermission:
 
     def test_returns_false_if_profile_is_not_from_user(self):
         requester = VerifiedUserFaker()
-        other_user = VerifiedUserFaker(email='other@user.com')
+        other_user = VerifiedUserFaker(email="other@user.com")
         request = MagicMock()
-        kwargs = {'kwargs': {'pk': other_user.profile.id}}
+        kwargs = {"kwargs": {"pk": other_user.profile.id}}
         mocked_kwargs = PropertyMock(return_value=kwargs)
         mocked_requester = PropertyMock(return_value=requester)
         type(request).user = mocked_requester
@@ -136,7 +136,7 @@ class TestIsProfileOwnerPermission:
         requester = VerifiedUserFaker()
         request = MagicMock()
         last_profile = Profile.objects.all().last()
-        kwargs = {'kwargs': {'pk': last_profile.id + 1}}
+        kwargs = {"kwargs": {"pk": last_profile.id + 1}}
         mocked_kwargs = PropertyMock(return_value=kwargs)
         mocked_requester = PropertyMock(return_value=requester)
         type(request).user = mocked_requester
@@ -148,35 +148,35 @@ class TestIsProfileOwnerPermission:
 class TestIsActionAllowedPermission:
     def test_returns_true_for_retrieve_action_allowed(self):
         view = MagicMock()
-        action = 'retrieve'
+        action = "retrieve"
         mocked_action = PropertyMock(return_value=action)
         type(view).action = mocked_action
         assert IsActionAllowed().has_permission(None, view) is True
 
     def test_returns_true_for_update_action_allowed(self):
         view = MagicMock()
-        action = 'update'
+        action = "update"
         mocked_action = PropertyMock(return_value=action)
         type(view).action = mocked_action
         assert IsActionAllowed().has_permission(None, view) is True
 
     def test_returns_false_for_list_action_not_allowed(self):
         view = MagicMock()
-        action = 'list'
+        action = "list"
         mocked_action = PropertyMock(return_value=action)
         type(view).action = mocked_action
         assert IsActionAllowed().has_permission(None, view) is False
 
     def test_returns_false_for_create_action_not_allowed(self):
         view = MagicMock()
-        action = 'create'
+        action = "create"
         mocked_action = PropertyMock(return_value=action)
         type(view).action = mocked_action
         assert IsActionAllowed().has_permission(None, view) is False
 
     def test_returns_false_for_delete_action_not_allowed(self):
         view = MagicMock()
-        action = 'delete'
+        action = "delete"
         mocked_action = PropertyMock(return_value=action)
         type(view).action = mocked_action
         assert IsActionAllowed().has_permission(None, view) is False

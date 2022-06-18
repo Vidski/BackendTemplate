@@ -6,8 +6,8 @@ from Emails.views import SuggestionViewSet
 
 
 router = DefaultRouter()
-router.register('suggestions', SuggestionViewSet, basename='users')
+router.register("suggestions", SuggestionViewSet, basename="users")
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]
