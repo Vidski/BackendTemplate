@@ -2,6 +2,21 @@ fail_fast: true
 repos:
   - repo: local # Use a local repository
     hooks:
+      - id: lint
+        name: Lint code
+        description: Any color you like
+        entry: black
+        args: [
+          --config=./App/App/settings/pyproject.toml,
+          --check
+        ]
+        files: ^App/
+        exclude: /migrations/*
+        require_serial: true
+        additional_dependencies: ['black==22.3.0']
+        always_run: false
+        language: python
+        language_version: python3
 
       - id: imports
         name: Sort imports
