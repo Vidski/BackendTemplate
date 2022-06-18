@@ -21,6 +21,8 @@ COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
 COVERAGE_WITH_HTML_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html
 BLACK_SETTINGS = --config="./App/settings/pyproject.toml"
 ISORT_SETTINGS = --settings-path="./App/settings/pyproject.toml"
+BLACK_LOCAL_SETTINGS = --config="./App/App/settings/pyproject.toml"
+ISORT_LOCAL_SETTINGS = --settings-path="./App/App/settings/pyproject.toml"
 STYLE = {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2} ## Prints the target in a nice format
 
 
@@ -143,11 +145,11 @@ lint: ## Run the linter
 
 .PHONY: check-lint
 check-lint: ## Check for linting errors.
-	@${COMMAND} "black --check . ${BLACK_SETTINGS}"
+	@${COMMAND} "black . ${BLACK_SETTINGS} --check"
 
 .PHONY: check-lint-local
 check-lint-local: ## Check for linting errors in local, useful for CI.
-	@black --check . ${BLACK_SETTINGS}
+	@black . ${BLACK_LOCAL_SETTINGS} --check
 
 .PHONY: sort-imports
 sort-imports: ## Sort the imports
@@ -159,7 +161,7 @@ check-imports: ## Check for errors on imports ordering.
 
 .PHONY: check-imports-local
 check-imports-local:  ## Check for errors on imports ordering in local, useful for CI.
-	@isort . ${ISORT_SETTINGS} --check
+	@isort . ${ISORT_LOCAL_SETTINGS} --check
 
 .PHONY: wait-db
 wait-db: ## Wait until the database is ready, useful for CI. You can modify the host with HOST parameter.
