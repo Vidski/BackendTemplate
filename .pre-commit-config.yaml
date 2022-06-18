@@ -21,7 +21,7 @@ repos:
       - id: imports
         name: Sort imports
         description: Isort your imports, so you don't have to
-        entry: isort
+        entry: isort .
         args: [
           --settings-path=./App/App/settings/pyproject.toml,
           --check
