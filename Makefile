@@ -12,8 +12,8 @@ TEST_SETTINGS = SETTINGS=test
 PYTEST_SETTINGS = --reuse-db --ds=App.settings.django.test_settings -W ignore::django.utils.deprecation.RemovedInDjango41Warning -p no:cacheprovider
 COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
 COVERAGE_WITH_HTML_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html
-
-PING_DB = docker exec database mysqladmin --user=user --password=password --host ${HOST} ping
+STYLE = {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2} ## Prints the target in a nice format
+PING_DB = docker exec database mysqladmin --user=${DBUSER} --password=${DBPASSWORD} --host ${HOST} ping
 
 OITNB_SETTINGS = --exclude="/migrations/*" --icons --line-length=79
 ISORT_SETTINGS = --known-local-folder=App/ --skip-glob="**/migrations/*" --skip-glob="**/.env/*" --lai=2 --sl --use-parentheses --trailing-comma --force-grid-wrap=0 --multi-line=3
@@ -24,7 +24,7 @@ all: ## Main command, just needed to type `make`. Is equivalent to `make up`.
 
 .PHONY: help
 help:	## Show this help which show all the possible make targets and its description.
-	@sed -ne '/^[a-zA-Z_-]/ s/^/• / ; /@sed/!s/## //p' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / ${STYLE}' $(MAKEFILE_LIST)
 
 .PHONY: up
 up: ## Start the containers running the app.
@@ -156,7 +156,7 @@ check-imports-local:  ## Check for errors on imports ordering in local, useful f
 	@isort . ${ISORT_SETTINGS} --check
 
 .PHONY: wait-db
-wait-db: ## Wait until the database is ready, useful for CI.
+wait-db: ## Wait until the database is ready, useful for CI. You can modify the host with HOST parameter.
 	@while [[ @true ]] ; do \
 		if ${PING_DB} --silent &> /dev/null; then\
 			echo "Database is up!" && break ; \
