@@ -1,22 +1,29 @@
+## Variables used in target commands
 SHELL := /bin/bash
 ENV ?= Local
 SETTINGS ?= $(shell echo $(ENV) | tr '[:upper:]' '[:lower:]')
 DBUSER ?= user
 DBPASSWORD ?= password
 HOST ?= "127.0.0.1"
+
+## Variables to make targets more readable
 COMMAND = docker exec -i django-app bash -c
 MANAGE = python manage.py
 DOCKER_FILE = docker-compose -f ./Docker/${ENV}/docker-compose.yml
 SETTINGS_FLAG = --settings=App.settings.django.${SETTINGS}_settings
 TEST_SETTINGS = SETTINGS=test
-PYTEST_SETTINGS = --reuse-db --ds=App.settings.django.test_settings -W ignore::django.utils.deprecation.RemovedInDjango41Warning -p no:cacheprovider
-COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
-COVERAGE_WITH_HTML_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html
-STYLE = {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2} ## Prints the target in a nice format
 PING_DB = docker exec database mysqladmin --user=${DBUSER} --password=${DBPASSWORD} --host ${HOST} ping
 
+## Settings used in target commands
+IGNORE_WARNINGS = -W ignore::django.utils.deprecation.RemovedInDjango41Warning
+PYTEST_SETTINGS = --reuse-db --ds=App.settings.django.test_settings ${IGNORE_WARNINGS} -p no:cacheprovider
+COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
+COVERAGE_WITH_HTML_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html
 OITNB_SETTINGS = --exclude="/migrations/*" --icons --line-length=79
-ISORT_SETTINGS = --known-local-folder=App/ --skip-glob="**/migrations/*" --skip-glob="**/.env/*" --lai=2 --sl --use-parentheses --trailing-comma --force-grid-wrap=0 --multi-line=3
+ISORT_SETTINGS_FOR_BLACK = --use-parentheses --trailing-comma --force-grid-wrap=0 --multi-line=3
+ISORT_SETTINGS = --known-local-folder=App/ --sg="**/migrations/*" --sg="**/.env/*" --lai=2 --sl ${ISORT_SETTINGS_FOR_BLACK}
+STYLE = {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2} ## Prints the target in a nice format
+
 
 .PHONY: all
 all: ## Main command, just needed to type `make`. Is equivalent to `make up`.
