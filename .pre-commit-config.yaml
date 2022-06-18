@@ -2,34 +2,14 @@ fail_fast: true
 repos:
   - repo: local # Use a local repository
     hooks:
-      - id: lint
-        name: Lint code
-        description: Orange is the new black code linter
-        entry: oitnb
-        args: [--icons, --line-length=79, --check,  --exclude=/migrations/*]
-        files: ^App/
-        exclude: /migrations/*
-        require_serial: true
-        additional_dependencies: ['oitnb==0.2.2']
-        always_run: false
-        language: python
-        language_version: python3
 
       - id: imports
         name: Sort imports
         description: Isort your imports, so you don't have to
         entry: isort
         args: [
-          --known-local-folder=App/,
-          --skip-glob='**/migrations/*',
-          --lai=2,
-          --sl,
-          --check,
-          --diff,
-          --use-parentheses,
-          --trailing-comma,
-          --force-grid-wrap=0,
-          --multi-line=3
+          --settings-path=./App/App/settings/pyproject.toml,
+          --check
         ]
         files: ^App/
         exclude: /migrations/*
