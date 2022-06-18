@@ -30,7 +30,7 @@ all: ## Main command, just needed to type `make`. Is equivalent to `make up`
 	@make up
 
 help:	## Show this help.
-	@sed -ne '/@sed/!s/## //p' $(MAKEFILE_LIST)
+	@sed -ne '/^[a-zA-Z_-]/ s/^/• / ; /@sed/!s/## //p' $(MAKEFILE_LIST)
 
 up: ## Start the containers running the app
 	@${DOCKER_FILE} up
