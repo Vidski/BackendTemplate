@@ -28,7 +28,7 @@ jobs:
       run:  make check-sort-imports-local
 
   Testing:
-    needs: [Lint]
+    needs: [Format]
     runs-on: ubuntu-latest
     steps:
     - name: 🔀 Checkout
