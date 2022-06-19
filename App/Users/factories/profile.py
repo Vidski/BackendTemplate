@@ -10,14 +10,14 @@ class ProfileFactory(factory.django.DjangoModelFactory):
         model = Profile
 
     user = factory.SubFactory(UserFactory)
-    nickname = factory.Faker('isbn13')
-    bio = factory.Faker('text')
+    nickname = factory.Faker("isbn13")
+    bio = factory.Faker("text")
     image = factory.django.ImageField(
-        filename='profile_picture.jpg',
+        filename="profile_picture.jpg",
         width=100,
         height=100,
-        format='JPEG',
-        color='gray',
+        format="JPEG",
+        color="gray",
     )
-    gender = factory.fuzzy.FuzzyChoice(('F', 'M', 'N', 'P'))
-    birth_date = factory.Faker('date')
+    gender = factory.fuzzy.FuzzyChoice(("F", "M", "N", "P"))
+    birth_date = factory.Faker("date")

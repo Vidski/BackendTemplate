@@ -22,7 +22,7 @@ class Block(models.Model):
     link = models.URLField(max_length=100, null=True)
 
     def __str__(self):
-        return f'{self.id} | {self.title}'
+        return f"{self.id} | {self.title}"
 
 
 class Email(AbstractEmailClass):
@@ -34,7 +34,7 @@ class Email(AbstractEmailClass):
     is_test = models.BooleanField(default=False)
     programed_send_date = models.DateTimeField(null=True)
     to = models.ForeignKey(
-        User, on_delete=models.CASCADE, null=False, related_name='to_user'
+        User, on_delete=models.CASCADE, null=False, related_name="to_user"
     )
 
     def get_emails(self):
@@ -43,8 +43,8 @@ class Email(AbstractEmailClass):
     def set_programed_send_date(self):
         programmed_date = self.programed_send_date
         if programmed_date and programmed_date <= timezone.now():
-            message = 'Programed send date must be future'
-            raise ValidationError(message, code='invalid')
+            message = "Programed send date must be future"
+            raise ValidationError(message, code="invalid")
         if not programmed_date:
             five_minutes_ahead = timezone.now() + timezone.timedelta(minutes=5)
             self.programed_send_date = five_minutes_ahead
@@ -62,7 +62,7 @@ class Suggestion(AbstractEmailClass):
     """
 
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='suggestion', unique=False
+        User, on_delete=models.CASCADE, related_name="suggestion", unique=False
     )
     subject = models.CharField(
         max_length=100,

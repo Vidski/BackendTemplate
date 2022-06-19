@@ -22,17 +22,17 @@ class TestEmailFakers:
         email = EmailTestFaker()
         assert Email.objects.count() == 1
         assert Block.objects.count() == 1
-        assert email.subject == 'Test subject'
-        assert email.header == 'Test header'
+        assert email.subject == "Test subject"
+        assert email.header == "Test header"
         assert email.is_test == True
         assert isinstance(email.to, User)
         assert email.blocks.first() is not None
         block = email.blocks.first()
-        assert block.title == 'test'
-        assert block.content == 'test'
+        assert block.title == "test"
+        assert block.content == "test"
         assert block.show_link == True
-        assert block.link_text == 'test'
-        assert block.link == 'test.com'
+        assert block.link_text == "test"
+        assert block.link == "test.com"
 
 
 @pytest.mark.django_db
@@ -41,11 +41,11 @@ class TestBlockFakers:
         assert Block.objects.count() == 0
         block = BlockTestFaker()
         assert Block.objects.count() == 1
-        assert block.title == 'test'
-        assert block.content == 'test'
+        assert block.title == "test"
+        assert block.content == "test"
         assert block.show_link == True
-        assert block.link_text == 'test'
-        assert block.link == 'test.com'
+        assert block.link_text == "test"
+        assert block.link == "test.com"
 
 
 @pytest.mark.django_db
@@ -57,14 +57,14 @@ class TestSuggestionFakers:
         assert Block.objects.count() == 1
         assert Suggestion.objects.count() == 1
         assert suggestion.subject == CommentType.SUGGESTION.value
-        assert suggestion.header == 'Test header'
+        assert suggestion.header == "Test header"
         assert suggestion.blocks.first() is not None
         block = suggestion.blocks.first()
-        assert block.title == 'test'
-        assert block.content == 'test'
+        assert block.title == "test"
+        assert block.content == "test"
         assert block.show_link == True
-        assert block.link_text == 'test'
-        assert block.link == 'test.com'
+        assert block.link_text == "test"
+        assert block.link == "test.com"
 
 
 @pytest.mark.django_db
@@ -75,19 +75,19 @@ class TestNotificationFakers:
         notification = NotificationTestFaker()
         assert Block.objects.count() == 1
         assert Notification.objects.count() == 1
-        assert notification.subject == 'Test subject'
-        assert notification.header == 'Test header'
+        assert notification.subject == "Test subject"
+        assert notification.header == "Test header"
         assert notification.is_test == True
         assert notification.programed_send_date is None
         assert notification.sent_date is None
         assert notification.was_sent is False
         assert notification.blocks.first() is not None
         block = notification.blocks.first()
-        assert block.title == 'test'
-        assert block.content == 'test'
+        assert block.title == "test"
+        assert block.content == "test"
         assert block.show_link == True
-        assert block.link_text == 'test'
-        assert block.link == 'test.com'
+        assert block.link_text == "test"
+        assert block.link == "test.com"
 
     def test_notification_faker_creates_emails_when_send(self):
         assert Block.objects.count() == 0
@@ -106,4 +106,4 @@ class TestBlackListFakers:
         assert BlackList.objects.count() == 0
         black_list_item = BlackListTestFaker()
         assert BlackList.objects.count() == 1
-        assert black_list_item.email == 'emailinblacklist@test.com'
+        assert black_list_item.email == "emailinblacklist@test.com"

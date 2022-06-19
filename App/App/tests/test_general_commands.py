@@ -10,18 +10,18 @@ from Users.models import Profile
 from Users.models import User
 
 
-COMMAND = 'populate_db'
+COMMAND = "populate_db"
 
 
 @pytest.mark.django_db
 class TestPopulateCommand:
-    @override_settings(ENVIRONMENT_NAME='production')
+    @override_settings(ENVIRONMENT_NAME="production")
     def test_populate_db_command_fails_on_non_dev_mode(self, caplog):
         caplog.clear()
-        call_command(COMMAND, '-i', '5')
+        call_command(COMMAND, "-i", "5")
         message = (
-            'This command creates fake data do NOT run '
-            + 'this in production environments'
+            "This command creates fake data do NOT run "
+            + "this in production environments"
         )
         assert [message] == [record.message for record in caplog.records]
 
@@ -69,7 +69,7 @@ class TestPopulateCommand:
         assert Email.objects.all().count() == 0
         assert Profile.objects.all().count() == 0
         assert Suggestion.objects.all().count() == 0
-        call_command(COMMAND, '-i', '5')
+        call_command(COMMAND, "-i", "5")
         assert User.objects.all().count() == 6
         assert Email.objects.all().count() == 5
         assert Profile.objects.all().count() == 6
@@ -80,7 +80,7 @@ class TestPopulateCommand:
         assert Email.objects.all().count() == 0
         assert Profile.objects.all().count() == 0
         assert Suggestion.objects.all().count() == 0
-        call_command(COMMAND, '-i', '5', '-n')
+        call_command(COMMAND, "-i", "5", "-n")
         assert User.objects.all().count() == 5
         assert Email.objects.all().count() == 5
         assert Profile.objects.all().count() == 5

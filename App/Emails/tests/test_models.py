@@ -24,15 +24,15 @@ class TestBlockModel:
         block = BlockFactory()
         dict_keys = block.__dict__.keys()
         attributes = [attribute for attribute in dict_keys]
-        assert 'title' in attributes
-        assert 'content' in attributes
-        assert 'show_link' in attributes
-        assert 'link_text' in attributes
-        assert 'link' in attributes
+        assert "title" in attributes
+        assert "content" in attributes
+        assert "show_link" in attributes
+        assert "link_text" in attributes
+        assert "link" in attributes
 
     def test_block_str(self):
         block = BlockFactory()
-        expected_str = f'{block.id} | {block.title}'
+        expected_str = f"{block.id} | {block.title}"
         assert str(block) == expected_str
 
 
@@ -47,17 +47,17 @@ class TestEmailModel:
         email = EmailFactory()
         dict_keys = email.__dict__.keys()
         attributes = [attribute for attribute in dict_keys]
-        assert 'subject' in attributes
-        assert 'header' in attributes
-        assert 'is_test' in attributes
-        assert 'to_id' in attributes
-        assert 'programed_send_date' in attributes
-        assert 'sent_date' in attributes
-        assert 'was_sent' in attributes
+        assert "subject" in attributes
+        assert "header" in attributes
+        assert "is_test" in attributes
+        assert "to_id" in attributes
+        assert "programed_send_date" in attributes
+        assert "sent_date" in attributes
+        assert "was_sent" in attributes
 
     def test_email_str(self):
         email = EmailFactory()
-        expected_str = f'{email.id} | {email.subject}'
+        expected_str = f"{email.id} | {email.subject}"
         assert str(email) == expected_str
 
     def test_save(self):
@@ -121,21 +121,21 @@ class TestEmailModel:
         block = BlockFactory()
         email = EmailFactory(blocks=[block])
         data = email.get_email_data()
-        assert data['header'] == email.header
-        assert list(data['blocks']) == list(email.blocks.all())
+        assert data["header"] == email.header
+        assert list(data["blocks"]) == list(email.blocks.all())
 
     def test_get_emails_data_without_blocks(self):
         email = EmailFactory(blocks=None)
         email.blocks.all().delete()
         data = email.get_email_data()
-        assert data['header'] == email.header
-        assert data['blocks'] == []
+        assert data["header"] == email.header
+        assert data["blocks"] == []
 
     def test_get_template(self):
         email = EmailFactory()
         data = email.get_email_data()
         template = email.get_template()
-        expected_template = render_to_string('email.html', data)
+        expected_template = render_to_string("email.html", data)
         assert template == expected_template
 
     def test_get_email_object(self):
@@ -168,20 +168,20 @@ class TestSuggestionModel:
     """
 
     def test_email_attributes(self):
-        type = 'ERROR'
+        type = "ERROR"
         user = UserFaker()
-        content = 'This is the content'
+        content = "This is the content"
         email = SuggestionEmailFactory(type=type, content=content, user=user)
         dict_keys = email.__dict__.keys()
         attributes = [attribute for attribute in dict_keys]
-        assert 'user_id' in attributes
-        assert 'subject' in attributes
-        assert 'header' in attributes
-        assert 'is_test' not in attributes
-        assert 'programed_send_date' not in attributes
-        assert 'sent_date' in attributes
-        assert 'was_sent' in attributes
-        assert 'was_read' in attributes
+        assert "user_id" in attributes
+        assert "subject" in attributes
+        assert "header" in attributes
+        assert "is_test" not in attributes
+        assert "programed_send_date" not in attributes
+        assert "sent_date" in attributes
+        assert "was_sent" in attributes
+        assert "was_read" in attributes
 
     def test_get_emails(self):
         email = SuggestionErrorFaker()
@@ -200,12 +200,12 @@ class TestNotificationModel:
         notification = NotificationFactory()
         dict_keys = notification.__dict__.keys()
         attributes = [attribute for attribute in dict_keys]
-        assert 'subject' in attributes
-        assert 'header' in attributes
-        assert 'is_test' in attributes
-        assert 'programed_send_date' in attributes
-        assert 'sent_date' in attributes
-        assert 'was_sent' in attributes
+        assert "subject" in attributes
+        assert "header" in attributes
+        assert "is_test" in attributes
+        assert "programed_send_date" in attributes
+        assert "sent_date" in attributes
+        assert "was_sent" in attributes
 
     def test_send_notification_with_is_test_attribute_as_true(self):
         assert Email.objects.all().count() == 0
@@ -258,4 +258,4 @@ class TestBlackListModel:
         black_list_item = BlackListFactory()
         dict_keys = black_list_item.__dict__.keys()
         attributes = [attribute for attribute in dict_keys]
-        assert 'email' in attributes
+        assert "email" in attributes

@@ -5,22 +5,21 @@ from Users.factories.user import UserFactory
 from Users.fakers.profile import AdultProfileFaker
 from Users.fakers.profile import KidProfileFaker
 from Users.fakers.user import AdminFaker
-from Users.utils import generate_user_verification_token
 
 
 @pytest.mark.django_db
 class TestUserModel:
     def test_model_has_attributes(self):
         user = UserFactory()
-        assert hasattr(user, 'email')
-        assert hasattr(user, 'first_name')
-        assert hasattr(user, 'last_name')
-        assert hasattr(user, 'password')
-        assert hasattr(user, 'is_verified')
-        assert hasattr(user, 'is_premium')
-        assert hasattr(user, 'is_admin')
-        assert hasattr(user, 'created_at')
-        assert hasattr(user, 'updated_at')
+        assert hasattr(user, "email")
+        assert hasattr(user, "first_name")
+        assert hasattr(user, "last_name")
+        assert hasattr(user, "password")
+        assert hasattr(user, "is_verified")
+        assert hasattr(user, "is_premium")
+        assert hasattr(user, "is_admin")
+        assert hasattr(user, "created_at")
+        assert hasattr(user, "updated_at")
 
     def test_model_do_not_has_attributes(self):
         user = UserFactory()
@@ -30,7 +29,7 @@ class TestUserModel:
 
     def test_model_has_custom_properties(self):
         user = UserFactory()
-        assert user.name == user.first_name + ' ' + user.last_name
+        assert user.name == user.first_name + " " + user.last_name
         assert user.is_staff == user.is_admin
 
     def test_model_verify_function(self):
@@ -52,19 +51,19 @@ class TestUserModel:
 
     def test_has_module_perms_as_admin(self):
         user = AdminFaker()
-        assert user.has_module_perms('Users') == True
-        assert user.has_module_perms('Emails') == True
-        assert user.has_module_perms('Logs') == True
+        assert user.has_module_perms("Users") == True
+        assert user.has_module_perms("Emails") == True
+        assert user.has_module_perms("Logs") == True
 
     def test_has_module_perms_as_not_admin(self):
         user = UserFactory()
-        assert user.has_module_perms('Users') == False
-        assert user.has_module_perms('Emails') == False
-        assert user.has_module_perms('Logs') == False
+        assert user.has_module_perms("Users") == False
+        assert user.has_module_perms("Emails") == False
+        assert user.has_module_perms("Logs") == False
 
     def test_str_user(self):
         user = UserFactory()
-        assert str(user) == f'{user.email}'
+        assert str(user) == f"{user.email}"
 
 
 @pytest.mark.django_db
@@ -73,19 +72,19 @@ class TestProfileModel:
         profile = ProfileFactory()
         dict_keys = profile.__dict__.keys()
         attributes = [attribute for attribute in dict_keys]
-        assert 'user_id' in attributes
-        assert 'nickname' in attributes
-        assert 'bio' in attributes
-        assert 'image' in attributes
-        assert 'gender' in attributes
-        assert 'preferred_language' in attributes
-        assert 'birth_date' in attributes
-        assert 'created_at' in attributes
-        assert 'updated_at' in attributes
+        assert "user_id" in attributes
+        assert "nickname" in attributes
+        assert "bio" in attributes
+        assert "image" in attributes
+        assert "gender" in attributes
+        assert "preferred_language" in attributes
+        assert "birth_date" in attributes
+        assert "created_at" in attributes
+        assert "updated_at" in attributes
 
     def test_profile_str(self):
         profile = ProfileFactory()
-        expected_str = f'User ({profile.user_id}) profile ({profile.pk})'
+        expected_str = f"User ({profile.user_id}) profile ({profile.pk})"
         assert str(profile) == expected_str
 
     def test_is_adult(self):

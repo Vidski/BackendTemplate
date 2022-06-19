@@ -14,7 +14,7 @@ class IsAdmin(BasePermission):
 
 
 class IsVerified(BasePermission):
-    message = 'You have to verify your account first'
+    message = "You have to verify your account first"
 
     def has_permission(self, request, view):
         return request.user.is_verified
@@ -25,7 +25,7 @@ class IsUserOwner(BasePermission):
 
     def has_permission(self, request, view):
         try:
-            pk = request.parser_context['kwargs']['pk']
+            pk = request.parser_context["kwargs"]["pk"]
             user = get_object_or_404(User, id=pk)
         except:
             return False
@@ -36,7 +36,7 @@ class IsSameUserId(BasePermission):
     message = "You don't have permission"
 
     def has_permission(self, request, view):
-        url_user_id = request.GET.get('user_id', request.user.id)
+        url_user_id = request.GET.get("user_id", request.user.id)
         return request.user.id == int(url_user_id)
 
 
@@ -45,7 +45,7 @@ class IsProfileOwner(DjangoObjectPermissions):
 
     def has_permission(self, request, view):
         try:
-            pk = request.parser_context['kwargs']['pk']
+            pk = request.parser_context["kwargs"]["pk"]
             profile = get_object_or_404(Profile, id=pk)
         except:
             return False
@@ -54,7 +54,7 @@ class IsProfileOwner(DjangoObjectPermissions):
 
 class IsActionAllowed(DjangoObjectPermissions):
     message = "You don't have permission"
-    allowed_actions_for_user = ['retrieve', 'update']
+    allowed_actions_for_user = ["retrieve", "update"]
 
     def has_permission(self, request, view):
         return view.action in self.allowed_actions_for_user

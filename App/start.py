@@ -20,20 +20,20 @@ python3 start.py --waiting-service-name database --ip database
 """
 
 CELERY_WORKER = (
-    'celery --app=App.celery.worker.app worker '
-    + '--concurrency=1 --hostname=worker@%h --loglevel=INFO'
+    "celery --app=App.celery_worker.worker.app worker "
+    + "--concurrency=1 --hostname=worker@%h --loglevel=INFO"
 )
 CELERY_BEAT = (
-    'python3 -m celery --app=App.celery.worker.app beat -l debug -f'
-    + ' /var/log/App-celery-beat.log --pidfile=/tmp/celery-beat.pid'
+    "python3 -m celery --app=App.celery_worker.worker.app beat -l debug -f"
+    + " /var/log/App-celery-beat.log --pidfile=/tmp/celery-beat.pid"
 )
-DJANGO = 'python3 manage.py runserver 0.0.0.0:8000'
+DJANGO = "python3 manage.py runserver 0.0.0.0:8000"
 
 
 class Start:
     def __init__(self):
         description = (
-            'Check if port is open, avoid docker-compose race condition'
+            "Check if port is open, avoid docker-compose race condition"
         )
         parser = argparse.ArgumentParser(description=description)
         self.arguments = self.get_arguments(parser)
@@ -42,12 +42,12 @@ class Start:
         self.iterate_port()
 
     def get_arguments(self, parser):
-        parser.add_argument('--service', required=False)
-        parser.add_argument('--waiting-service-name', required=False)
-        parser.add_argument('--ip', required=False)
-        parser.add_argument('--port', required=False)
-        parser.add_argument('--raising-service-name', required=False)
-        parser.add_argument('--command', required=False)
+        parser.add_argument("--service", required=False)
+        parser.add_argument("--waiting-service-name", required=False)
+        parser.add_argument("--ip", required=False)
+        parser.add_argument("--port", required=False)
+        parser.add_argument("--raising-service-name", required=False)
+        parser.add_argument("--command", required=False)
         return parser.parse_args()
 
     def set_service_data(self, service):
@@ -59,8 +59,8 @@ class Start:
 
     def set_service_data(self, service):
         self.raising_service_name = service
-        self.waiting_service_name = 'database'
-        self.ip = 'database'
+        self.waiting_service_name = "database"
+        self.ip = "database"
         self.port = 3306
         self.command = self.get_command(service)
 
@@ -72,11 +72,11 @@ class Start:
         self.command = str(self.arguments.command)
 
     def get_command(self, service):
-        if service == 'Django-App':
+        if service == "Django-App":
             command = DJANGO
-        elif service == 'Celery-Worker':
+        elif service == "Celery-Worker":
             command = CELERY_WORKER
-        elif service == 'Celery-Beat':
+        elif service == "Celery-Beat":
             command = CELERY_BEAT
         return command
 
@@ -93,9 +93,9 @@ class Start:
         now = datetime.now()
         os.system(
             f'echo "{now}" [info] The service '
-            f'{self.waiting_service_name} is now '
-            f'running and the port is open. Now '
-            f'{self.raising_service_name} will start!'
+            f"{self.waiting_service_name} is now "
+            f"running and the port is open. Now "
+            f"{self.raising_service_name} will start!"
         )
         os.system(self.command)
 
@@ -103,8 +103,8 @@ class Start:
         now = datetime.now()
         os.system(
             f'echo "{now}" [info] The port of '
-            f'{self.waiting_service_name} is not '
-            'open yet. It will be checked again soon!'
+            f"{self.waiting_service_name} is not "
+            "open yet. It will be checked again soon!"
         )
         time.sleep(1)
 

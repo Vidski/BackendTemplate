@@ -1,7 +1,7 @@
 from celery import shared_task
 from django.utils import timezone
 
-from App.celery.worker import app
+from App.celery_worker.worker import app
 from Emails.models.models import Email
 
 
@@ -21,8 +21,8 @@ def each_seconds():
 
 
 app.conf.beat_schedule = {
-    'send_emails': {
-        'task': 'Emails.tasks.send_emails',
-        'schedule': each_seconds(),
+    "send_emails": {
+        "task": "Emails.tasks.send_emails",
+        "schedule": each_seconds(),
     },
 }
