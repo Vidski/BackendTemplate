@@ -1,8 +1,8 @@
-ICON_DIMENSIONS = 'width="14px" height="14px"'
-COLOR = "white"
-ICON_COLOR = f'style="fill: {COLOR}"'
+ICON_DIMENSIONS: str = 'width="14px" height="14px"'
+COLOR: str = "white"
+ICON_COLOR: str = f'style="fill: {COLOR}"'
 
-user_label_with_icon = (
+user_label_with_icon: str = (
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" '
     + f'{ICON_DIMENSIONS}><path d="M224 256c70.7 0 128-57.31 128-128s-57.3-128-'
     + "128-128C153.3 0 96 57.31 96 128S153.3 256 224 256zM274.7 304H173.3C77.61"
@@ -11,7 +11,7 @@ user_label_with_icon = (
     + "bsp;&nbsp;&nbsp;Users"
 )
 
-profile_label_with_icon = (
+profile_label_with_icon: str = (
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"'
     + f'{ICON_DIMENSIONS}><path d="M512 32H64C28.65 32 0 60.65 0 96v320c0 35.35'
     + " 28.65 64 64 64h448c35.35 0 64-28.65 64-64V96C576 60.65 547.3 32 512 32z"
@@ -26,7 +26,7 @@ profile_label_with_icon = (
     + "Profiles"
 )
 
-suggestion_label_with_icon = (
+suggestion_label_with_icon: str = (
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"'
     + f'{ICON_DIMENSIONS}><path d="M256 32C114.6 32 .0272 125.1 .0272 240c0 49.'
     + "63 21.35 94.98 56.97 130.7c-12.5 50.37-54.27 95.27-54.77 95.77c-2.25 2.2"
@@ -35,7 +35,7 @@ suggestion_label_with_icon = (
     + f'97.4 32 256 32z"{ICON_COLOR}/></svg>&nbsp;&nbsp;&nbsp;Suggestions'
 )
 
-email_label_with_icon = (
+email_label_with_icon: str = (
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"'
     + f'{ICON_DIMENSIONS}><path d="M464 64C490.5 64 512 85.49 512 112C512 127.1'
     + " 504.9 141.3 492.8 150.4L275.2 313.6C263.8 322.1 248.2 322.1 236.8 313.6"
@@ -45,7 +45,7 @@ email_label_with_icon = (
     + "vg>&nbsp;&nbsp;&nbsp;Emails"
 )
 
-block_label_with_icon = (
+block_label_with_icon: str = (
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" '
     + f' {ICON_DIMENSIONS}><path d="M256 417.1c-16.38 0-32.88-4.1-46.88-1'
     + "5.12L0 250.9v213.1C0 490.5 21.5 512 48 512h416c26.5 0 48-21.5 48-47.1V25"
@@ -61,7 +61,7 @@ block_label_with_icon = (
     + f'4.8 167.2 191.1 176 191.1z"{ICON_COLOR}/></svg>&nbsp;&nbsp;&nbsp;Blocks'
 )
 
-log_label_with_icon = (
+log_label_with_icon: str = (
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"'
     + f' {ICON_DIMENSIONS}><path d="M256 0C397.4 0 512 114.6 512 256C512 397.4 '
     + "397.4 512 256 512C201.7 512 151.2 495 109.7 466.1C95.2 455.1 91.64 436 1"
@@ -75,7 +75,7 @@ log_label_with_icon = (
     + f'"{ICON_COLOR}/></svg>&nbsp;&nbsp;&nbsp;Logs'
 )
 
-swagger_label_with_icon = (
+swagger_label_with_icon: str = (
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"'
     + f'{ICON_DIMENSIONS}><path d="M16 0c-8.823 0-16 7.177-16 16s7.177 16 16 16'
     + "c8.823 0 16-7.177 16-16s-7.177-16-16-16zM16 1.527c7.995 0 14.473 6.479 1"
@@ -111,7 +111,7 @@ swagger_label_with_icon = (
     + "nbsp;&nbsp;&nbsp;Swagger"
 )
 
-redoc_label_with_icon = (
+redoc_label_with_icon: str = (
     f'<svg xmlns="http://www.w3.org/2000/svg" version="1.0" {ICON_DIMENSIONS} vi'
     + 'ewBox="0 0 100.000000 100.000000" preserveAspectRatio="xMidYMid meet"><g'
     + ' xmlns="http://www.w3.org/2000/svg" transform="translate(0.000000,100.00'
@@ -132,7 +132,7 @@ redoc_label_with_icon = (
     + "&nbsp;Redoc"
 )
 
-black_list_with_icon = (
+black_list_with_icon: str = (
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"'
     f'{ICON_DIMENSIONS}><path d="M0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6'
     + " 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM175 208.1L"
@@ -144,7 +144,7 @@ black_list_with_icon = (
     + f'208.1z"{ICON_COLOR}/></svg>&nbsp;&nbsp;&nbsp;Blacklist'
 )
 
-notification_with_icon = (
+notification_with_icon: str = (
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"'
     + f'{ICON_DIMENSIONS}><path d="M480 179.6C498.6 188.4 512 212.1 512 240C512'
     + " 267.9 498.6 291.6 480 300.4V448C480 460.9 472.2 472.6 460.2 477.6C448.3"

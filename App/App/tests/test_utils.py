@@ -3,16 +3,12 @@ from datetime import datetime
 from logging import Logger
 
 import pytest
-from django.test import override_settings
 from freezegun import freeze_time
 from mock import MagicMock
 from mock import PropertyMock
 
 from App.utils import log_email_action
 from App.utils import log_information
-
-
-LOGGER: Logger = logging.getLogger(__name__)
 
 
 @pytest.mark.django_db

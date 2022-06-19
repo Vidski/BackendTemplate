@@ -3,24 +3,24 @@ from datetime import timedelta
 from App.settings.django.default_settings import *
 
 
-URL = "http://localhost:8000"
+URL: str = "http://localhost:8000"
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "default-secret-key"
+SECRET_KEY: str = "default-secret-key"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-ENVIRONMENT_NAME = "dev"
-ALLOWED_HOSTS = []
+DEBUG: bool = True
+ENVIRONMENT_NAME: str = "dev"
+ALLOWED_HOSTS: list = []
 
 
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "/App/App/static"),)
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_DIRS: tuple = (os.path.join(BASE_DIR, "/App/App/static"),)
+STATIC_ROOT: str = os.path.join(BASE_DIR, "staticfiles")
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
+DATABASES: dict = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "databasename",
@@ -40,22 +40,22 @@ DATABASES = {
 }
 
 # TOKEN TO VERIFY USER VIA EMAIL
-EMAIL_VERIFICATION_TOKEN_SECRET = "hu712dkej_803h7719)a4n-5!5n0cr((2l"
+EMAIL_VERIFICATION_TOKEN_SECRET: str = "hu712dkej_803h7719)a4n-5!5n0cr((2l"
 
 # SMTP CONFIG
-EMAIL_HOST = ""
-EMAIL_HOST_USER = ""
-EMAIL_HOST_PASSWORD = ""
-EMAIL_PORT = ""
+EMAIL_HOST: str = ""
+EMAIL_HOST_USER: str = ""
+EMAIL_HOST_PASSWORD: str = ""
+EMAIL_PORT: str = ""
 
 # Email settings
-TEST_EMAIL = "test@ing.email"
-SUGGESTIONS_EMAIL = "test@suggestion.email"
+TEST_EMAIL: str = "test@ing.email"
+SUGGESTIONS_EMAIL: str = "test@suggestion.email"
 
 # Verify email settings
-VERIFY_EMAIL_URL = f"{URL}/api/users"
+VERIFY_EMAIL_URL: str = f"{URL}/api/users"
 
-SIMPLE_JWT = {
+SIMPLE_JWT: dict = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=50),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=100),
     "ROTATE_REFRESH_TOKENS": False,
