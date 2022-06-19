@@ -5,7 +5,6 @@ from Users.factories.user import UserFactory
 from Users.fakers.profile import AdultProfileFaker
 from Users.fakers.profile import KidProfileFaker
 from Users.fakers.user import AdminFaker
-from Users.utils import generate_user_verification_token
 
 
 @pytest.mark.django_db
