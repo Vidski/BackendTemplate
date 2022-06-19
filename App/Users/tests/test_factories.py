@@ -8,9 +8,9 @@ from Users.models import User
 
 @pytest.mark.django_db
 class TestUserFactory:
-    def test_user_factory(self):
+    def test_user_factory(self) -> None:
         assert User.objects.count() == 0
-        user = UserFactory()
+        user: User = UserFactory()
         assert User.objects.count() == 1
         assert user.name is not None
         assert user.email is not None
@@ -23,9 +23,9 @@ class TestUserFactory:
 
 @pytest.mark.django_db
 class TestProfileFactory:
-    def test_profile_factory(self):
+    def test_profile_factory(self) -> None:
         assert Profile.objects.count() == 0
-        profile = ProfileFactory()
+        profile: Profile = ProfileFactory()
         assert Profile.objects.count() == 1
         assert profile.user is not None
         assert profile.nickname is not None

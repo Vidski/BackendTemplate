@@ -11,14 +11,14 @@ from Users.models import User
 
 
 # Sets the admin logo
-logo_url = "http://localhost:8000/static/logo.png"
+logo_url: str = "http://localhost:8000/static/logo.png"
 admin.site.site_header = format_html(
     "<img src={url} height=50 width=50>", url=logo_url
 )
 
 
 # Sets the admin 'view site' url
-site_url = settings.FRONTEND_URL
+site_url: str = settings.FRONTEND_URL
 admin.site.site_url = site_url
 
 
@@ -36,10 +36,16 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ("id", "email", "first_name", "is_verified", "is_premium")
-    list_display_links = ("id", "email")
-    list_filter = ("is_admin", "is_verified", "is_premium")
-    fieldsets = (
+    list_display: tuple = (
+        "id",
+        "email",
+        "first_name",
+        "is_verified",
+        "is_premium",
+    )
+    list_display_links: tuple = ("id", "email")
+    list_filter: tuple = ("is_admin", "is_verified", "is_premium")
+    fieldsets: tuple = (
         ("General", {"fields": ("id", "email", "password")}),
         (
             "Personal info",
@@ -49,10 +55,10 @@ class UserAdmin(BaseUserAdmin):
         ("Permissions", {"fields": ("is_admin",)}),
         ("Dates", {"fields": ("created_at", "updated_at")}),
     )
-    readonly_fields = ["created_at", "updated_at", "id"]
+    readonly_fields: list = ["created_at", "updated_at", "id"]
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
-    add_fieldsets = (
+    add_fieldsets: tuple = (
         (
             "General",
             {
@@ -67,16 +73,16 @@ class UserAdmin(BaseUserAdmin):
             },
         ),
     )
-    search_fields = ("email", "id")
-    ordering = ("id", "email", "first_name")
-    filter_horizontal = ()
+    search_fields: tuple = ("email", "id")
+    ordering: tuple = ("id", "email", "first_name")
+    filter_horizontal: tuple = ()
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ("nickname", "gender", "birth_date")
-    list_display_links = ("nickname",)
-    list_filter = ("gender", "birth_date")
-    fieldsets = (
+    list_display: tuple = ("nickname", "gender", "birth_date")
+    list_display_links: tuple = ("nickname",)
+    list_filter: tuple = ("gender", "birth_date")
+    fieldsets: tuple = (
         ("User", {"fields": ("user",)}),
         (
             "Personal info",
@@ -84,20 +90,20 @@ class ProfileAdmin(admin.ModelAdmin):
         ),
         ("Account info", {"fields": ("nickname", "bio")}),
     )
-    search_fields = ("nickname", "id")
-    ordering = ("user", "nickname", "gender", "birth_date")
+    search_fields: tuple = ("nickname", "id")
+    ordering: tuple = ("user", "nickname", "gender", "birth_date")
 
 
 class LogEntryAdmin(admin.ModelAdmin):
-    list_display = (
+    list_display: tuple = (
         "user",
         "action_flag",
         "change_message",
     )
-    search_fields = ("user__email",)
-    date_hierarchy = "action_time"
-    list_filter = ("action_flag", "content_type__model")
-    list_per_page = 20
+    search_fields: tuple = ("user__email",)
+    date_hierarchy: str = "action_time"
+    list_filter: tuple = ("action_flag", "content_type__model")
+    list_per_page: int = 20
 
 
 admin.site.register(User, UserAdmin)
