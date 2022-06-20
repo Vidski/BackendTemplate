@@ -15,9 +15,9 @@ from Users.models import User
 
 @pytest.mark.django_db
 class TestUserFakers:
-    def test_user_faker(self):
+    def test_user_faker(self) -> None:
         assert User.objects.count() == 0
-        user = UserFaker(
+        user: User = UserFaker(
             email="normaluser@appname.me", phone_number="+1123123123"
         )
         assert User.objects.count() == 1
@@ -29,9 +29,9 @@ class TestUserFakers:
         assert user.is_admin is False
         assert user.is_verified is False
 
-    def test_verified_user_faker(self):
+    def test_verified_user_faker(self) -> None:
         assert User.objects.count() == 0
-        user = VerifiedUserFaker(email="normalverifieduser@appname.me")
+        user: User = VerifiedUserFaker(email="normalverifieduser@appname.me")
         assert User.objects.count() == 1
         assert user.name is not None
         assert user.email == "normalverifieduser@appname.me"
@@ -41,9 +41,9 @@ class TestUserFakers:
         assert user.is_admin is False
         assert user.is_verified is True
 
-    def test_admin_user_faker(self):
+    def test_admin_user_faker(self) -> None:
         assert User.objects.count() == 0
-        user = AdminFaker(
+        user: User = AdminFaker(
             email="adminuser@appname.me", phone_number="+1123123124"
         )
         assert User.objects.count() == 1
@@ -58,9 +58,9 @@ class TestUserFakers:
 
 @pytest.mark.django_db
 class TestProfileFakers:
-    def test_adult_profile_faker(self):
+    def test_adult_profile_faker(self) -> None:
         assert Profile.objects.count() == 0
-        profile = AdultProfileFaker()
+        profile: Profile = AdultProfileFaker()
         assert Profile.objects.count() == 1
         assert profile.user is not None
         assert profile.nickname is not None
@@ -71,9 +71,9 @@ class TestProfileFakers:
         assert profile.image is not None
         assert profile.image.url is not None
 
-    def test_kid_profile_faker(self):
+    def test_kid_profile_faker(self) -> None:
         assert Profile.objects.count() == 0
-        profile = KidProfileFaker()
+        profile: Profile = KidProfileFaker()
         assert Profile.objects.count() == 1
         assert profile.user is not None
         assert profile.nickname is not None
@@ -84,9 +84,9 @@ class TestProfileFakers:
         assert profile.image is not None
         assert profile.image.url is not None
 
-    def test_female_profile_faker(self):
+    def test_female_profile_faker(self) -> None:
         assert Profile.objects.count() == 0
-        profile = FemaleProfileFaker()
+        profile: Profile = FemaleProfileFaker()
         assert Profile.objects.count() == 1
         assert profile.user is not None
         assert profile.nickname is not None
@@ -97,9 +97,9 @@ class TestProfileFakers:
         assert profile.image is not None
         assert profile.image.url is not None
 
-    def test_male_profile_faker(self):
+    def test_male_profile_faker(self) -> None:
         assert Profile.objects.count() == 0
-        profile = MaleProfileFaker()
+        profile: Profile = MaleProfileFaker()
         assert Profile.objects.count() == 1
         assert profile.user is not None
         assert profile.nickname is not None
@@ -110,9 +110,9 @@ class TestProfileFakers:
         assert profile.image is not None
         assert profile.image.url is not None
 
-    def test_non_binary_profile_faker(self):
+    def test_non_binary_profile_faker(self) -> None:
         assert Profile.objects.count() == 0
-        profile = NonBinaryProfileFaker()
+        profile: Profile = NonBinaryProfileFaker()
         assert Profile.objects.count() == 1
         assert profile.user is not None
         assert profile.nickname is not None
@@ -123,9 +123,9 @@ class TestProfileFakers:
         assert profile.image is not None
         assert profile.image.url is not None
 
-    def test_not_said_profile_faker(self):
+    def test_not_said_profile_faker(self) -> None:
         assert Profile.objects.count() == 0
-        profile = NotSaidProfileFaker()
+        profile: Profile = NotSaidProfileFaker()
         assert Profile.objects.count() == 1
         assert profile.user is not None
         assert profile.nickname is not None

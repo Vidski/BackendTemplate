@@ -6,10 +6,10 @@ from Users.views import ProfileViewSet
 from Users.views import UserViewSet
 
 
-router = DefaultRouter()
+router: DefaultRouter = DefaultRouter()
 router.register("users", UserViewSet, basename="users")
 router.register("profiles", ProfileViewSet, basename="profiles")
 
-urlpatterns = [
+urlpatterns: list = [
     path("", include(router.urls)),
 ]

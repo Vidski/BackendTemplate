@@ -5,9 +5,9 @@ from rest_framework.routers import DefaultRouter
 from Emails.views import SuggestionViewSet
 
 
-router = DefaultRouter()
+router: DefaultRouter = DefaultRouter()
 router.register("suggestions", SuggestionViewSet, basename="users")
 
-urlpatterns = [
+urlpatterns: list = [
     path("", include(router.urls)),
 ]

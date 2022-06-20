@@ -14,7 +14,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.views import TokenRefreshView
 
 
-urlpatterns = [
+urlpatterns: list = [
     # Django JET URLS
     path("jet/", include("jet.urls", "jet")),
     # Django JET dashboard URLS

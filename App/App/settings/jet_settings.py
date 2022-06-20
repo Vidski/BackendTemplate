@@ -16,8 +16,8 @@ from App.settings.labels_with_svg import user_label_with_icon
 JET Documentation: https://django-jet-reboot.readthedocs.io/
 """
 
-JET_SIDE_MENU_COMPACT = True
-JET_THEMES = [
+JET_SIDE_MENU_COMPACT: bool = True
+JET_THEMES: list = [
     {
         "theme": "default",  # theme folder name
         "color": "#47bac1",  # color of the theme's button in user menu
@@ -29,7 +29,7 @@ JET_THEMES = [
     {"theme": "light-blue", "color": "#5EADDE", "title": "Light Blue"},
     {"theme": "light-gray", "color": "#222", "title": "Light Gray"},
 ]
-JET_SIDE_MENU_ITEMS = [
+JET_SIDE_MENU_ITEMS: list = [
     {
         "label": ("People"),
         "app_label": "Users",

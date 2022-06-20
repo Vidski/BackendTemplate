@@ -1,6 +1,8 @@
 import base64
+from io import BufferedReader
 
 import pytest
+from rest_framework.response import Response
 from rest_framework.test import APIClient
 
 from Users.factories.user import UserFactory
@@ -8,46 +10,53 @@ from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker
 from Users.models import Profile
+from Users.models import User
 
 
-ENDPOINT = "/api/profiles"
+ENDPOINT: str = "/api/profiles"
 
 
 @pytest.fixture(scope="function")
-def client():
+def client() -> APIClient:
     return APIClient()
 
 
 @pytest.fixture(scope="class")
-def base64_image():
-    image_file = open("App/static/logo.png", "rb")
-    image_base64 = base64.b64encode(image_file.read())
+def base64_image() -> bytes:
+    image_file: BufferedReader = open("App/static/logo.png", "rb")
+    image_base64: bytes = base64.b64encode(image_file.read())
     image_file.close()
     return image_base64
 
 
 @pytest.mark.django_db
 class TestProfileListEndpoint:
-    def test_list_fails_as_unauthenticate_user(self, client):
-        response = client.get(f"{ENDPOINT}/", format="json")
+    def test_list_fails_as_unauthenticated_user(
+        self, client: APIClient
+    ) -> None:
+        response: Response = client.get(f"{ENDPOINT}/", format="json")
         assert response.status_code == 401
 
-    def test_list_fails_as_authenticate_unverified_user(self, client):
-        user = UserFaker()
+    def test_list_fails_as_authenticated_unverified_user(
+        self, client: APIClient
+    ) -> None:
+        user: User = UserFaker()
         client.force_authenticate(user=user)
-        response = client.get(f"{ENDPOINT}/", format="json")
+        response: Response = client.get(f"{ENDPOINT}/", format="json")
         assert response.status_code == 403
 
-    def test_list_fails_as_authenticate_verified_user(self, client):
-        user = VerifiedUserFaker()
+    def test_list_fails_as_authenticated_verified_user(
+        self, client: APIClient
+    ) -> None:
+        user: User = VerifiedUserFaker()
         client.force_authenticate(user=user)
-        response = client.get(f"{ENDPOINT}/", format="json")
+        response: Response = client.get(f"{ENDPOINT}/", format="json")
         assert response.status_code == 403
 
-    def test_list_success_as_admin_user(self, client):
-        user = AdminFaker()
+    def test_list_success_as_admin_user(self, client: APIClient) -> None:
+        user: User = AdminFaker()
         client.force_authenticate(user=user)
-        response = client.get(f"{ENDPOINT}/", format="json")
+        response: Response = client.get(f"{ENDPOINT}/", format="json")
         assert response.status_code == 200
         assert len(response.data["results"]) == Profile.objects.count()
         assert response.data["count"] == Profile.objects.count()
@@ -55,39 +64,53 @@ class TestProfileListEndpoint:
 
 @pytest.mark.django_db
 class TestProfileRetrieveEndpoint:
-    def test_retrieve_fails_as_unauthenticate_user(self, client):
-        user = UserFaker()
+    def test_retrieve_fails_as_unauthenticated_user(
+        self, client: APIClient
+    ) -> None:
+        user: User = UserFaker()
         user.create_profile()
-        profile_id = user.profile.id
-        response = client.get(f"{ENDPOINT}/{profile_id}/", format="json")
+        profile_id: int = user.profile.id
+        response: Response = client.get(
+            f"{ENDPOINT}/{profile_id}/", format="json"
+        )
         assert response.status_code == 401
 
-    def test_retrieve_fails_as_authenticate_unverified_user(self, client):
-        user = UserFaker()
+    def test_retrieve_fails_as_authenticated_unverified_user(
+        self, client: APIClient
+    ) -> None:
+        user: User = UserFaker()
         user.create_profile()
         client.force_authenticate(user=user)
-        profile_id = user.profile.id
-        response = client.get(f"{ENDPOINT}/{profile_id}/", format="json")
+        profile_id: int = user.profile.id
+        response: Response = client.get(
+            f"{ENDPOINT}/{profile_id}/", format="json"
+        )
         assert response.status_code == 403
 
-    def test_retrieve_fails_as_authenticate_verified_user_to_other_user_data(
-        self, client
-    ):
-        user = VerifiedUserFaker()
-        other_user = UserFactory(email="other@user.com", is_verified=True)
+    def test_retrieve_fails_as_authenticated_verified_user_to_other_user_data(
+        self, client: APIClient
+    ) -> None:
+        user: User = VerifiedUserFaker()
+        other_user: User = UserFactory(
+            email="other@user.com", is_verified=True
+        )
         client.force_authenticate(user=user)
-        profile_id = other_user.profile.id
-        response = client.get(f"{ENDPOINT}/{profile_id}/", format="json")
+        profile_id: int = other_user.profile.id
+        response: Response = client.get(
+            f"{ENDPOINT}/{profile_id}/", format="json"
+        )
         assert response.status_code == 403
 
-    def test_retrieve_success_as_authenticate_verified_user_to_its_data(
-        self, client
-    ):
-        user = VerifiedUserFaker()
+    def test_retrieve_success_as_authenticated_verified_user_to_its_data(
+        self, client: APIClient
+    ) -> None:
+        user: User = VerifiedUserFaker()
         client.force_authenticate(user=user)
-        profile_id = user.profile.id
-        response = client.get(f"{ENDPOINT}/{profile_id}/", format="json")
-        profile = user.profile
+        profile_id: int = user.profile.id
+        response: Response = client.get(
+            f"{ENDPOINT}/{profile_id}/", format="json"
+        )
+        profile: Profile = user.profile
         assert response.status_code == 200
         assert response.data["id"] == profile_id
         assert response.data["user_id"] == user.id
@@ -101,14 +124,18 @@ class TestProfileRetrieveEndpoint:
         assert response.data["birth_date"] == profile.birth_date
         assert response.data["is_adult"] == profile.is_adult()
 
-    def test_retrieve_success_as_admin_to_other_user_data(self, client):
+    def test_retrieve_success_as_admin_to_other_user_data(
+        self, client: APIClient
+    ) -> None:
         assert 0 == Profile.objects.count()
-        user = VerifiedUserFaker()
-        admin = AdminFaker()
+        user: User = VerifiedUserFaker()
+        admin: User = AdminFaker()
         client.force_authenticate(user=admin)
-        profile_id = user.profile.id
-        response = client.get(f"{ENDPOINT}/{profile_id}/", format="json")
-        profile = user.profile
+        profile_id: int = user.profile.id
+        response: Response = client.get(
+            f"{ENDPOINT}/{profile_id}/", format="json"
+        )
+        profile: Profile = user.profile
         assert response.status_code == 200
         assert response.data["id"] == profile_id
         assert response.data["user_id"] == user.id
@@ -125,58 +152,83 @@ class TestProfileRetrieveEndpoint:
 
 @pytest.mark.django_db
 class TestProfileCreateEndpoint:
-    def test_create_fails_as_unauthenticate_user(self, client):
-        data = {}
-        response = client.post(f"{ENDPOINT}/", data=data, format="json")
+    def test_create_fails_as_unauthenticated_user(
+        self, client: APIClient
+    ) -> None:
+        data: dict = {}
+        response: Response = client.post(
+            f"{ENDPOINT}/", data=data, format="json"
+        )
         assert response.status_code == 401
 
-    def test_create_fails_as_authenticate_unverified_user(self, client):
-        data = {}
-        user = UserFaker()
+    def test_create_fails_as_authenticated_unverified_user(
+        self, client
+    ) -> None:
+        data: dict = {}
+        user: User = UserFaker()
         client.force_authenticate(user=user)
-        response = client.post(f"{ENDPOINT}/", data=data, format="json")
+        response: Response = client.post(
+            f"{ENDPOINT}/", data=data, format="json"
+        )
         assert response.status_code == 403
 
-    def test_create_fails_as_authenticate_verified_user(self, client):
+    def test_create_fails_as_authenticated_verified_user(
+        self, client: APIClient
+    ) -> None:
         # create will be triggered when verifying the user instance
         # so the create method will be available only for admin users
-        user = UserFaker()
-        data = {"user_id": user.pk, "nickname": "test", "bio": "test"}
-        user = VerifiedUserFaker()
+        user: User = UserFaker()
+        data: dict = {"user_id": user.pk, "nickname": "test", "bio": "test"}
+        user: User = VerifiedUserFaker()
         client.force_authenticate(user=user)
-        response = client.post(f"{ENDPOINT}/", data=data, format="json")
+        response: Response = client.post(
+            f"{ENDPOINT}/", data=data, format="json"
+        )
         assert response.status_code == 403
 
-    def test_create_fails_with_used_user_id_as_admin(self, client):
-        user = VerifiedUserFaker()
-        data = {"user_id": user.pk, "nickname": "test", "bio": "test"}
-        admin = AdminFaker()
+    def test_create_fails_with_used_user_id_as_admin(
+        self, client: APIClient
+    ) -> None:
+        user: User = VerifiedUserFaker()
+        data: dict = {"user_id": user.pk, "nickname": "test", "bio": "test"}
+        admin: User = AdminFaker()
         client.force_authenticate(user=admin)
-        response = client.post(f"{ENDPOINT}/", data=data, format="json")
-        error_message = "User profile already exists"
+        response: Response = client.post(
+            f"{ENDPOINT}/", data=data, format="json"
+        )
+        error_message: str = "User profile already exists"
         assert response.status_code == 400
         assert response.data == [error_message]
 
-    def test_create_fails_with_used_nickname_as_admin(self, client):
-        user = VerifiedUserFaker()
-        profile = user.profile
+    def test_create_fails_with_used_nickname_as_admin(
+        self, client: APIClient
+    ) -> None:
+        user: User = VerifiedUserFaker()
+        profile: Profile = user.profile
         profile.nickname = "test"
         profile.save()
-        other_user = UserFaker()
-        data = {"user_id": other_user.pk, "nickname": user.profile.nickname}
-        admin = AdminFaker()
+        other_user: User = UserFaker()
+        data: dict = {
+            "user_id": other_user.pk,
+            "nickname": user.profile.nickname,
+        }
+        admin: User = AdminFaker()
         client.force_authenticate(user=admin)
-        response = client.post(f"{ENDPOINT}/", data=data, format="json")
-        error_message = "This nickname already exists."
+        response: Response = client.post(
+            f"{ENDPOINT}/", data=data, format="json"
+        )
+        error_message: str = "This nickname already exists."
         assert response.status_code == 400
         assert response.data["nickname"] == [error_message]
 
-    def test_create_success_as_admin(self, client):
-        user = UserFaker()
-        data = {"user_id": user.pk, "nickname": "test", "bio": "test"}
-        admin = AdminFaker()
+    def test_create_success_as_admin(self, client: APIClient) -> None:
+        user: User = UserFaker()
+        data: str = {"user_id": user.pk, "nickname": "test", "bio": "test"}
+        admin: User = AdminFaker()
         client.force_authenticate(user=admin)
-        response = client.post(f"{ENDPOINT}/", data=data, format="json")
+        response: Response = client.post(
+            f"{ENDPOINT}/", data=data, format="json"
+        )
         assert response.status_code == 201
         user.refresh_from_db()
         assert response.data["id"] == user.profile.id
@@ -187,51 +239,55 @@ class TestProfileCreateEndpoint:
 
 @pytest.mark.django_db
 class TestProfileUpdateEndpoint:
-    def test_update_fails_as_unauthenticate_user(self, client):
-        user = VerifiedUserFaker()
-        data = {}
-        profile_id = user.profile.id
-        response = client.put(
+    def test_update_fails_as_unauthenticated_user(
+        self, client: APIClient
+    ) -> None:
+        user: User = VerifiedUserFaker()
+        data: dict = {}
+        profile_id: int = user.profile.id
+        response: Response = client.put(
             f"{ENDPOINT}/{profile_id}/", data=data, format="json"
         )
         assert response.status_code == 401
 
-    def test_update_fails_as_authenticate_unverified_user(self, client):
-        user = VerifiedUserFaker()
-        data = {}
-        profile_id = user.profile.id
+    def test_update_fails_as_authenticated_unverified_user(
+        self, client: APIClient
+    ) -> None:
+        user: User = VerifiedUserFaker()
+        data: dict = {}
+        profile_id: int = user.profile.id
         user.is_verified = False
         user.save()
         client.force_authenticate(user=user)
-        response = client.put(
+        response: Response = client.put(
             f"{ENDPOINT}/{profile_id}/", data=data, format="json"
         )
         assert response.status_code == 403
 
-    def test_update_fails_as_authenticate_verified_user_to_other_user_profile(
-        self, client
-    ):
-        user = VerifiedUserFaker()
-        other_user = VerifiedUserFaker(email="other@email.com")
-        data = {}
-        profile_id = other_user.profile.id
+    def test_update_fails_as_authenticated_verified_user_to_other_user_profile(
+        self, client: APIClient
+    ) -> None:
+        user: User = VerifiedUserFaker()
+        other_user: User = VerifiedUserFaker(email="other@email.com")
+        data: dict = {}
+        profile_id: int = other_user.profile.id
         client.force_authenticate(user=user)
-        response = client.put(
+        response: Response = client.put(
             f"{ENDPOINT}/{profile_id}/", data=data, format="json"
         )
         assert response.status_code == 403
 
-    def test_update_success_as_authenticate_verified_user_to_its_profile(
-        self, client
-    ):
-        user = VerifiedUserFaker()
-        data = {
+    def test_update_success_as_authenticated_verified_user_to_its_profile(
+        self, client: APIClient
+    ) -> None:
+        user: User = VerifiedUserFaker()
+        data: dict = {
             "nickname": "testing nickname",
             "bio": "testing bio",
         }
-        profile_id = user.profile.id
+        profile_id: int = user.profile.id
         client.force_authenticate(user=user)
-        response = client.put(
+        response: Response = client.put(
             f"{ENDPOINT}/{profile_id}/", data=data, format="json"
         )
         assert response.status_code == 200
@@ -241,19 +297,19 @@ class TestProfileUpdateEndpoint:
         assert response.data["bio"] == data["bio"]
 
     def test_update_success_as_authenticate_verified_user_to_its_profile_do_not_change_the_user_id(
-        self, client
-    ):
-        other_user = VerifiedUserFaker(email="other@usertesting.com")
+        self, client: APIClient
+    ) -> None:
+        other_user: User = VerifiedUserFaker(email="other@usertesting.com")
         other_user.profile.delete()
-        user = VerifiedUserFaker()
-        data = {
+        user: User = VerifiedUserFaker()
+        data: dict = {
             "user_id": other_user.pk,
             "nickname": "testing nickname",
             "bio": "testing bio",
         }
-        profile_id = user.profile.id
+        profile_id: int = user.profile.id
         client.force_authenticate(user=user)
-        response = client.put(
+        response: Response = client.put(
             f"{ENDPOINT}/{profile_id}/", data=data, format="json"
         )
         assert response.status_code == 200
@@ -263,18 +319,18 @@ class TestProfileUpdateEndpoint:
         assert response.data["bio"] == data["bio"]
 
     def test_update_success_as_authenticate_verified_user_to_its_profile_changes_image(
-        self, client, base64_image
-    ):
-        user = VerifiedUserFaker()
+        self, client: APIClient, base64_image: bytes
+    ) -> None:
+        user: User = VerifiedUserFaker()
         assert user.profile.image.name is None
-        data = {
+        data: dict = {
             "image": base64_image,
             "nickname": "testing nickname",
             "bio": "testing bio",
         }
-        profile_id = user.profile.id
+        profile_id: int = user.profile.id
         client.force_authenticate(user=user)
-        response = client.put(
+        response: Response = client.put(
             f"{ENDPOINT}/{profile_id}/", data=data, format="json"
         )
         assert response.status_code == 200
@@ -286,20 +342,22 @@ class TestProfileUpdateEndpoint:
         user.refresh_from_db()
         assert user.profile.image.name is not None
 
-    def test_update_success_as_admin_can_change_user_id(self, client):
-        other_user = VerifiedUserFaker(email="other@usertesting.com")
+    def test_update_success_as_admin_can_change_user_id(
+        self, client: APIClient
+    ) -> None:
+        other_user: User = VerifiedUserFaker(email="other@usertesting.com")
         other_user.profile.delete()
-        user = VerifiedUserFaker()
-        admin = AdminFaker()
-        data = {
+        user: User = VerifiedUserFaker()
+        admin: User = AdminFaker()
+        data: dict = {
             "user_id": other_user.pk,
             "nickname": "testing nickname",
             "bio": "testing bio",
         }
         assert user.profile is not None
-        profile_id = user.profile.id
+        profile_id: int = user.profile.id
         client.force_authenticate(user=admin)
-        response = client.put(
+        response: Response = client.put(
             f"{ENDPOINT}/{profile_id}/", data=data, format="json"
         )
         assert response.status_code == 200
@@ -310,35 +368,39 @@ class TestProfileUpdateEndpoint:
         user.refresh_from_db()
         assert getattr(user, "profile", None) is None
 
-    def test_update_fails_as_admin_changing_to_used_user_id(self, client):
-        other_user = VerifiedUserFaker(email="other@usertesting.com")
-        user = VerifiedUserFaker()
-        admin = AdminFaker()
-        data = {
+    def test_update_fails_as_admin_changing_to_used_user_id(
+        self, client: APIClient
+    ) -> None:
+        other_user: User = VerifiedUserFaker(email="other@usertesting.com")
+        user: User = VerifiedUserFaker()
+        admin: User = AdminFaker()
+        data: dict = {
             "user_id": other_user.pk,
             "nickname": "testing nickname",
             "bio": "testing bio",
         }
-        profile_id = user.profile.id
+        profile_id: int = user.profile.id
         client.force_authenticate(user=admin)
-        response = client.put(
+        response: Response = client.put(
             f"{ENDPOINT}/{profile_id}/", data=data, format="json"
         )
         assert response.status_code == 400
         error_message = "User profile already exists"
         assert response.data == [error_message]
 
-    def test_update_success_as_admin_not_changing_user_id(self, client):
-        user = VerifiedUserFaker()
-        admin = AdminFaker()
-        data = {
+    def test_update_success_as_admin_not_changing_user_id(
+        self, client: APIClient
+    ) -> None:
+        user: User = VerifiedUserFaker()
+        admin: User = AdminFaker()
+        data: dict = {
             "user_id": user.pk,
             "nickname": "testing nickname",
             "bio": "testing bio",
         }
-        profile_id = user.profile.id
+        profile_id: int = user.profile.id
         client.force_authenticate(user=admin)
-        response = client.put(
+        response: Response = client.put(
             f"{ENDPOINT}/{profile_id}/", data=data, format="json"
         )
         assert response.status_code == 200
@@ -346,49 +408,61 @@ class TestProfileUpdateEndpoint:
 
 @pytest.mark.django_db
 class TestProfileDeleteEndpoint:
-    def test_delete_fails_as_unauthenticate_user(self, client):
-        user = VerifiedUserFaker()
-        profile_id = user.profile.id
-        response = client.delete(f"{ENDPOINT}/{profile_id}/", format="json")
+    def test_delete_fails_as_unauthenticated_user(
+        self, client: APIClient
+    ) -> None:
+        user: User = VerifiedUserFaker()
+        profile_id: int = user.profile.id
+        response: Response = client.delete(
+            f"{ENDPOINT}/{profile_id}/", format="json"
+        )
         assert response.status_code == 401
 
-    def test_delete_fails_as_authenticate_unverified_user(self, client):
-        user = VerifiedUserFaker()
-        profile_id = user.profile.id
+    def test_delete_fails_as_authenticated_unverified_user(self, client):
+        user: User = VerifiedUserFaker()
+        profile_id: int = user.profile.id
         user.is_verified = False
         user.save()
         client.force_authenticate(user=user)
-        response = client.delete(f"{ENDPOINT}/{profile_id}/", format="json")
+        response: Response = client.delete(
+            f"{ENDPOINT}/{profile_id}/", format="json"
+        )
         assert response.status_code == 403
 
-    def test_delete_fails_as_authenticate_verified_user_to_other_user_profile(
-        self, client
-    ):
-        user = VerifiedUserFaker()
-        other_user = VerifiedUserFaker(email="other@email.com")
-        profile_id = other_user.profile.id
+    def test_delete_fails_as_authenticated_verified_user_to_other_user_profile(
+        self, client: APIClient
+    ) -> None:
+        user: User = VerifiedUserFaker()
+        other_user: User = VerifiedUserFaker(email="other@email.com")
+        profile_id: int = other_user.profile.id
         client.force_authenticate(user=user)
-        response = client.delete(f"{ENDPOINT}/{profile_id}/", format="json")
+        response: Response = client.delete(
+            f"{ENDPOINT}/{profile_id}/", format="json"
+        )
         assert response.status_code == 403
 
     def test_delete_fails_as_authenticate_verified_user_to_its_profile(
-        self, client
-    ):
+        self, client: APIClient
+    ) -> None:
         # destroy will be triggered when deleted the user instance
         # so the destroy method will be available only for admin users
-        user = VerifiedUserFaker()
-        profile_id = user.profile.id
+        user: User = VerifiedUserFaker()
+        profile_id: int = user.profile.id
         client.force_authenticate(user=user)
-        response = client.delete(f"{ENDPOINT}/{profile_id}/", format="json")
+        response: Response = client.delete(
+            f"{ENDPOINT}/{profile_id}/", format="json"
+        )
         assert response.status_code == 403
 
-    def test_delete_success_as_admin(self, client):
-        admin = AdminFaker(is_verified=False)
+    def test_delete_success_as_admin(self, client: APIClient) -> None:
+        admin: User = AdminFaker(is_verified=False)
         # not verified to avoid profile creation
-        user = VerifiedUserFaker()
-        profile_id = user.profile.id
+        user: User = VerifiedUserFaker()
+        profile_id: int = user.profile.id
         client.force_authenticate(user=admin)
         assert Profile.objects.count() == 1
-        response = client.delete(f"{ENDPOINT}/{profile_id}/", format="json")
+        response: Response = client.delete(
+            f"{ENDPOINT}/{profile_id}/", format="json"
+        )
         assert response.status_code == 204
         assert Profile.objects.count() == 0
