@@ -14,7 +14,7 @@ def generate_user_verification_token(user: User) -> str:
     Creates an user token to verify its account
     """
     string_user: str = user.email + settings.EMAIL_VERIFICATION_TOKEN_SECRET
-    hashed: str = hashlib.md5(string_user.encode())
+    hashed: str = hashlib.sha256(string_user.encode())
     decoded: str = base64.b64encode(hashed.digest()).decode("utf-8")
     token: str = (
         decoded.replace("\\", "-")
