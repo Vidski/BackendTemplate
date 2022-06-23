@@ -10,19 +10,18 @@ HOST ?= "127.0.0.1"
 COMMAND = docker exec -i django-app bash -c
 MANAGE = python manage.py
 DOCKER_FILE = docker-compose -f ./Docker/${ENV}/docker-compose.yml
-SETTINGS_FLAG = --settings=App.settings.django.${SETTINGS}_settings
+SETTINGS_FLAG = --settings=Project.settings.django.${SETTINGS}_settings
 TEST_SETTINGS = SETTINGS=test
+CODE_FOLDERS = Apps Project
 PING_DB = docker exec database mysqladmin --user=${DBUSER} --password=${DBPASSWORD} --host ${HOST} ping
 
 ## Settings used in target commands
-IGNORE_WARNINGS = -W ignore::django.utils.deprecation.RemovedInDjango41Warning
-PYTEST_SETTINGS = --reuse-db --ds=App.settings.django.test_settings ${IGNORE_WARNINGS} -p no:cacheprovider
+TOML_PATH = ./Project/settings/pyproject.toml
+PYTEST_SETTINGS = -c="${TOML_PATH}"
 COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
-COVERAGE_WITH_HTML_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html
-BLACK_SETTINGS = --config="./App/settings/pyproject.toml"
-ISORT_SETTINGS = --settings-path="./App/settings/pyproject.toml"
-BLACK_LOCAL_SETTINGS = --config="./App/App/settings/pyproject.toml"
-ISORT_LOCAL_SETTINGS = --settings-path="./App/App/settings/pyproject.toml"
+HTML_COVERAGE_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html
+BLACK_SETTINGS = --config="${TOML_PATH}"
+ISORT_SETTINGS = --settings-path="${TOML_PATH}"
 STYLE = {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2} ## Prints the target in a nice format
 
 
@@ -116,7 +115,7 @@ test-recreate: ## Recreate the the database with dummy data for tests.
 test: ## Run the tests. You can modify the app that will be tested with APP parameter.
 	@make create-test-db
 ifeq (${APP},)
-	@${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS}"
+	@${COMMAND} "pytest ${CODE_FOLDERS} ${PYTEST_SETTINGS}"
 else
 	@${COMMAND} "pytest ${APP} -s ${PYTEST_SETTINGS}"
 endif
@@ -124,12 +123,12 @@ endif
 .PHONY: cover-test
 cover-test: ## Run the tests with coverage.
 	@make create-test-db
-	@${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
+	@${COMMAND} "pytest ${CODE_FOLDERS} ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
 
 .PHONY: html-test
 html-test: ## Run the tests with coverage and html report.
 	@make create-test-db
-	@${COMMAND} "pytest ${APP} ${PYTEST_SETTINGS} ${COVERAGE_WITH_HTML_SETTINGS}"
+	@${COMMAND} "pytest ${CODE_FOLDERS} ${PYTEST_SETTINGS} ${HTML_COVERAGE_SETTINGS}"
 
 .PHONY: fast-test
 fast-test: ## Run the tests in parallel
@@ -141,27 +140,27 @@ database: ## Access the mysql in the database container. You can modify user/pas
 
 .PHONY: lint
 lint: ## Run the linter
-	@${COMMAND} "black . ${BLACK_SETTINGS}"
+	@${COMMAND} "black ${CODE_FOLDERS} ${BLACK_SETTINGS}"
 
 .PHONY: check-lint
 check-lint: ## Check for linting errors.
-	@${COMMAND} "black . ${BLACK_SETTINGS} --check"
+	@${COMMAND} "black ${CODE_FOLDERS} ${BLACK_SETTINGS} --check"
 
 .PHONY: check-lint-local
 check-lint-local: ## Check for linting errors in local, useful for CI.
-	@black . ${BLACK_LOCAL_SETTINGS} --check
+	@black ${CODE_FOLDERS} ${BLACK_SETTINGS} --check
 
 .PHONY: sort-imports
 sort-imports: ## Sort the imports
-	@${COMMAND} "isort . ${ISORT_SETTINGS}"
+	@${COMMAND} "isort ${CODE_FOLDERS} ${ISORT_SETTINGS}"
 
 .PHONY: check-imports
 check-imports: ## Check for errors on imports ordering.
-	@${COMMAND} "isort . ${ISORT_SETTINGS} --check"
+	@${COMMAND} "isort ${CODE_FOLDERS} ${ISORT_SETTINGS} --check"
 
 .PHONY: check-imports-local
 check-imports-local:  ## Check for errors on imports ordering in local, useful for CI.
-	@isort . ${ISORT_LOCAL_SETTINGS} --check
+	@isort ${CODE_FOLDERS} ${ISORT_SETTINGS} --check
 
 .PHONY: wait-db
 wait-db: ## Wait until the database is ready, useful for CI. You can modify the host with HOST parameter.
