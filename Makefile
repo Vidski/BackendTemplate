@@ -7,7 +7,8 @@ DBPASSWORD ?= password
 HOST ?= "127.0.0.1"
 
 ## Variables to make targets more readable
-COMMAND = docker exec -i django-app bash -c
+COMMAND = docker exec -it django-app bash -c
+NON_INTERACTIVE_COMMAND = docker exec -i django-app bash -c
 MANAGE = python manage.py
 DOCKER_FILE = docker-compose -f ./Docker/${ENV}/docker-compose.yml
 SETTINGS_FLAG = --settings=Project.settings.django.${SETTINGS}_settings
@@ -17,7 +18,8 @@ PING_DB = docker exec database mysqladmin --user=${DBUSER} --password=${DBPASSWO
 
 ## Settings used in target commands
 TOML_PATH = ./Project/settings/pyproject.toml
-PYTEST_SETTINGS = -c="${TOML_PATH}"
+DISABLE_WARNINGS = -W ignore::django.utils.deprecation.RemovedInDjango41Warning -W ignore::DeprecationWarning
+PYTEST_SETTINGS = --reuse-db -p no:cacheprovider --ds=Project.settings.django.test_settings ${DISABLE_WARNINGS}
 COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
 HTML_COVERAGE_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html
 BLACK_SETTINGS = --config="${TOML_PATH}"
@@ -31,7 +33,10 @@ all: ## Main command, just needed to type `make`. Is equivalent to `make up`.
 
 .PHONY: help
 help:	## Show this help which show all the possible make targets and its description.
-	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / ${STYLE}' $(MAKEFILE_LIST)
+	@echo ""
+	@echo "The following are the make targets you can use in this way 'make <target>': "
+	@echo ""
+	@awk ' BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / ${STYLE}' $(MAKEFILE_LIST)
 
 .PHONY: up
 up: ## Start the containers running the app.
@@ -55,7 +60,7 @@ bash: ## Open a bash shell in the django container.
 
 .PHONY: shell
 shell: ## Open the shell_plus of django. You can modify the environment with SETTINGS parameter.
-	@${COMMAND} "${MANAGE} shell_plus ${SETTINGS_FLAG}"
+	${COMMAND} "${MANAGE} shell_plus ${SETTINGS_FLAG}"
 
 .PHONY: migrate
 migrate: ## Creates and applies the django migrations. You can modify the environment with SETTINGS parameter.
@@ -75,7 +80,7 @@ flush: ## Flush the database. You can modify the environment with SETTINGS param
 	@${COMMAND} "${MANAGE} flush ${SETTINGS_FLAG}"
 
 .PHONY: show_urls
-show_urls: ## Show the urls of the app. You can modify grep a string with GREP parameter.
+show_urls: ## Show the urls of the app. You can grep a string with GREP parameter.
 ifeq (${GREP},)
 	@${COMMAND} "${MANAGE} show_urls"
 else
@@ -119,6 +124,11 @@ ifeq (${APP},)
 else
 	@${COMMAND} "pytest ${APP} -s ${PYTEST_SETTINGS}"
 endif
+
+.PHONY: non-interactive-test
+non-interactive-test: ## Run the tests in non-interactive mode. Usefull for CI.
+	@make create-test-db
+	@${NON_INTERACTIVE_COMMAND} "pytest ${CODE_FOLDERS} ${PYTEST_SETTINGS}"
 
 .PHONY: cover-test
 cover-test: ## Run the tests with coverage.
