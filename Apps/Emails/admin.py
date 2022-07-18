@@ -1,11 +1,11 @@
+from django.contrib import admin
+from django.db.models import Model
+
 from Emails.models.models import BlackList
 from Emails.models.models import Block
 from Emails.models.models import Email
 from Emails.models.models import Notification
 from Emails.models.models import Suggestion
-
-from django.contrib import admin
-from django.db.models import Model
 
 
 class BlockAdmin(admin.ModelAdmin):

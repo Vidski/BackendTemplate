@@ -1,6 +1,11 @@
-import factory
 from datetime import datetime
+
+import factory
+from django.conf import settings
+from django.db.models import Model
+from django.utils import timezone
 from django_rest_passwordreset.models import ResetPasswordToken
+
 from Emails.factories.block import BlockFactory
 from Emails.factories.block import ResetPasswordBlockFactory
 from Emails.factories.block import VerifyEmailBlockFactory
@@ -8,10 +13,6 @@ from Emails.models.models import Block
 from Emails.models.models import Email
 from Users.factories.user import UserFactory
 from Users.models import User
-
-from django.conf import settings
-from django.db.models import Model
-from django.utils import timezone
 
 
 class EmailFactory(factory.django.DjangoModelFactory):

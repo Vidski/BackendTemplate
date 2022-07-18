@@ -1,7 +1,7 @@
 import factory
-from Users.models import User
-
 from django.db.models import Model
+
+from Users.models import User
 
 
 class UserFactory(factory.django.DjangoModelFactory):

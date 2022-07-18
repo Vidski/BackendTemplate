@@ -1,5 +1,13 @@
-import pytest
 from datetime import datetime
+
+import pytest
+from django.conf import settings
+from django.core import mail
+from django.core.exceptions import ValidationError
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils import timezone
+
 from Emails.factories.blacklist import BlackListFactory
 from Emails.factories.block import BlockFactory
 from Emails.factories.email import EmailFactory
@@ -15,13 +23,6 @@ from Emails.models.models import Suggestion
 from Users.fakers.user import EmailTestUserFaker
 from Users.fakers.user import UserFaker
 from Users.models import User
-
-from django.conf import settings
-from django.core import mail
-from django.core.exceptions import ValidationError
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
-from django.utils import timezone
 
 
 @pytest.mark.django_db

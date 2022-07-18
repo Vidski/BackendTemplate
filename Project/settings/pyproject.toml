@@ -11,4 +11,4 @@ use_parentheses = true
 include_trailing_comma = true
 multi_line_output = 3
 known_third_party = ['django', 'pytest', 'rest_framework']
-known_local_folder = ['../../../Apps/', '../../Project/']
+known_local_folder = ['../../Apps/', '../../Project/']

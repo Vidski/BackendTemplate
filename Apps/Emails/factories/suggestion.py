@@ -1,12 +1,12 @@
 import factory
+from django.conf import settings
+from django.db.models import Model
+from rest_framework.exceptions import ParseError
+
 from Emails.choices import CommentType
 from Emails.factories.block import SuggestionBlockFactory
 from Emails.models.models import Block
 from Emails.models.models import Suggestion
-from rest_framework.exceptions import ParseError
-
-from django.conf import settings
-from django.db.models import Model
 
 
 class SuggestionEmailFactory(factory.django.DjangoModelFactory):

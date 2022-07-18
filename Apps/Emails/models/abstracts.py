@@ -1,6 +1,5 @@
 from abc import abstractmethod
 from datetime import datetime
-from Project.utils import log_information
 
 from django.apps import apps
 from django.conf import settings
@@ -10,6 +9,7 @@ from django.db.models import Model
 from django.db.models.fields import Field
 from django.template.loader import render_to_string
 from django.utils import timezone
+from Project.utils import log_information
 
 
 class AbstractEmailFunctionClass(Model):

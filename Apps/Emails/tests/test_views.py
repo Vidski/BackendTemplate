@@ -1,15 +1,15 @@
 import pytest
+from django.core import mail
+from rest_framework.response import Response
+from rest_framework.test import APIClient
+
 from Emails.choices import CommentType
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Emails.models.models import Suggestion
-from rest_framework.response import Response
-from rest_framework.test import APIClient
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker
 from Users.models import User
-
-from django.core import mail
 
 
 @pytest.fixture(scope="function")

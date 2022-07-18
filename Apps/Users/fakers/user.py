@@ -1,7 +1,7 @@
 import factory
-from Users.factories.user import UserFactory
-
 from django.conf import settings
+
+from Users.factories.user import UserFactory
 
 
 class UserFaker(UserFactory):

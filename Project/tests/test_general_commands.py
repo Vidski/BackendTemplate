@@ -1,14 +1,15 @@
+from logging import Logger
+
 import pytest
+from django.core.management import call_command
+from django.test import override_settings
+from Project.management.commands.populate_db import Command as PopulateCommand
+
 from Emails.models.models import Email
 from Emails.models.models import Suggestion
-from logging import Logger
-from Project.management.commands.populate_db import Command as PopulateCommand
 from Users.factories.user import UserFactory
 from Users.models import Profile
 from Users.models import User
-
-from django.core.management import call_command
-from django.test import override_settings
 
 
 COMMAND: str = "populate_db"

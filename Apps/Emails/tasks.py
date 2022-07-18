@@ -1,10 +1,11 @@
-from celery import shared_task
 from datetime import datetime
-from Emails.models.models import Email
-from Project.celery_worker.worker import app
 
+from celery import shared_task
 from django.db.models import QuerySet
 from django.utils import timezone
+from Project.celery_worker.worker import app
+
+from Emails.models.models import Email
 
 
 SECONDS: float = 10.0

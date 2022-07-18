@@ -7,6 +7,7 @@ from Project.permissions import IsProfileOwner
 from Project.permissions import IsSameUserId
 from Project.permissions import IsUserOwner
 from Project.permissions import IsVerified
+
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker

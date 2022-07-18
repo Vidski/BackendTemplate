@@ -1,5 +1,10 @@
 import pytest
+from django.conf import settings
+from django.db import transaction
+from django.db.utils import IntegrityError
 from django_rest_passwordreset.models import ResetPasswordToken
+from rest_framework.exceptions import ParseError
+
 from Emails.factories.block import BlockFactory
 from Emails.factories.block import ResetPasswordBlockFactory
 from Emails.factories.block import SuggestionBlockFactory
@@ -14,14 +19,9 @@ from Emails.models.models import Block
 from Emails.models.models import Email
 from Emails.models.models import Notification
 from Emails.models.models import Suggestion
-from rest_framework.exceptions import ParseError
 from Users.factories.user import UserFactory
 from Users.models import User
 from Users.utils import generate_user_verification_token
-
-from django.conf import settings
-from django.db import transaction
-from django.db.utils import IntegrityError
 
 
 @pytest.mark.django_db
