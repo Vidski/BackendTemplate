@@ -1,7 +1,5 @@
 import json
-
 import pytest
-from django.core import mail
 from django_rest_passwordreset.models import ResetPasswordToken
 from rest_framework.response import Response
 from rest_framework.test import APIClient
@@ -12,6 +10,8 @@ from Users.fakers.user import VerifiedUserFaker
 from Users.models import Profile
 from Users.models import User
 from Users.utils import generate_user_verification_token
+
+from django.core import mail
 
 
 ENDPOINT: str = "/api/users"

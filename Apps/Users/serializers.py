@@ -1,8 +1,3 @@
-from django.contrib.auth import authenticate
-from django.contrib.auth import password_validation
-from django.db.models import Field
-from django.db.models import Model
-from django.db.models import QuerySet
 from drf_extra_fields.fields import Base64ImageField
 from Emails.utils import send_email
 from phonenumber_field.serializerfields import PhoneNumberField
@@ -15,6 +10,12 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from Users.models import Profile
 from Users.models import User
 from Users.utils import check_e164_format
+
+from django.contrib.auth import authenticate
+from django.contrib.auth import password_validation
+from django.db.models import Field
+from django.db.models import Model
+from django.db.models import QuerySet
 
 
 class UserSerializer(serializers.ModelSerializer):

@@ -1,5 +1,4 @@
 import pytest
-from django.core import mail
 from Emails.choices import CommentType
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Emails.models.models import Suggestion
@@ -9,6 +8,8 @@ from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker
 from Users.models import User
+
+from django.core import mail
 
 
 @pytest.fixture(scope="function")

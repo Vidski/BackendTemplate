@@ -1,6 +1,7 @@
+from storages.backends.s3boto3 import S3Boto3Storage
+
 from django.conf import settings
 from django.db.models import Model
-from storages.backends.s3boto3 import S3Boto3Storage
 
 
 class ImageStorage(S3Boto3Storage):

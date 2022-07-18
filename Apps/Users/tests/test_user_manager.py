@@ -1,7 +1,8 @@
 import pytest
+from Users.models import User
+
 from django.contrib.auth import get_user_model
 from django.db.models import Model
-from Users.models import User
 
 
 @pytest.mark.django_db

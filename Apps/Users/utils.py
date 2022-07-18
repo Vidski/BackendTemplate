@@ -1,11 +1,11 @@
 import base64
 import hashlib
 import re as regex
-
-from django.conf import settings
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.serializers import ValidationError
 from Users.models import User
+
+from django.conf import settings
 
 
 def generate_user_verification_token(user: User) -> str:

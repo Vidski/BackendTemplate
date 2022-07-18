@@ -1,6 +1,3 @@
-from django.db.models import QuerySet
-from django.http import HttpRequest
-from django.shortcuts import get_object_or_404
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Emails.models.models import Suggestion
 from Emails.serializers import SuggestionEmailSerializer
@@ -15,6 +12,10 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from Users.models import User
+
+from django.db.models import QuerySet
+from django.http import HttpRequest
+from django.shortcuts import get_object_or_404
 
 
 CREATED = status.HTTP_201_CREATED

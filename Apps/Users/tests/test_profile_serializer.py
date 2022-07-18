@@ -1,5 +1,4 @@
 import pytest
-from django.db.utils import IntegrityError
 from mock import MagicMock
 from mock import PropertyMock
 from rest_framework.serializers import ValidationError
@@ -9,6 +8,8 @@ from Users.fakers.user import VerifiedUserFaker
 from Users.models import Profile
 from Users.models import User
 from Users.serializers import ProfileSerializer
+
+from django.db.utils import IntegrityError
 
 
 @pytest.mark.django_db

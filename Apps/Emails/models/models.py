@@ -1,4 +1,9 @@
 from datetime import datetime
+from Emails import factories
+from Emails.choices import CommentType
+from Emails.models.abstracts import AbstractEmailClass
+from Users.fakers.user import EmailTestUserFaker
+from Users.models import User
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -6,11 +11,6 @@ from django.db import models
 from django.db.models.fields import Field
 from django.db.models.fields.related import ForeignObject
 from django.utils import timezone
-from Emails import factories
-from Emails.choices import CommentType
-from Emails.models.abstracts import AbstractEmailClass
-from Users.fakers.user import EmailTestUserFaker
-from Users.models import User
 
 
 class Block(models.Model):

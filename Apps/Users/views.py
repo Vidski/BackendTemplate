@@ -1,6 +1,3 @@
-from django.db.models import QuerySet
-from django.http import HttpRequest
-from django.http.response import JsonResponse
 from Project.pagination import ListResultsSetPagination
 from Project.permissions import IsActionAllowed
 from Project.permissions import IsAdmin
@@ -22,6 +19,10 @@ from Users.serializers import UserLoginSerializer
 from Users.serializers import UserSerializer
 from Users.serializers import UserSignUpSerializer
 from Users.utils import verify_user_query_token
+
+from django.db.models import QuerySet
+from django.http import HttpRequest
+from django.http.response import JsonResponse
 
 
 SUCCESS: int = status.HTTP_200_OK

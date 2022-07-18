@@ -1,9 +1,8 @@
 import logging
-from datetime import datetime
-from logging import Logger
-
 import pytest
+from datetime import datetime
 from freezegun import freeze_time
+from logging import Logger
 from mock import MagicMock
 from mock import PropertyMock
 from Project.utils import log_email_action

@@ -1,9 +1,9 @@
-from datetime import datetime
-
 import factory
-from django.db.models import Model
+from datetime import datetime
 from Emails.factories.notification import NotificationFactory
 from Emails.fakers.block import BlockTestFaker
+
+from django.db.models import Model
 
 
 class NotificationTestFaker(NotificationFactory):

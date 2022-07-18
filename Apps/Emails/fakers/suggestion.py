@@ -1,11 +1,11 @@
-from datetime import datetime
-
 import factory
-from django.db.models import Model
+from datetime import datetime
 from Emails.choices import CommentType
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Emails.fakers.block import BlockTestFaker
 from Users.factories.user import UserFactory
+
+from django.db.models import Model
 
 
 class SuggestionErrorFaker(SuggestionEmailFactory):

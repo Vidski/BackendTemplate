@@ -1,11 +1,11 @@
-from datetime import datetime
-
 import factory
-from django.db.models import Model
+from datetime import datetime
 from Emails.factories.email import EmailFactory
 from Emails.fakers.block import BlockTestFaker
 from Users.factories.user import UserFactory
 from Users.models import User
+
+from django.db.models import Model
 
 
 class EmailTestFaker(EmailFactory):

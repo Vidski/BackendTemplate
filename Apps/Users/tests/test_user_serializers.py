@@ -1,13 +1,13 @@
-from datetime import datetime
-
 import pytest
-from django.core.exceptions import ValidationError
+from datetime import datetime
 from rest_framework import serializers
 from Users.factories.user import UserFactory
 from Users.models import User
 from Users.serializers import UserLoginSerializer
 from Users.serializers import UserSerializer
 from Users.serializers import UserSignUpSerializer
+
+from django.core.exceptions import ValidationError
 
 
 @pytest.mark.django_db

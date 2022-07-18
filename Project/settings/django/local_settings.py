@@ -1,5 +1,4 @@
 from datetime import timedelta
-
 from Project.settings.django.default_settings import *
 
 

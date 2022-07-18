@@ -1,7 +1,6 @@
 import base64
-from io import BufferedReader
-
 import pytest
+from io import BufferedReader
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 from Users.factories.user import UserFactory

@@ -1,8 +1,9 @@
-from django.db.models import Field
-from django.db.models import Model
 from Emails.models.models import Suggestion
 from rest_framework import serializers
 from rest_framework.relations import RelatedField
+
+from django.db.models import Field
+from django.db.models import Model
 
 
 class SuggestionEmailSerializer(serializers.Serializer):

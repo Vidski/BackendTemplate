@@ -1,12 +1,12 @@
-from datetime import datetime
-
 import factory
 import factory.fuzzy
-from django.db.models import ImageField
-from django.db.models import Model
+from datetime import datetime
 from Users.factories.user import UserFactory
 from Users.models import Profile
 from Users.models import User
+
+from django.db.models import ImageField
+from django.db.models import Model
 
 
 class ProfileFactory(factory.django.DjangoModelFactory):

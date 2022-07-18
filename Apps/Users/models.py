@@ -1,6 +1,13 @@
 from datetime import datetime
-
 from dateutil.relativedelta import relativedelta
+from django_prometheus.models import ExportModelOperationsMixin
+from django_rest_passwordreset.signals import reset_password_token_created
+from phonenumber_field.modelfields import PhoneNumberField
+from Project.storage import image_file_upload
+from rest_framework.views import View
+from Users.choices import GenderChoices
+from Users.choices import PreferredLanguageChoices
+
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
@@ -10,13 +17,6 @@ from django.db.models import Model
 from django.db.models.fields.related import ForeignObject
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-from django_prometheus.models import ExportModelOperationsMixin
-from django_rest_passwordreset.signals import reset_password_token_created
-from phonenumber_field.modelfields import PhoneNumberField
-from Project.storage import image_file_upload
-from rest_framework.views import View
-from Users.choices import GenderChoices
-from Users.choices import PreferredLanguageChoices
 
 
 class CustomUserManager(BaseUserManager):
