@@ -1,13 +1,6 @@
 from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.http.response import JsonResponse
-from Project.pagination import ListResultsSetPagination
-from Project.permissions import IsActionAllowed
-from Project.permissions import IsAdmin
-from Project.permissions import IsProfileOwner
-from Project.permissions import IsUserOwner
-from Project.permissions import IsVerified
-from Project.utils import log_information
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -16,6 +9,13 @@ from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from Project.pagination import ListResultsSetPagination
+from Project.permissions import IsActionAllowed
+from Project.permissions import IsAdmin
+from Project.permissions import IsProfileOwner
+from Project.permissions import IsUserOwner
+from Project.permissions import IsVerified
+from Project.utils import log_information
 from Users.models import Profile
 from Users.models import User
 from Users.serializers import ProfileSerializer
