@@ -5,6 +5,7 @@ line-length = 79
 
 [tool.isort]
 skip_glob = ['*/migrations/**']
+extend_skip_glob = [".env/*"]
 lines_after_imports = 2
 force_single_line = true
 use_parentheses = true

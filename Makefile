@@ -45,6 +45,10 @@ up: ## Start the containers running the app.
 upd: ## Start the containers detached.
 	@${DOCKER_FILE} up -d
 
+.PHONY: build
+build: ## Build the containers.
+	@${DOCKER_FILE} build
+
 .PHONY: ps
 ps: ## Show the containers status.
 	@${DOCKER_FILE} ps
