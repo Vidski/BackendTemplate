@@ -1,6 +1,7 @@
 import pytest
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.serializers import ValidationError
+
 from Users.factories.user import UserFactory
 from Users.models import User
 from Users.utils import check_e164_format
