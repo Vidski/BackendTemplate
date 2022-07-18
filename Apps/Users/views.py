@@ -9,13 +9,13 @@ from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from Project.pagination import ListResultsSetPagination
-from Project.permissions import IsActionAllowed
-from Project.permissions import IsAdmin
-from Project.permissions import IsProfileOwner
-from Project.permissions import IsUserOwner
-from Project.permissions import IsVerified
-from Project.utils import log_information
+from Pagination.pagination import ListResultsSetPagination
+from Permissions.permissions import IsActionAllowed
+from Permissions.permissions import IsAdmin
+from Permissions.permissions import IsProfileOwner
+from Permissions.permissions import IsUserOwner
+from Permissions.permissions import IsVerified
+from Project.utils.log import log_information
 from Users.models import Profile
 from Users.models import User
 from Users.serializers import ProfileSerializer

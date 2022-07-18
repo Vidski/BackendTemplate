@@ -96,7 +96,7 @@ ROOT_URLCONF: str = "Project.urls"
 TEMPLATES: list = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "/Project/static")],
+        "DIRS": [os.path.join(BASE_DIR, "Apps/Static")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -176,9 +176,10 @@ USE_TZ: bool = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL: str = "/static/"
-
-MEDIA_DIRS: str = os.path.join(BASE_DIR, "/Project/media")
+STATICFILES_DIRS: tuple = (os.path.join(BASE_DIR, "Apps/Static"),)
 MEDIA_URL: str = "/media/"
+MEDIA_PATH: str = "Apps/Media"
+MEDIA_DIRS: str = os.path.join(BASE_DIR, MEDIA_PATH)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

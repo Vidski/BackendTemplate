@@ -11,10 +11,10 @@ from rest_framework.response import Response
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Emails.models.models import Suggestion
 from Emails.serializers import SuggestionEmailSerializer
-from Project.pagination import ListResultsSetPagination
-from Project.permissions import IsAdmin
-from Project.permissions import IsSameUserId
-from Project.permissions import IsVerified
+from Pagination.pagination import ListResultsSetPagination
+from Permissions.permissions import IsAdmin
+from Permissions.permissions import IsSameUserId
+from Permissions.permissions import IsVerified
 from Users.models import User
 
 
