@@ -10,10 +10,9 @@ HOST ?= "127.0.0.1"
 COMMAND = docker exec -it django-app bash -c
 NON_INTERACTIVE_COMMAND = docker exec -i django-app bash -c
 MANAGE = python manage.py
-DOCKER_FILE = docker-compose -f ./Docker/${ENV}/docker-compose.yml
+DOCKER_FILE = docker-compose -f ./Docker/${ENV}/docker-compose.yml --env-file ./Docker/${ENV}/docker.env
 SETTINGS_FLAG = --settings=Project.settings.django.${SETTINGS}_settings
 TEST_SETTINGS = SETTINGS=test
-CODE_FOLDERS = Apps Project
 PING_DB = docker exec database mysqladmin --user=${DBUSER} --password=${DBPASSWORD} --host ${HOST} ping
 
 ## Settings used in target commands
@@ -45,6 +44,10 @@ up: ## Start the containers running the app.
 .PHONY: upd
 upd: ## Start the containers detached.
 	@${DOCKER_FILE} up -d
+
+.PHONY: build
+build: ## Build the containers.
+	@${DOCKER_FILE} build
 
 .PHONY: ps
 ps: ## Show the containers status.
@@ -120,7 +123,7 @@ test-recreate: ## Recreate the the database with dummy data for tests.
 test: ## Run the tests. You can modify the app that will be tested with APP parameter.
 	@make create-test-db
 ifeq (${APP},)
-	@${COMMAND} "pytest ${CODE_FOLDERS} ${PYTEST_SETTINGS}"
+	@${COMMAND} "pytest . ${PYTEST_SETTINGS}"
 else
 	@${COMMAND} "pytest ${APP} -s ${PYTEST_SETTINGS}"
 endif
@@ -128,17 +131,17 @@ endif
 .PHONY: non-interactive-test
 non-interactive-test: ## Run the tests in non-interactive mode. Usefull for CI.
 	@${NON_INTERACTIVE_COMMAND} "${MANAGE} create_test_db"
-	@${NON_INTERACTIVE_COMMAND} "pytest ${CODE_FOLDERS} ${PYTEST_SETTINGS}"
+	@${NON_INTERACTIVE_COMMAND} "pytest . ${PYTEST_SETTINGS}"
 
 .PHONY: cover-test
 cover-test: ## Run the tests with coverage.
 	@make create-test-db
-	@${COMMAND} "pytest ${CODE_FOLDERS} ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
+	@${COMMAND} "pytest . ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
 
 .PHONY: html-test
 html-test: ## Run the tests with coverage and html report.
 	@make create-test-db
-	@${COMMAND} "pytest ${CODE_FOLDERS} ${PYTEST_SETTINGS} ${HTML_COVERAGE_SETTINGS}"
+	@${COMMAND} "pytest . ${PYTEST_SETTINGS} ${HTML_COVERAGE_SETTINGS}"
 
 .PHONY: fast-test
 fast-test: ## Run the tests in parallel
@@ -150,27 +153,27 @@ database: ## Access the mysql in the database container. You can modify user/pas
 
 .PHONY: lint
 lint: ## Run the linter
-	@${COMMAND} "black ${CODE_FOLDERS} ${BLACK_SETTINGS}"
+	@${COMMAND} "black . ${BLACK_SETTINGS}"
 
 .PHONY: check-lint
 check-lint: ## Check for linting errors.
-	@${COMMAND} "black ${CODE_FOLDERS} ${BLACK_SETTINGS} --check"
+	@${COMMAND} "black . ${BLACK_SETTINGS} --check"
 
 .PHONY: check-lint-local
 check-lint-local: ## Check for linting errors in local, useful for CI.
-	@black ${CODE_FOLDERS} ${BLACK_SETTINGS} --check
+	@black . ${BLACK_SETTINGS} --check
 
 .PHONY: sort-imports
 sort-imports: ## Sort the imports
-	@${COMMAND} "isort ${CODE_FOLDERS} ${ISORT_SETTINGS}"
+	@${COMMAND} "isort . ${ISORT_SETTINGS}"
 
 .PHONY: check-imports
 check-imports: ## Check for errors on imports ordering.
-	@${COMMAND} "isort ${CODE_FOLDERS} ${ISORT_SETTINGS} --check"
+	@${COMMAND} "isort . ${ISORT_SETTINGS} --check"
 
 .PHONY: check-imports-local
 check-imports-local:  ## Check for errors on imports ordering in local, useful for CI.
-	@isort ${CODE_FOLDERS} ${ISORT_SETTINGS} --check
+	@isort . ${ISORT_SETTINGS} --check
 
 .PHONY: wait-db
 wait-db: ## Wait until the database is ready, useful for CI. You can modify the host with HOST parameter.

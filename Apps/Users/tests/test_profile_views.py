@@ -4,6 +4,7 @@ from io import BufferedReader
 import pytest
 from rest_framework.response import Response
 from rest_framework.test import APIClient
+
 from Users.factories.user import UserFactory
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
@@ -22,7 +23,7 @@ def client() -> APIClient:
 
 @pytest.fixture(scope="class")
 def base64_image() -> bytes:
-    image_file: BufferedReader = open("Project/static/logo.png", "rb")
+    image_file: BufferedReader = open("Apps/Static/logo.png", "rb")
     image_base64: bytes = base64.b64encode(image_file.read())
     image_file.close()
     return image_base64

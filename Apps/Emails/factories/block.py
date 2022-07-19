@@ -1,6 +1,7 @@
 import factory
 from django.conf import settings
 from django.db.models import Model
+
 from Emails.models.models import Block
 from Users.models import User
 from Users.utils import generate_user_verification_token

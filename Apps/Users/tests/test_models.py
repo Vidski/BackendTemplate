@@ -1,4 +1,5 @@
 import pytest
+
 from Users.factories.profile import ProfileFactory
 from Users.factories.user import UserFactory
 from Users.fakers.profile import AdultProfileFaker

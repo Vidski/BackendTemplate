@@ -15,4 +15,4 @@ def image_file_upload(instance: Model, filename: str) -> str:
     user_id: int = instance.user.id
     extension: str = filename.split(".")[-1]
     file_name: str = f"profile_image_of_user_{user_id}.{extension}"
-    return f"media/profile_images//{user_id}/{file_name}"
+    return f"{settings.MEDIA_PATH}/profile_images/{user_id}/{file_name}"

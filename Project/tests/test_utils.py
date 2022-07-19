@@ -6,8 +6,9 @@ import pytest
 from freezegun import freeze_time
 from mock import MagicMock
 from mock import PropertyMock
-from Project.utils import log_email_action
-from Project.utils import log_information
+
+from Project.utils.log import log_email_action
+from Project.utils.log import log_information
 
 
 @pytest.mark.django_db

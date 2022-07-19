@@ -2,6 +2,7 @@ from datetime import datetime
 
 import factory
 from django.db.models import Model
+
 from Emails.factories.notification import NotificationFactory
 from Emails.fakers.block import BlockTestFaker
 

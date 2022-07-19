@@ -1,5 +1,6 @@
 import factory
 from django.db.models import Model
+
 from Users.models import User
 
 

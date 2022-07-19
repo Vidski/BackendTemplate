@@ -1,4 +1,5 @@
 import pytest
+
 from Emails.choices import CommentType
 from Emails.fakers.blacklist import BlackListTestFaker
 from Emails.fakers.block import BlockTestFaker
