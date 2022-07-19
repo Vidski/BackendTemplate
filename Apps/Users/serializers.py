@@ -4,7 +4,6 @@ from django.db.models import Field
 from django.db.models import Model
 from django.db.models import QuerySet
 from drf_extra_fields.fields import Base64ImageField
-from Emails.utils import send_email
 from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 from rest_framework.relations import RelatedField
@@ -12,6 +11,8 @@ from rest_framework.serializers import ValidationError
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from Emails.utils import send_email
 from Users.models import Profile
 from Users.models import User
 from Users.utils import check_e164_format

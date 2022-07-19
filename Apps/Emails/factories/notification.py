@@ -3,6 +3,7 @@ from datetime import datetime
 import factory
 from django.db.models import Model
 from django.utils import timezone
+
 from Emails.factories.block import BlockFactory
 from Emails.models.models import Notification
 
