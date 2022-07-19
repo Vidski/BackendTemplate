@@ -30,8 +30,6 @@ jobs:
       uses: actions/checkout@v3
     - name: 🐳 Set up container
       run: make upd
-    - name: ⏳ Wait for the environment to get up
-      run: make wait-db
     - name: ✅ Test
       run: make non-interactive-test
 
