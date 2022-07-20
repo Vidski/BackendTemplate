@@ -130,7 +130,7 @@ endif
 .PHONY: non-interactive-test
 non-interactive-test: ## Run the tests in non-interactive mode. Usefull for CI.
 	@${NON_INTERACTIVE_COMMAND} "${MANAGE} create_test_db"
-	@${NON_INTERACTIVE_COMMAND} "pytest . ${PYTEST_SETTINGS}"
+	@${NON_INTERACTIVE_COMMAND} "pytest . ${PYTEST_SETTINGS} -n auto"
 
 .PHONY: cover-test
 cover-test: ## Run the tests with coverage.
