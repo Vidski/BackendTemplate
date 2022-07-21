@@ -9,15 +9,15 @@ from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from Pagination.pagination import ListResultsSetPagination
-from Permissions.permissions import IsActionAllowed
-from Permissions.permissions import IsAdmin
-from Permissions.permissions import IsProfileOwner
-from Permissions.permissions import IsUserOwner
-from Permissions.permissions import IsVerified
+from Project.pagination import ListTenResultsSetPagination
 from Project.utils.log import log_information
 from Users.models import Profile
 from Users.models import User
+from Users.permissions import IsActionAllowed
+from Users.permissions import IsAdmin
+from Users.permissions import IsProfileOwner
+from Users.permissions import IsUserOwner
+from Users.permissions import IsVerified
 from Users.serializers import ProfileSerializer
 from Users.serializers import UserLoginSerializer
 from Users.serializers import UserSerializer
@@ -41,7 +41,7 @@ class UserViewSet(viewsets.GenericViewSet):
     user_permissions: bool = IsAuthenticated & IsVerified & IsUserOwner
     admin_user_permissions: bool = IsAuthenticated & IsAdmin
     permission_classes: list = [user_permissions | admin_user_permissions]
-    pagination_class: PageNumberPagination = ListResultsSetPagination
+    pagination_class: PageNumberPagination = ListTenResultsSetPagination
 
     def list(self, request: HttpRequest) -> Response:
         """
@@ -137,4 +137,4 @@ class ProfileViewSet(viewsets.ModelViewSet):
     admin_user_permissions: bool = IsAdmin
     permissions: bool = user_permissions | admin_user_permissions
     permission_classes: list = [IsAuthenticated & permissions]
-    pagination_class: PageNumberPagination = ListResultsSetPagination
+    pagination_class: PageNumberPagination = ListTenResultsSetPagination

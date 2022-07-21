@@ -2,17 +2,17 @@ import pytest
 from mock import MagicMock
 from mock import PropertyMock
 
-from Permissions.permissions import IsActionAllowed
-from Permissions.permissions import IsAdmin
-from Permissions.permissions import IsProfileOwner
-from Permissions.permissions import IsSameUserId
-from Permissions.permissions import IsUserOwner
-from Permissions.permissions import IsVerified
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker
 from Users.models import Profile
 from Users.models import User
+from Users.permissions import IsActionAllowed
+from Users.permissions import IsAdmin
+from Users.permissions import IsProfileOwner
+from Users.permissions import IsSameUserId
+from Users.permissions import IsUserOwner
+from Users.permissions import IsVerified
 
 
 @pytest.mark.django_db

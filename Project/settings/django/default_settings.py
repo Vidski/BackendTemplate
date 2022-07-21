@@ -176,7 +176,8 @@ USE_TZ: bool = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL: str = "/static/"
-STATICFILES_DIRS: tuple = (os.path.join(BASE_DIR, "Apps/Static"),)
+STATIC_PATH: str = "Project/static"
+STATICFILES_DIRS: tuple = (os.path.join(BASE_DIR, STATIC_PATH),)
 MEDIA_URL: str = "/media/"
 MEDIA_PATH: str = "Apps/Media"
 MEDIA_DIRS: str = os.path.join(BASE_DIR, MEDIA_PATH)

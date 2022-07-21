@@ -13,14 +13,13 @@ MANAGE = python manage.py
 DOCKER_FILE = docker-compose -f ./Docker/${ENV}/docker-compose.yml --env-file ./Docker/${ENV}/docker.env
 SETTINGS_FLAG = --settings=Project.settings.django.${SETTINGS}_settings
 TEST_SETTINGS = SETTINGS=test
-PING_DB = docker exec database mysqladmin --user=${DBUSER} --password=${DBPASSWORD} --host ${HOST} ping
 
 ## Settings used in target commands
 TOML_PATH = ./Project/settings/pyproject.toml
 DISABLE_WARNINGS = -W ignore::django.utils.deprecation.RemovedInDjango41Warning -W ignore::DeprecationWarning
 PYTEST_SETTINGS = --reuse-db -p no:cacheprovider --ds=Project.settings.django.test_settings ${DISABLE_WARNINGS}
 COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
-HTML_COVERAGE_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html
+HTML_COVERAGE_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html:./Project/.htmlconv
 BLACK_SETTINGS = --config="${TOML_PATH}"
 ISORT_SETTINGS = --settings-path="${TOML_PATH}"
 STYLE = {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2} ## Prints the target in a nice format
@@ -131,7 +130,7 @@ endif
 .PHONY: non-interactive-test
 non-interactive-test: ## Run the tests in non-interactive mode. Usefull for CI.
 	@${NON_INTERACTIVE_COMMAND} "${MANAGE} create_test_db"
-	@${NON_INTERACTIVE_COMMAND} "pytest . ${PYTEST_SETTINGS}"
+	@${NON_INTERACTIVE_COMMAND} "pytest . ${PYTEST_SETTINGS} -n auto"
 
 .PHONY: cover-test
 cover-test: ## Run the tests with coverage.
@@ -174,12 +173,3 @@ check-imports: ## Check for errors on imports ordering.
 .PHONY: check-imports-local
 check-imports-local:  ## Check for errors on imports ordering in local, useful for CI.
 	@isort . ${ISORT_SETTINGS} --check
-
-.PHONY: wait-db
-wait-db: ## Wait until the database is ready, useful for CI. You can modify the host with HOST parameter.
-	@while [[ @true ]] ; do \
-		if ${PING_DB} --silent &> /dev/null; then\
-			echo "Database is up!" && break ; \
-		fi ; \
-		echo "Waiting for the database to be up" && sleep 1 ; \
-	done
