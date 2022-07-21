@@ -1,42 +1,14 @@
-name: Main workflow
+name: Versioning workflow
 
 on:
-  pull_request:
+  push:
     branches:
       - 'master'
       - 'staging'
       - 'dev'
 
 jobs:
-  Format:
-    runs-on: ubuntu-latest
-    steps:
-    - name: 🔀 Checkout
-      uses: actions/checkout@v3
-    - name: 📥 Download black
-      run: pip3 install black==22.3.0
-    - name: 📝 Check lint
-      run:  make check-lint-local
-    - name: 📥 Download isort
-      run: pip3 install isort==5.10.1
-    - name: 🆎 Check imports order
-      run:  make check-imports-local
-
-  Testing:
-    needs: [Format]
-    runs-on: ubuntu-latest
-    steps:
-    - name: 🔀 Checkout
-      uses: actions/checkout@v3
-    - name: 🐳 Set up container
-      run: make upd
-    - name: ⏳ Wait for the environment to get up
-      run: make wait-db
-    - name: ✅ Test
-      run: make non-interactive-test
-
   Docker-Tag:
-    needs: [Testing]
     runs-on: ubuntu-latest
     steps:
     - name: 🔀 Checkout
@@ -68,10 +40,11 @@ jobs:
         file: ./Docker/Local/Dockerfile
         push: true
         tags: |
-          ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ github.base_ref }}-latest
+          ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ github.ref_name }}-latest
           ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ github.sha }}
 
-  Versioning:
+  Github-Versioning:
+    if: ${{ github.ref == 'refs/heads/master' }}
     needs: [Docker-Tag]
     runs-on: ubuntu-latest
     env:
@@ -81,7 +54,7 @@ jobs:
         name: 🔏 Generates release and tag for code versioning
         uses: rymndhng/release-on-push-action@master
         with:
-          bump_version_scheme: norelease
+          bump_version_scheme: patch
           tag_prefix: v
           use_github_release_notes: true
       - name: 📣 Check versioning
@@ -90,7 +63,7 @@ jobs:
           echo "Got release version ${{ steps.release.outputs.version }}"
 
   Deploy:
-    needs: [Versioning]
+    needs: [Github-Versioning]
     runs-on: ubuntu-latest
     steps:
     - name: 🔀 Checkout
@@ -110,4 +83,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: 🎉 Congratulations
-      run: echo "Everything is okay! 🎉"
+      run: echo "Everything is updated! 🎉"
