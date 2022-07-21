@@ -11,11 +11,11 @@ from rest_framework.response import Response
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Emails.models.models import Suggestion
 from Emails.serializers import SuggestionEmailSerializer
-from Pagination.pagination import ListResultsSetPagination
-from Permissions.permissions import IsAdmin
-from Permissions.permissions import IsSameUserId
-from Permissions.permissions import IsVerified
+from Project.pagination import ListTenResultsSetPagination
 from Users.models import User
+from Users.permissions import IsAdmin
+from Users.permissions import IsSameUserId
+from Users.permissions import IsVerified
 
 
 CREATED = status.HTTP_201_CREATED
@@ -31,7 +31,7 @@ class SuggestionViewSet(viewsets.GenericViewSet):
     LIST_PERMISSIONS: list = [IsAuthenticated & (IsAdmin | IsSameUserId)]
     READ_PERMISSIONS: list = [IsAuthenticated & IsAdmin]
     queryset: QuerySet = Suggestion.objects.all().order_by("-id")
-    pagination_class: PageNumberPagination = ListResultsSetPagination
+    pagination_class: PageNumberPagination = ListTenResultsSetPagination
 
     @action(
         detail=False, methods=["post"], permission_classes=SUBMIT_PERMISSIONS
