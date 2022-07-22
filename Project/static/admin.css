@@ -1,0 +1,30 @@
+
+.related-widget-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.related-widget-wrapper select {
+  width: 20rem;
+  height: 15rem;
+  margin-right: 3rem;
+}
+
+.related-widget-wrapper [class*="--multiple"] [class*="selection"] {
+  width: 20rem;
+  height: 15rem;
+}
+
+@media screen and (max-width: 480px) {
+  .related-widget-wrapper {
+    flex-direction: column;
+  }
+  .related-widget-wrapper select {
+    width: 100%;
+    margin-right: 0;
+  }
+  .related-widget-wrapper [class*="--multiple"] [class*="selection"] {
+    width: 100%;
+  }
+}
