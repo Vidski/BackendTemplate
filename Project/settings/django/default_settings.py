@@ -93,22 +93,6 @@ SPECTACULAR_SETTINGS: dict = {
 
 ROOT_URLCONF: str = "Project.urls"
 
-TEMPLATES: list = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "Apps/Static")],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ],
-        },
-    },
-]
-
 WSGI_APPLICATION: str = "Project.wsgi.application"
 
 CACHES: dict = {
@@ -181,6 +165,21 @@ STATICFILES_DIRS: tuple = (os.path.join(BASE_DIR, STATIC_PATH),)
 MEDIA_URL: str = "/media/"
 MEDIA_PATH: str = "Apps/Media"
 MEDIA_DIRS: str = os.path.join(BASE_DIR, MEDIA_PATH)
+TEMPLATES: list = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [os.path.join(BASE_DIR, STATIC_PATH)],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
