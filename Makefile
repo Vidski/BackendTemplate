@@ -173,3 +173,8 @@ check-imports: ## Check for errors on imports ordering.
 .PHONY: check-imports-local
 check-imports-local:  ## Check for errors on imports ordering in local, useful for CI.
 	@isort . ${ISORT_SETTINGS} --check
+
+.PHONY: format
+format: ## Runs the linter and import sorter at once
+	@make lint
+	@make sort-imports
