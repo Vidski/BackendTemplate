@@ -127,12 +127,12 @@ test-recreate: ## Recreate the the database with dummy data for tests.
 	@make test-populate
 
 .PHONY: test
-test: ## Run the tests. You can modify the app that will be tested with APP parameter.
+test: ## Run the tests. You can modify the app that will be tested with PATH parameter.
 	@make create-test-db
-ifeq (${APP},)
+ifeq (${PATH},)
 	@${COMMAND} "pytest . ${PYTEST_SETTINGS}"
 else
-	@${COMMAND} "pytest ${APP} -s ${PYTEST_SETTINGS}"
+	@${COMMAND} "pytest ${PATH} -s ${PYTEST_SETTINGS}"
 endif
 
 .PHONY: non-interactive-test
@@ -140,13 +140,13 @@ non-interactive-test: ## Run the tests in non-interactive mode. Usefull for CI.
 	@${NON_INTERACTIVE_COMMAND} "${MANAGE} create_test_db"
 	@${NON_INTERACTIVE_COMMAND} "pytest . ${PYTEST_SETTINGS} -n auto"
 
-.PHONY: cover-test
-cover-test: ## Run the tests with coverage.
+.PHONY: test-coverage
+test-coverage: ## Run the tests with coverage.
 	@make create-test-db
 	@${COMMAND} "pytest . ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
 
-.PHONY: html-test
-html-test: ## Run the tests with coverage and html report.
+.PHONY: test-coverage-html
+test-coverage-html: ## Run the tests with coverage and html report.
 	@make create-test-db
 	@${COMMAND} "pytest . ${PYTEST_SETTINGS} ${HTML_COVERAGE_SETTINGS}"
 
