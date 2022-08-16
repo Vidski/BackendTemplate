@@ -18,7 +18,7 @@ class AbstractEmailFunctionClass(Model):
     class Meta:
         abstract: bool = True
 
-    def _str_(self) -> str:
+    def __str__(self) -> str:
         return f"{self.id} | {self.subject}"
 
     @abstractmethod
