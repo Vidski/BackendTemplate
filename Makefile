@@ -127,12 +127,12 @@ test-recreate: ## Recreate the the database with dummy data for tests.
 	@make test-populate
 
 .PHONY: test
-test: ## Run the tests. You can modify the app that will be tested with PATH parameter.
+test: ## Run the tests. You can modify the app that will be tested with PYTEST_PATH parameter.
 	@make create-test-db
-ifeq (${PATH},)
+ifeq (${PYTEST_PATH},)
 	@${COMMAND} "pytest . ${PYTEST_SETTINGS}"
 else
-	@${COMMAND} "pytest ${PATH} -s ${PYTEST_SETTINGS}"
+	@${COMMAND} "pytest ${PYTEST_PATH} -s ${PYTEST_SETTINGS}"
 endif
 
 .PHONY: non-interactive-test
