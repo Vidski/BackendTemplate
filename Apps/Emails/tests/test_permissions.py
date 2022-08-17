@@ -6,12 +6,8 @@ from mock import PropertyMock
 from Emails.fakers.blacklist import BlackListTestFaker
 from Emails.models.models import BlackList
 from Emails.permissions import IsBlacklistOwner
-from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
-from Users.fakers.user import VerifiedUserFaker
-from Users.models import Profile
 from Users.models import User
-from Users.permissions import IsActionAllowed
 
 
 @pytest.mark.django_db
