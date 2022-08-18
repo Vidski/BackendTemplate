@@ -12,6 +12,7 @@ class IsBlacklistOwner(BasePermission):
 
     def has_permission(self, request: HttpRequest, view: View) -> bool:
         user: User = request.user
-        blacklist_id: int = request.parser_context["kwargs"]["pk"]
+        kwargs: dict = request.parser_context["kwargs"]
+        blacklist_id: int = kwargs.get("pk", None)
         blacklist: BlackList = get_object_or_404(BlackList, id=blacklist_id)
         return user.has_permission(blacklist)
