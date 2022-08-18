@@ -11,7 +11,7 @@ from Users.models import User
 
 
 @pytest.mark.django_db
-class TestIsAdminPermission:
+class TestIsBlacklistOwnerPermission:
     def test_returns_false_if_user_not_owns_the_blacklist_item(self) -> None:
         blacklist: BlackList = BlackListTestFaker()
         kwargs: dict = {"kwargs": {"pk": blacklist.id}}
