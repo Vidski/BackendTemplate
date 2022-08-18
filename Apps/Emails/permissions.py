@@ -16,3 +16,18 @@ class IsBlacklistOwner(BasePermission):
         blacklist_id: int = kwargs.get("pk", None)
         blacklist: BlackList = get_object_or_404(BlackList, id=blacklist_id)
         return user.has_permission(blacklist)
+
+
+class HasListBlacklistPermission(BasePermission):
+    message: str = "You don't have permission to list blacklist"
+
+    def is_a_list_request(self, request) -> bool:
+        is_get_method: bool = request.method == "GET"
+        has_empty_kwargs: bool = request.parser_context["kwargs"] == {}
+        return is_get_method and has_empty_kwargs
+
+    def has_permission(self, request: HttpRequest, view: View) -> bool:
+        if self.is_a_list_request(request):
+            user: User = request.user
+            return user.is_admin
+        return True
