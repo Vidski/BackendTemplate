@@ -3,6 +3,7 @@ from django.db.models import Model
 from rest_framework import serializers
 from rest_framework.relations import RelatedField
 
+from Emails.models.models import BlackList
 from Emails.models.models import Suggestion
 
 
@@ -24,3 +25,15 @@ class SuggestionEmailSerializer(serializers.Serializer):
 
     class Meta:
         model: Model = Suggestion
+
+
+class BlacklistSerializer(serializers.Serializer):
+    """
+    Blacklist serializer
+    """
+
+    id: Field = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model: Model = BlackList
+        fields: str = "__all__"

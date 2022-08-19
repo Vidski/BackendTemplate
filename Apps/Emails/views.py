@@ -2,14 +2,19 @@ from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import ModelViewSet
 
 from Emails.factories.suggestion import SuggestionEmailFactory
+from Emails.models.models import BlackList
 from Emails.models.models import Suggestion
+from Emails.permissions import HasListBlacklistPermission
+from Emails.permissions import IsBlacklistOwner
+from Emails.serializers import BlacklistSerializer
 from Emails.serializers import SuggestionEmailSerializer
 from Project.pagination import ListTenResultsSetPagination
 from Users.models import User
@@ -21,7 +26,7 @@ from Users.permissions import IsVerified
 CREATED = status.HTTP_201_CREATED
 
 
-class SuggestionViewSet(viewsets.GenericViewSet):
+class SuggestionViewSet(GenericViewSet):
     """
     API endpoint that allows users to create and list suggestions email.
     Allows also to admins to mark a suggestions as read.
@@ -62,3 +67,15 @@ class SuggestionViewSet(viewsets.GenericViewSet):
         page: QuerySet = self.paginate_queryset(suggestions)
         data: dict = SuggestionEmailSerializer(page, many=True).data
         return self.get_paginated_response(data)
+
+
+class BlacklistViewSet(ModelViewSet):
+    queryset: QuerySet = BlackList.objects.all()
+    lookup_url_kwarg: str = "pk"
+    serializer_class: BlacklistSerializer = BlacklistSerializer
+    active_user: bool = IsAuthenticated & IsVerified
+    base_permissions: bool = active_user & HasListBlacklistPermission
+    permission_classes: list = [
+        base_permissions & (IsAdmin | IsBlacklistOwner)
+    ]
+    pagination_class: PageNumberPagination = ListTenResultsSetPagination
