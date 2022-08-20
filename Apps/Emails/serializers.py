@@ -27,12 +27,13 @@ class SuggestionEmailSerializer(serializers.Serializer):
         model: Model = Suggestion
 
 
-class BlacklistSerializer(serializers.Serializer):
+class BlacklistSerializer(serializers.ModelSerializer):
     """
     Blacklist serializer
     """
 
     id: Field = serializers.IntegerField(read_only=True)
+    affairs: Field = serializers.CharField(required=False)
 
     class Meta:
         model: Model = BlackList
