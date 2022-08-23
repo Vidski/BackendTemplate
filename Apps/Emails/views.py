@@ -12,8 +12,7 @@ from rest_framework.viewsets import ModelViewSet
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Emails.models.models import BlackList
 from Emails.models.models import Suggestion
-from Emails.permissions import HasListBlacklistPermission
-from Emails.permissions import IsBlacklistOwner
+from Emails.permissions import HasBlacklistPetitionPermission
 from Emails.serializers import BlacklistSerializer
 from Emails.serializers import SuggestionEmailSerializer
 from Project.pagination import ListTenResultsSetPagination
@@ -73,9 +72,9 @@ class BlacklistViewSet(ModelViewSet):
     queryset: QuerySet = BlackList.objects.all()
     lookup_url_kwarg: str = "pk"
     serializer_class: BlacklistSerializer = BlacklistSerializer
-    active_user: bool = IsAuthenticated & IsVerified
-    base_permissions: bool = active_user & HasListBlacklistPermission
-    permission_classes: list = [
-        base_permissions & (IsAdmin | IsBlacklistOwner)
-    ]
     pagination_class: PageNumberPagination = ListTenResultsSetPagination
+    permission_classes: list = [
+        IsAuthenticated
+        & IsVerified
+        & (IsAdmin | HasBlacklistPetitionPermission)
+    ]
