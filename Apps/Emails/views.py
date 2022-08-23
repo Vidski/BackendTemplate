@@ -69,7 +69,7 @@ class SuggestionViewSet(GenericViewSet):
 
 
 class BlacklistViewSet(ModelViewSet):
-    queryset: QuerySet = BlackList.objects.all()
+    queryset: QuerySet = BlackList.objects.all().order_by("-id")
     lookup_url_kwarg: str = "pk"
     serializer_class: BlacklistSerializer = BlacklistSerializer
     pagination_class: PageNumberPagination = ListTenResultsSetPagination
