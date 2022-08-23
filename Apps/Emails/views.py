@@ -1,11 +1,12 @@
 from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
-from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.status import HTTP_200_OK as OK
+from rest_framework.status import HTTP_201_CREATED as CREATED
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.viewsets import ModelViewSet
 
@@ -20,9 +21,6 @@ from Users.models import User
 from Users.permissions import IsAdmin
 from Users.permissions import IsSameUserId
 from Users.permissions import IsVerified
-
-
-CREATED = status.HTTP_201_CREATED
 
 
 class SuggestionViewSet(GenericViewSet):
@@ -57,7 +55,7 @@ class SuggestionViewSet(GenericViewSet):
         suggestion.was_read = True
         suggestion.save()
         data: dict = SuggestionEmailSerializer(suggestion).data
-        return Response(data=data, status=status.HTTP_200_OK)
+        return Response(data=data, status=OK)
 
     @action(detail=False, methods=["get"], permission_classes=LIST_PERMISSIONS)
     def user(self, request: HttpRequest) -> Response:
