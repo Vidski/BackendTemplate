@@ -21,19 +21,14 @@ class IsBlacklistOwner(BasePermission):
 class HasBlacklistPetitionPermission(IsBlacklistOwner):
     message: str = "You don't have permission to perform this action"
 
-    def is_a_get_type_request(self, request: HttpRequest, _type: str) -> bool:
+    def is_a_list_type_request(self, request: HttpRequest) -> bool:
         is_get_method: bool = request.method == "GET"
         has_empty_kwargs: bool = request.parser_context["kwargs"] == {}
-        if _type and _type == "retrieve":
-            return is_get_method and has_empty_kwargs
-        if _type and _type == "list":
-            return is_get_method and not has_empty_kwargs
+        return is_get_method and has_empty_kwargs
 
     def has_permission(self, request: HttpRequest, view: View) -> bool:
-        if self.is_a_get_type_request(request, _type="list"):
+        if self.is_a_list_type_request(request):
             return False
-        if self.is_a_get_type_request(request, _type="retrieve"):
-            return True
         if request.method == "POST":
             id_in_body: int = int(request.data["user"])
             return id_in_body == request.user.id
