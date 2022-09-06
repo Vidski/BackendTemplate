@@ -7,6 +7,7 @@ from rest_framework.test import APIClient
 from Emails.choices import CommentType
 from Emails.factories.blacklist import BlackListFactory
 from Emails.factories.suggestion import SuggestionEmailFactory
+from Emails.fakers.blacklist import BlackListTestFaker
 from Emails.models.models import BlackList
 from Emails.models.models import Suggestion
 from Users.fakers.user import AdminFaker
@@ -287,7 +288,7 @@ class TestRetrieveBlacklistViews:
         self, client: APIClient
     ) -> None:
         user: User = VerifiedUserFaker()
-        blacklist: BlackList = BlackListFactory()
+        blacklist: BlackList = BlackListTestFaker()
         url: str = self.url(blacklist.id)
         client.force_authenticate(user=user)
         response: Response = client.get(url)
@@ -297,7 +298,7 @@ class TestRetrieveBlacklistViews:
         self, client: APIClient
     ) -> None:
         user: User = AdminFaker()
-        blacklist: BlackList = BlackListFactory()
+        blacklist: BlackList = BlackListTestFaker()
         url: str = self.url(blacklist.id)
         client.force_authenticate(user=user)
         response: Response = client.get(url)
@@ -307,7 +308,7 @@ class TestRetrieveBlacklistViews:
     def test_retrieve_user_suggestion_works_with_owner_normal_user(
         self, client: APIClient
     ) -> None:
-        blacklist: BlackList = BlackListFactory()
+        blacklist: BlackList = BlackListTestFaker()
         url: str = self.url(blacklist.id)
         client.force_authenticate(user=blacklist.user)
         response: Response = client.get(url)
@@ -362,5 +363,58 @@ class TestPostBlacklistViews:
         url: str = self.url()
         client.force_authenticate(user=user)
         response: Response = client.post(url, data=data)
-        # import ipdb; ipdb.set_trace()
         assert response.status_code == 201
+
+    def test_post_user_suggestion_works_with_admin(
+        self, client: APIClient
+    ) -> None:
+        user: User = VerifiedUserFaker()
+        data: dict = {"user": user.id}
+        url: str = self.url()
+        client.force_authenticate(user=AdminFaker())
+        response: Response = client.post(url, data=data)
+        assert response.status_code == 201
+
+
+@pytest.mark.django_db
+class TestUpdateBlacklistViews:
+    def url(self, pk: int = None) -> str:
+        if pk:
+            return reverse("emails:blacklist-detail", args=[pk])
+        return reverse("emails:blacklist-list")
+
+    def test_url(self) -> None:
+        assert self.url() == "/api/blacklist/"
+        assert self.url(pk=1) == "/api/blacklist/1/"
+
+    def test_post_user_suggestion_fails_as_unauthenticated(
+        self, client: APIClient
+    ) -> None:
+        blacklist: BlackList = BlackListTestFaker()
+        data: dict = {"user": blacklist.user, "affairs": ""}
+        url: str = self.url(pk=blacklist.id)
+        response: Response = client.put(url, data=data)
+        assert response.status_code == 401
+
+    def test_post_user_suggestion_fails_with_user_unverified(
+        self, client: APIClient
+    ) -> None:
+        data: dict = {"user": 2, "affairs": ""}
+        user: User = UserFaker()
+        blacklist: BlackList = BlackListTestFaker(user=user)
+        url: str = self.url(blacklist.id)
+        client.force_authenticate(user=user)
+        response: Response = client.put(url, data=data)
+        assert response.status_code == 403
+
+    def test_post_user_suggestion_fails_with_other_user(
+        self, client: APIClient
+    ) -> None:
+        other_user: User = VerifiedUserFaker()
+        data: dict = {"user": other_user.id}
+        user: User = VerifiedUserFaker()
+        blacklist: BlackList = BlackListTestFaker(user=user)
+        url: str = self.url(blacklist.id)
+        client.force_authenticate(user=user)
+        response: Response = client.put(url, data=data)
+        assert response.status_code == 403
