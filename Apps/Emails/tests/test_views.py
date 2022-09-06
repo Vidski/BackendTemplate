@@ -418,3 +418,16 @@ class TestUpdateBlacklistViews:
         client.force_authenticate(user=user)
         response: Response = client.put(url, data=data)
         assert response.status_code == 403
+
+    def test_post_user_suggestion_fails_works_with_admin(
+        self, client: APIClient
+    ) -> None:
+        user: User = VerifiedUserFaker()
+        blacklist: BlackList = BlackListTestFaker(user=user)
+        other_user: User = VerifiedUserFaker()
+        data: dict = {"user": other_user.id}
+        url: str = self.url(blacklist.id)
+        admin: User = AdminFaker()
+        client.force_authenticate(user=admin)
+        response: Response = client.put(url, data=data)
+        assert response.status_code == 200
