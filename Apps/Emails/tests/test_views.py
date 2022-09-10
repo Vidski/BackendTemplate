@@ -316,7 +316,7 @@ class TestRetrieveBlacklistViews:
 
 
 @pytest.mark.django_db
-class TestPostBlacklistViews:
+class TestCreateBlacklistViews:
     def url(self, pk: int = None) -> str:
         if pk:
             return reverse("emails:blacklist-detail", args=[pk])
@@ -419,7 +419,18 @@ class TestUpdateBlacklistViews:
         response: Response = client.put(url, data=data)
         assert response.status_code == 403
 
-    def test_post_user_suggestion_fails_works_with_admin(
+    def test_post_user_suggestion_works_with_user(
+        self, client: APIClient
+    ) -> None:
+        user: User = VerifiedUserFaker()
+        blacklist: BlackList = BlackListTestFaker(user=user)
+        data: dict = {"user": user.id}
+        url: str = self.url(blacklist.id)
+        client.force_authenticate(user=user)
+        response: Response = client.put(url, data=data)
+        assert response.status_code == 200
+
+    def test_post_user_suggestion_works_with_admin(
         self, client: APIClient
     ) -> None:
         user: User = VerifiedUserFaker()
@@ -431,3 +442,65 @@ class TestUpdateBlacklistViews:
         client.force_authenticate(user=admin)
         response: Response = client.put(url, data=data)
         assert response.status_code == 200
+
+
+@pytest.mark.django_db
+class TestDeleteBlacklistViews:
+    def url(self, pk: int = None) -> str:
+        if pk:
+            return reverse("emails:blacklist-detail", args=[pk])
+        return reverse("emails:blacklist-list")
+
+    def test_url(self) -> None:
+        assert self.url() == "/api/blacklist/"
+        assert self.url(pk=1) == "/api/blacklist/1/"
+
+    def test_delete_user_suggestion_fails_as_unauthenticated(
+        self, client: APIClient
+    ) -> None:
+        blacklist: BlackList = BlackListTestFaker()
+        url: str = self.url(pk=blacklist.id)
+        response: Response = client.delete(url)
+        assert response.status_code == 401
+
+    def test_delete_user_suggestion_fails_with_user_unverified(
+        self, client: APIClient
+    ) -> None:
+        user: User = UserFaker()
+        blacklist: BlackList = BlackListTestFaker(user=user)
+        url: str = self.url(blacklist.id)
+        client.force_authenticate(user=user)
+        response: Response = client.delete(url)
+        assert response.status_code == 403
+
+    def test_delete_user_suggestion_fails_with_other_user(
+        self, client: APIClient
+    ) -> None:
+        other_user: User = VerifiedUserFaker()
+        user: User = VerifiedUserFaker()
+        blacklist: BlackList = BlackListTestFaker(user=user)
+        url: str = self.url(blacklist.id)
+        client.force_authenticate(user=other_user)
+        response: Response = client.delete(url)
+        assert response.status_code == 403
+
+    def test_delete_user_suggestion_works_with_user(
+        self, client: APIClient
+    ) -> None:
+        user: User = VerifiedUserFaker()
+        blacklist: BlackList = BlackListTestFaker(user=user)
+        url: str = self.url(blacklist.id)
+        client.force_authenticate(user=user)
+        response: Response = client.delete(url)
+        assert response.status_code == 204
+
+    def test_delete_user_suggestion_works_with_admin(
+        self, client: APIClient
+    ) -> None:
+        user: User = VerifiedUserFaker()
+        blacklist: BlackList = BlackListTestFaker(user=user)
+        url: str = self.url(blacklist.id)
+        admin: User = AdminFaker()
+        client.force_authenticate(user=admin)
+        response: Response = client.delete(url)
+        assert response.status_code == 204
