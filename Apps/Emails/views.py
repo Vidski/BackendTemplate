@@ -12,9 +12,11 @@ from rest_framework.viewsets import ModelViewSet
 
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Emails.models.models import BlackList
+from Emails.models.models import Notification
 from Emails.models.models import Suggestion
 from Emails.permissions import HasBlacklistPetitionPermission
 from Emails.serializers import BlacklistSerializer
+from Emails.serializers import NotificationSerializer
 from Emails.serializers import SuggestionEmailSerializer
 from Project.pagination import ListTenResultsSetPagination
 from Users.models import User
@@ -76,3 +78,11 @@ class BlacklistViewSet(ModelViewSet):
         & IsVerified
         & (IsAdmin | HasBlacklistPetitionPermission)
     ]
+
+
+class NotificationViewSet(ModelViewSet):
+    queryset: QuerySet = Notification.objects.all().order_by("-id")
+    lookup_url_kwarg: str = "pk"
+    serializer_class: NotificationSerializer = NotificationSerializer
+    pagination_class: PageNumberPagination = ListTenResultsSetPagination
+    permission_classes: list = [IsAuthenticated & IsVerified & IsAdmin]
