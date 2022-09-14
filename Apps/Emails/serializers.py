@@ -1,23 +1,23 @@
 from django.db.models import Field
 from django.db.models import Model
 from rest_framework import serializers
+from rest_framework.generics import get_object_or_404
 from rest_framework.relations import RelatedField
 from rest_framework.serializers import ValidationError
 
 from Emails.models.models import BlackList
 from Emails.models.models import Block
+from Emails.models.models import Email
 from Emails.models.models import Notification
 from Emails.models.models import Suggestion
+from Users.models import User
 
 
 class SuggestionEmailSerializer(serializers.Serializer):
-    """
-    Suggestion serializer
-    """
 
-    id: Field = serializers.IntegerField()
+    id: Field = serializers.IntegerField(read_only=True)
     user_id: Field = serializers.IntegerField()
-    was_sent: Field = serializers.BooleanField()
+    was_sent: Field = serializers.BooleanField(read_only=True)
     was_read: Field = serializers.BooleanField()
     subject: Field = serializers.CharField()
     header: Field = serializers.CharField()
@@ -31,9 +31,6 @@ class SuggestionEmailSerializer(serializers.Serializer):
 
 
 class BlacklistSerializer(serializers.ModelSerializer):
-    """
-    Blacklist serializer
-    """
 
     id: Field = serializers.IntegerField(read_only=True)
     affairs: Field = serializers.CharField(required=False)
@@ -44,9 +41,6 @@ class BlacklistSerializer(serializers.ModelSerializer):
 
 
 class BlockSerializer(serializers.ModelSerializer):
-    """
-    Block serializer
-    """
 
     id: Field = serializers.IntegerField(read_only=True)
     title: Field = serializers.CharField()
@@ -60,38 +54,29 @@ class BlockSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class NotificationSerializer(serializers.ModelSerializer):
-    """
-    Notification serializer
-    """
+class AbstractEmailSerializer(serializers.ModelSerializer):
 
     id: Field = serializers.IntegerField(read_only=True)
-    header: Field = serializers.CharField()
-    affair: Field = serializers.CharField()
     subject: Field = serializers.CharField()
-    is_test: Field = serializers.BooleanField()
-    programed_send_date: Field = serializers.DateTimeField()
-    sent_date: Field = serializers.DateTimeField(read_only=True)
+    affair: Field = serializers.CharField()
+    header: Field = serializers.CharField()
+    sent_date: Field = serializers.CharField(read_only=True)
     was_sent: Field = serializers.BooleanField(read_only=True)
     blocks: BlockSerializer = BlockSerializer(required=True, many=True)
+    is_test: Field = serializers.BooleanField()
+    programed_send_date: Field = serializers.DateTimeField()
 
-    class Meta:
-        model: Model = Notification
-        fields = "__all__"
-
-    def update(
-        self, instance: Notification, validated_data: dict
-    ) -> Notification:
+    def update(self, instance: Model, validated_data: dict) -> Model:
         blocks_data: list = validated_data.pop("blocks")
         blocks: list = self.create_blocks(blocks_data)
-        instance: Notification = super().update(instance, validated_data)
+        instance: Model = super().update(instance, validated_data)
         instance.blocks.set(blocks)
         return instance
 
-    def create(self, validated_data: dict) -> Notification:
+    def create(self, validated_data: dict) -> Model:
         blocks_data: list = validated_data.pop("blocks")
         blocks: list = self.create_blocks(blocks_data)
-        instance: Notification = super().create(validated_data)
+        instance: Model = super().create(validated_data)
         instance.blocks.set(blocks)
         return instance
 
@@ -101,9 +86,34 @@ class NotificationSerializer(serializers.ModelSerializer):
             raise ValidationError("Block data is not correct.")
         return serializer.create(serializer.validated_data)
 
-    def to_representation(self, instance: Notification) -> dict:
+    def to_representation(self, instance: Model) -> dict:
         representation: dict = super().to_representation(instance)
         blocks: list = BlockSerializer(instance.blocks.all(), many=True).data
         representation["blocks"]: list = []
         [representation["blocks"].append(dict(block)) for block in blocks]
         return representation
+
+
+class NotificationSerializer(AbstractEmailSerializer):
+    class Meta:
+        model: Model = Notification
+        fields: str = "__all__"
+
+
+class EmailSerializer(AbstractEmailSerializer):
+
+    to: Field = serializers.CharField()
+
+    class Meta:
+        model: Model = Email
+        fields: str = "__all__"
+
+    def update(self, instance: Email, validated_data: dict) -> Email:
+        email: str = validated_data.pop("to")
+        validated_data["to"] = get_object_or_404(User, email=email)
+        return super().update(instance, validated_data)
+
+    def create(self, validated_data: dict) -> Email:
+        email: str = validated_data.pop("to")
+        validated_data["to"] = get_object_or_404(User, email=email)
+        return super().create(validated_data)
