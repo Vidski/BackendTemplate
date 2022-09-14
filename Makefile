@@ -22,7 +22,9 @@ COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
 HTML_COVERAGE_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html:./Project/.htmlconv
 BLACK_SETTINGS = --config="${TOML_PATH}"
 ISORT_SETTINGS = --settings-path="${TOML_PATH}"
-STYLE = {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2} ## Prints the target in a nice format
+
+## Prints the target in a nice format
+STYLE = {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}
 
 
 .PHONY: all
@@ -119,12 +121,12 @@ test-recreate: ## Recreate the the database with dummy data for tests.
 	@make test-populate
 
 .PHONY: test
-test: ## Run the tests. You can modify the app that will be tested with APP parameter.
+test: ## Run the tests. You can modify the app that will be tested with PYTEST_PATH parameter.
 	@make create-test-db
-ifeq (${APP},)
+ifeq (${PYTEST_PATH},)
 	@${COMMAND} "pytest . ${PYTEST_SETTINGS}"
 else
-	@${COMMAND} "pytest ${APP} -s ${PYTEST_SETTINGS}"
+	@${COMMAND} "pytest ${PYTEST_PATH} -s ${PYTEST_SETTINGS}"
 endif
 
 .PHONY: non-interactive-test
@@ -132,13 +134,13 @@ non-interactive-test: ## Run the tests in non-interactive mode. Usefull for CI.
 	@${NON_INTERACTIVE_COMMAND} "${MANAGE} create_test_db"
 	@${NON_INTERACTIVE_COMMAND} "pytest . ${PYTEST_SETTINGS} -n auto"
 
-.PHONY: cover-test
-cover-test: ## Run the tests with coverage.
+.PHONY: test-coverage
+test-coverage: ## Run the tests with coverage.
 	@make create-test-db
 	@${COMMAND} "pytest . ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
 
-.PHONY: html-test
-html-test: ## Run the tests with coverage and html report.
+.PHONY: test-coverage-html
+test-coverage-html: ## Run the tests with coverage and html report.
 	@make create-test-db
 	@${COMMAND} "pytest . ${PYTEST_SETTINGS} ${HTML_COVERAGE_SETTINGS}"
 
@@ -173,3 +175,8 @@ check-imports: ## Check for errors on imports ordering.
 .PHONY: check-imports-local
 check-imports-local:  ## Check for errors on imports ordering in local, useful for CI.
 	@isort . ${ISORT_SETTINGS} --check
+
+.PHONY: format
+format: ## Runs the linter and import sorter at once
+	@make lint
+	@make sort-imports
