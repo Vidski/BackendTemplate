@@ -12,10 +12,12 @@ from rest_framework.viewsets import ModelViewSet
 
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Emails.models.models import BlackList
+from Emails.models.models import Email
 from Emails.models.models import Notification
 from Emails.models.models import Suggestion
 from Emails.permissions import HasBlacklistPetitionPermission
 from Emails.serializers import BlacklistSerializer
+from Emails.serializers import EmailSerializer
 from Emails.serializers import NotificationSerializer
 from Emails.serializers import SuggestionEmailSerializer
 from Project.pagination import ListTenResultsSetPagination
@@ -23,6 +25,34 @@ from Users.models import User
 from Users.permissions import IsAdmin
 from Users.permissions import IsSameUserId
 from Users.permissions import IsVerified
+
+
+class EmailViewSet(ModelViewSet):
+    queryset: QuerySet = Email.objects.all().order_by("-id")
+    lookup_url_kwarg: str = "pk"
+    serializer_class: EmailSerializer = EmailSerializer
+    pagination_class: PageNumberPagination = ListTenResultsSetPagination
+    permission_classes: list = [IsAuthenticated & IsVerified & IsAdmin]
+
+
+class BlacklistViewSet(ModelViewSet):
+    queryset: QuerySet = BlackList.objects.all().order_by("-id")
+    lookup_url_kwarg: str = "pk"
+    serializer_class: BlacklistSerializer = BlacklistSerializer
+    pagination_class: PageNumberPagination = ListTenResultsSetPagination
+    permission_classes: list = [
+        IsAuthenticated
+        & IsVerified
+        & (IsAdmin | HasBlacklistPetitionPermission)
+    ]
+
+
+class NotificationViewSet(ModelViewSet):
+    queryset: QuerySet = Notification.objects.all().order_by("-id")
+    lookup_url_kwarg: str = "pk"
+    serializer_class: NotificationSerializer = NotificationSerializer
+    pagination_class: PageNumberPagination = ListTenResultsSetPagination
+    permission_classes: list = [IsAuthenticated & IsVerified & IsAdmin]
 
 
 class SuggestionViewSet(GenericViewSet):
@@ -66,23 +96,3 @@ class SuggestionViewSet(GenericViewSet):
         page: QuerySet = self.paginate_queryset(suggestions)
         data: dict = SuggestionEmailSerializer(page, many=True).data
         return self.get_paginated_response(data)
-
-
-class BlacklistViewSet(ModelViewSet):
-    queryset: QuerySet = BlackList.objects.all().order_by("-id")
-    lookup_url_kwarg: str = "pk"
-    serializer_class: BlacklistSerializer = BlacklistSerializer
-    pagination_class: PageNumberPagination = ListTenResultsSetPagination
-    permission_classes: list = [
-        IsAuthenticated
-        & IsVerified
-        & (IsAdmin | HasBlacklistPetitionPermission)
-    ]
-
-
-class NotificationViewSet(ModelViewSet):
-    queryset: QuerySet = Notification.objects.all().order_by("-id")
-    lookup_url_kwarg: str = "pk"
-    serializer_class: NotificationSerializer = NotificationSerializer
-    pagination_class: PageNumberPagination = ListTenResultsSetPagination
-    permission_classes: list = [IsAuthenticated & IsVerified & IsAdmin]
