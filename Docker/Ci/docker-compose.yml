@@ -13,9 +13,6 @@ services:
       - ../../Envs/local.env
     ports:
       - 8000:8000
-    volumes:
-      - ../../Apps:/App/Apps
-      - ../../Project:/App/Project
     depends_on:
       database:
         condition: service_healthy
@@ -26,8 +23,6 @@ services:
     image: ${MYSQL}
     restart: always
     env_file: *envfile
-    volumes:
-      - ${DATA_FOLDER}:/var/lib/mysql
     ports:
       - 3306:3306
     expose:
