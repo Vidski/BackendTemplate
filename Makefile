@@ -10,19 +10,27 @@ HOST ?= "127.0.0.1"
 COMMAND = docker exec -it django-app bash -c
 NON_INTERACTIVE_COMMAND = docker exec -i django-app bash -c
 MANAGE = python manage.py
-DOCKER_FILE = docker-compose -f ./Docker/${ENV}/docker-compose.yml --env-file ./Docker/${ENV}/docker.env
+DOCKER_ENV_FILE = --env-file ./Docker/${ENV}/docker.env
+DOCKER_COMPOSE_FILE = -f ./Docker/${ENV}/docker-compose.yml
+DOCKER_FILE = docker-compose ${DOCKER_COMPOSE_FILE} ${DOCKER_ENV_FILE}
 SETTINGS_FLAG = --settings=Project.settings.django.${SETTINGS}_settings
 TEST_SETTINGS = SETTINGS=test
 
-## Settings used in target commands
+## Modules settings
 TOML_PATH = ./Project/settings/pyproject.toml
-DISABLE_WARNINGS = -W ignore::django.utils.deprecation.RemovedInDjango41Warning -W ignore::DeprecationWarning
-PYTEST_SETTINGS = --reuse-db -p no:cacheprovider --ds=Project.settings.django.test_settings ${DISABLE_WARNINGS}
-COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
-HTML_COVERAGE_SETTINGS = ${COVERAGE_SETTINGS} --cov-report=html:./Project/.htmlconv
 BLACK_SETTINGS = --config="${TOML_PATH}"
 ISORT_SETTINGS = --settings-path="${TOML_PATH}"
-STYLE = {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2} ## Prints the target in a nice format
+
+## Testing settings
+DJANGO_TEST_SETTINGS = --ds=Project.settings.django.test_settings
+PYTEST_FLAGS = --reuse-db -p no:cacheprovider -p no:warnings
+PYTEST_SETTINGS = ${PYTEST_FLAGS} ${DJANGO_TEST_SETTINGS}
+COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
+HTML_PATH = --cov-report=html:./Project/.htmlconv
+HTML_COVERAGE_SETTINGS = ${COVERAGE_SETTINGS} ${HTML_PATH}
+
+## Style to print targets in a nice format
+STYLE = {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}
 
 
 .PHONY: all
