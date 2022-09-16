@@ -27,7 +27,7 @@ services:
     restart: always
     env_file: *envfile
     volumes:
-      - ${DATA_FOLDER}:/var/lib/mysql
+      - ${DATA_FOLDER}/mysql:/var/lib/mysql
     ports:
       - 3306:3306
     expose:
