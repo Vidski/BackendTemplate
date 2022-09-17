@@ -8,7 +8,7 @@ on:
       - 'dev'
 
 jobs:
-  Raise-Container:
+  Rise-Container:
     runs-on: ubuntu-latest
     steps:
     - name: 🔀 Checkout
@@ -17,7 +17,7 @@ jobs:
       run: make docker up FLAGS=--detach ENV=Ci
 
   Check-Lint:
-    needs: [Raise-Container]
+    needs: [Rise-Container]
     runs-on: ubuntu-latest
     steps:
     - name: 🔀 Checkout
@@ -26,7 +26,7 @@ jobs:
       run:  make check-lint ENV=Ci
 
   Check-Imports:
-    needs: [Raise-Containern]
+    needs: [Rise-Container]
     runs-on: ubuntu-latest
     steps:
     - name: 🔀 Checkout
@@ -41,7 +41,7 @@ jobs:
     - name: 🔀 Checkout
       uses: actions/checkout@v3
     - name: ✅ Test
-      run: make test-coverage ENV=Ci
+      run: make test-with-coverage ENV=Ci
 
   Done:
     needs: [Testing]
