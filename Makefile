@@ -49,7 +49,7 @@ ifeq (docker,$(firstword $(MAKECMDGOALS)))
 endif
 .PHONY: docker
 docker: ## Runs docker compose command. You can pass it paramaters as normal. Eg: 'make docker ps'.
-	@${DOCKER_FILE} $(ARGS)
+	@${DOCKER_FILE} $(ARGS) ${FLAGS}
 
 .PHONY: bash
 bash: ## Open a bash shell in the django container.
@@ -107,7 +107,7 @@ else
 endif
 
 .PHONY: test-coverage
-test-coverage: ## Run the tests with coverage.
+test-with-coverage: ## Run the tests with coverage.
 ifeq (${ENV}, Ci)
 	@${NON_INTERACTIVE_COMMAND} "${MANAGE} create_test_db"
 	@${COMMAND} "pytest . ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
@@ -116,8 +116,8 @@ else
 	@${COMMAND} "pytest . ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
 endif
 
-.PHONY: test-coverage-html
-test-coverage-html: ## Run the tests with coverage and html report.
+.PHONY: test-with-html
+test-with-html: ## Run the tests with coverage and html report.
 	@make create-test-db
 	@${COMMAND} "pytest . ${PYTEST_SETTINGS} ${HTML_COVERAGE_SETTINGS}"
 
