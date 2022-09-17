@@ -48,7 +48,7 @@ ifeq (docker,$(firstword $(MAKECMDGOALS)))
   $(eval $(ARGS):;@:)
 endif
 .PHONY: docker
-docker: ## Runs docker compose command. You can pass it paramaters as normal. Eg: 'make docker ps'.
+docker: ## Runs docker compose command. You can pass it paramaters as normal, and flags as arguments.
 	@${DOCKER_FILE} $(ARGS) ${FLAGS}
 
 .PHONY: bash
