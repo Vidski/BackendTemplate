@@ -48,7 +48,7 @@ ifeq (docker,$(firstword $(MAKECMDGOALS)))
   $(eval $(ARGS):;@:)
 endif
 .PHONY: docker
-docker: ## Runs docker compose command. You can pass it paramaters as normal, and flags as arguments.
+docker: ## Runs docker compose command. Eg: "make docker up FLAGS=-d".
 	@${DOCKER_FILE} $(ARGS) ${FLAGS}
 
 .PHONY: bash
@@ -67,10 +67,6 @@ else
 	@${COMMAND} "${MANAGE} show_urls | grep ${GREP}"
 endif
 
-.PHONY: create-test-db
-create-test-db: ## Create a test database.
-	@${COMMAND} "${MANAGE} create_test_db"
-
 .PHONY: flush
 flush: ## Flush the database. *
 	@${COMMAND} "${MANAGE} flush ${SETTINGS_FLAG}"
@@ -88,60 +84,44 @@ else
 	@${COMMAND} "${MANAGE} populate_db -i $(INSTANCES) ${SETTINGS_FLAG}"
 endif
 
-.PHONY: recreate
-recreate: ## Recreate the the database with dummy data. *
-	@make flush
-	@make migrations
-	@make populate
-ifeq (${SETTINGS}, test)
-	@create-test-db
-endif
-
 .PHONY: test
 test: ## Run the tests. ****
-	@make create-test-db
+	@${COMMAND} "${MANAGE} create_test_db"
 ifeq (${PATH},)
 	@${COMMAND} "pytest . ${PYTEST_SETTINGS}"
 else
 	@${COMMAND} "pytest ${PATH} -s ${PYTEST_SETTINGS}"
 endif
 
-.PHONY: test-coverage
+.PHONY: test-with-coverage
 test-with-coverage: ## Run the tests with coverage.
 ifeq (${ENV}, Ci)
 	@${NON_INTERACTIVE_COMMAND} "${MANAGE} create_test_db"
 	@${COMMAND} "pytest . ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
 else
-	@make create-test-db
+	@${COMMAND} "${MANAGE} create_test_db"
 	@${COMMAND} "pytest . ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
 endif
 
 .PHONY: test-with-html
 test-with-html: ## Run the tests with coverage and html report.
-	@make create-test-db
+	@${COMMAND} "${MANAGE} create_test_db"
 	@${COMMAND} "pytest . ${PYTEST_SETTINGS} ${HTML_COVERAGE_SETTINGS}"
 
 .PHONY: fast-test
 fast-test: ## Run the tests in parallel. ****
+	@${COMMAND} "${MANAGE} create_test_db"
 	@${COMMAND} "pytest ${PATH} ${PYTEST_SETTINGS} -n auto"
-
-.PHONY: lint
-lint: ## Run the linter
-	@${COMMAND} "black . ${BLACK_SETTINGS}"
 
 .PHONY: check-lint
 check-lint: ## Check for linting errors.
 	@${COMMAND} "black . ${BLACK_SETTINGS} --check"
-
-.PHONY: sort-imports
-sort-imports: ## Sort the imports
-	@${COMMAND} "isort . ${ISORT_SETTINGS}"
 
 .PHONY: check-imports
 check-imports: ## Check for errors on imports ordering.
 	@${COMMAND} "isort . ${ISORT_SETTINGS} --check"
 
 .PHONY: format
-format: ## Runs the linter and import sorter at once
-	@make lint
-	@make sort-imports
+format: ## Runs the linter and import sorter.
+	@${COMMAND} "black . ${BLACK_SETTINGS}"
+	@${COMMAND} "isort . ${ISORT_SETTINGS}"
