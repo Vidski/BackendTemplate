@@ -17,6 +17,7 @@ jobs:
       run: make docker up -d ENV=Ci
 
   Check-Lint:
+    needs: [Raise-Container]
     runs-on: ubuntu-latest
     steps:
     - name: 🔀 Checkout
@@ -25,6 +26,7 @@ jobs:
       run:  make check-lint ENV=Ci
 
   Check-Imports:
+    needs: [Raise-Container]
     runs-on: ubuntu-latest
     steps:
     - name: 🔀 Checkout
