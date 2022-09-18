@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import factory
+import factory.fuzzy
 from django.conf import settings
 from django.db.models import Model
 from django.utils import timezone
@@ -30,6 +31,16 @@ class EmailFactory(factory.django.DjangoModelFactory):
         "date_time", tzinfo=timezone.get_current_timezone()
     )
     was_sent: bool = False
+    affair: str = factory.fuzzy.FuzzyChoice(
+        (
+            "NOTIFICATION",
+            "PROMOTION",
+            "GENERAL",
+            "SETTINGS",
+            "INVOICE",
+            "SUGGESTION",
+        )
+    )
 
     @factory.post_generation
     def blocks(self, create: bool, extracted: Model, **kwargs: dict) -> None:

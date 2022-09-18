@@ -1,3 +1,6 @@
+import sys
+from io import StringIO
+from io import TextIOWrapper
 from logging import Logger
 
 import pytest
@@ -13,6 +16,14 @@ from Users.models import User
 
 
 COMMAND: str = "populate_db"
+
+
+@pytest.fixture(scope="function")
+def silent_stdout():
+    capturedOutput: StringIO = StringIO()
+    sys.stdout: TextIOWrapper = capturedOutput
+    yield sys.stdout
+    sys.stdout = sys.__stdout__
 
 
 @pytest.mark.django_db

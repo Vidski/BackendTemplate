@@ -1,15 +1,24 @@
 from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
-from rest_framework import status
-from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.status import HTTP_200_OK as OK
+from rest_framework.status import HTTP_201_CREATED as CREATED
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import ModelViewSet
 
 from Emails.factories.suggestion import SuggestionEmailFactory
+from Emails.models.models import BlackList
+from Emails.models.models import Email
+from Emails.models.models import Notification
 from Emails.models.models import Suggestion
+from Emails.permissions import HasBlacklistPetitionPermission
+from Emails.serializers import BlacklistSerializer
+from Emails.serializers import EmailSerializer
+from Emails.serializers import NotificationSerializer
 from Emails.serializers import SuggestionEmailSerializer
 from Project.pagination import ListTenResultsSetPagination
 from Users.models import User
@@ -18,10 +27,35 @@ from Users.permissions import IsSameUserId
 from Users.permissions import IsVerified
 
 
-CREATED = status.HTTP_201_CREATED
+class EmailViewSet(ModelViewSet):
+    queryset: QuerySet = Email.objects.all().order_by("-id")
+    lookup_url_kwarg: str = "pk"
+    serializer_class: EmailSerializer = EmailSerializer
+    pagination_class: PageNumberPagination = ListTenResultsSetPagination
+    permission_classes: list = [IsAuthenticated & IsVerified & IsAdmin]
 
 
-class SuggestionViewSet(viewsets.GenericViewSet):
+class BlacklistViewSet(ModelViewSet):
+    queryset: QuerySet = BlackList.objects.all().order_by("-id")
+    lookup_url_kwarg: str = "pk"
+    serializer_class: BlacklistSerializer = BlacklistSerializer
+    pagination_class: PageNumberPagination = ListTenResultsSetPagination
+    permission_classes: list = [
+        IsAuthenticated
+        & IsVerified
+        & (IsAdmin | HasBlacklistPetitionPermission)
+    ]
+
+
+class NotificationViewSet(ModelViewSet):
+    queryset: QuerySet = Notification.objects.all().order_by("-id")
+    lookup_url_kwarg: str = "pk"
+    serializer_class: NotificationSerializer = NotificationSerializer
+    pagination_class: PageNumberPagination = ListTenResultsSetPagination
+    permission_classes: list = [IsAuthenticated & IsVerified & IsAdmin]
+
+
+class SuggestionViewSet(GenericViewSet):
     """
     API endpoint that allows users to create and list suggestions email.
     Allows also to admins to mark a suggestions as read.
@@ -53,7 +87,7 @@ class SuggestionViewSet(viewsets.GenericViewSet):
         suggestion.was_read = True
         suggestion.save()
         data: dict = SuggestionEmailSerializer(suggestion).data
-        return Response(data=data, status=status.HTTP_200_OK)
+        return Response(data=data, status=OK)
 
     @action(detail=False, methods=["get"], permission_classes=LIST_PERMISSIONS)
     def user(self, request: HttpRequest) -> Response:
