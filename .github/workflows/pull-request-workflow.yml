@@ -13,20 +13,16 @@ jobs:
     steps:
     - name: 🔀 Checkout
       uses: actions/checkout@v3
-    - name: 📥 Download black
-      run: pip3 install black==22.3.0
     - name: 📝 Check lint
-      run:  make check-lint-local ENV=Ci
+      run:  make check-lint ENV=Ci
 
   Check-Imports:
     runs-on: ubuntu-latest
     steps:
     - name: 🔀 Checkout
       uses: actions/checkout@v3
-    - name: 📥 Download isort
-      run: pip3 install isort==5.10.1
     - name: 🆎 Check imports order
-      run:  make check-imports-local ENV=Ci
+      run:  make check-imports ENV=Ci
 
   Testing:
     needs: [Check-Lint, Check-Imports]
@@ -35,9 +31,9 @@ jobs:
     - name: 🔀 Checkout
       uses: actions/checkout@v3
     - name: 🐳 Set up container
-      run: make upd ENV=Ci
+      run: make docker up FLAGS=--detach ENV=Ci
     - name: ✅ Test
-      run: make non-interactive-test ENV=Ci
+      run: make fast-test ENV=Ci
 
   Done:
     needs: [Testing]
