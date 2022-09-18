@@ -116,7 +116,7 @@ fast-test: ## Run the tests in parallel. ****
 .PHONY: check-lint
 check-lint: ## Check for linting errors.
 ifeq (${ENV}, Ci)
-	@pip3 install -r ./Requirements/ci.txt
+	@pip3 install -r ./Requirements/format.txt
 	@black . ${BLACK_SETTINGS} --check
 else
 	@${COMMAND} "isort . ${ISORT_SETTINGS} --check"
@@ -125,7 +125,7 @@ endif
 .PHONY: check-imports
 check-imports: ## Check for errors on imports ordering.
 ifeq (${ENV}, Ci)
-	@pip3 install -r ./Requirements/ci.txt
+	@pip3 install -r ./Requirements/format.txt
 	@isort . ${ISORT_SETTINGS} --check
 else
 	@${COMMAND} "isort . ${ISORT_SETTINGS} --check"
