@@ -16,6 +16,7 @@ SETTINGS_FLAG = --settings=Project.settings.django.${SETTINGS}_settings
 TOML_PATH = ./Project/settings/pyproject.toml
 BLACK_SETTINGS = --config="${TOML_PATH}"
 ISORT_SETTINGS = --settings-path="${TOML_PATH}"
+INSTALL_FORMAT_MODULES = pip3 install -r ./Requirements/format.txt
 
 ## Testing settings
 DJANGO_TEST_SETTINGS = --ds=Project.settings.django.test_settings
@@ -116,8 +117,7 @@ fast-test: ## Run the tests in parallel. ****
 .PHONY: check-lint
 check-lint: ## Check for linting errors.
 ifeq (${ENV}, Ci)
-	@pip3 install -r ./Requirements/format.txt
-	@black . ${BLACK_SETTINGS} --check
+	@${INSTALL_FORMAT_MODULES} && black . ${BLACK_SETTINGS} --check
 else
 	@${COMMAND} "isort . ${ISORT_SETTINGS} --check"
 endif
@@ -125,8 +125,7 @@ endif
 .PHONY: check-imports
 check-imports: ## Check for errors on imports ordering.
 ifeq (${ENV}, Ci)
-	@pip3 install -r ./Requirements/format.txt
-	@isort . ${ISORT_SETTINGS} --check
+	@${INSTALL_FORMAT_MODULES} && isort . ${ISORT_SETTINGS} --check
 else
 	@${COMMAND} "isort . ${ISORT_SETTINGS} --check"
 endif
