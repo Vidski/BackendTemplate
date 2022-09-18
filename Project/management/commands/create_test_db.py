@@ -2,8 +2,7 @@ from django.core.management.base import BaseCommand
 from django.db import connection
 
 
-GRANT: str = 'grant all privileges on *.* to "admin"@"%" with grant option;'
-CREATE: str = "create database if not exists test_database;"
+CREATE_TEST_DB: str = "create database if not exists test_database;"
 
 
 class Command(BaseCommand):
@@ -15,5 +14,4 @@ class Command(BaseCommand):
 
     def execute_sql(self) -> None:
         with connection.cursor() as cursor:
-            cursor.execute(GRANT)
-            cursor.execute(CREATE)
+            cursor.execute(CREATE_TEST_DB)
