@@ -20,7 +20,7 @@ INSTALL_FORMAT_MODULES = pip3 install -r ./Requirements/format.txt
 
 ## Testing settings
 DJANGO_TEST_SETTINGS = --ds=Project.settings.django.test_settings
-PYTEST_FLAGS = --reuse-db -p no:cacheprovider -p no:warnings
+PYTEST_FLAGS =  -p no:cacheprovider -p no:warnings
 PYTEST_SETTINGS = ${PYTEST_FLAGS} ${DJANGO_TEST_SETTINGS}
 COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
 HTML_PATH = --cov-report=html:./Project/.htmlconv
@@ -77,42 +77,30 @@ migrations: ## Creates and applies the django migrations. *
 	@${COMMAND} "${MANAGE} makemigrations ${SETTINGS_FLAG}"
 	@${COMMAND} "${MANAGE} migrate ${SETTINGS_FLAG}"
 
+INSTANCES ?= 50
 .PHONY: populate
 populate: ## Populates the database with dummy data. ***
-ifeq (${INSTANCES},)
-	@${COMMAND} "${MANAGE} populate_db -i 50 ${SETTINGS_FLAG}"
-else
 	@${COMMAND} "${MANAGE} populate_db -i $(INSTANCES) ${SETTINGS_FLAG}"
-endif
 
+TEST_PATH ?= .
 .PHONY: test
 test: ## Run the tests. ****
 	@${COMMAND} "${MANAGE} create_test_db"
-ifeq (${TEST_PATH},)
-	@${COMMAND} "pytest . ${PYTEST_SETTINGS}"
-else
-	@${COMMAND} "pytest ${TEST_PATH} ${PYTEST_SETTINGS}"
-endif
+	@${COMMAND} "pytest ${TEST_PATH} --reuse-db ${PYTEST_SETTINGS}"
+
+.PHONY: fast-test
+fast-test: ## Run the tests in parallel. ****
+	@${NON_INTERACTIVE_COMMAND} "pytest . ${PYTEST_SETTINGS} -n auto"
 
 .PHONY: test-with-coverage
 test-with-coverage: ## Run the tests with coverage.
-ifeq (${ENV}, Ci)
-	@${NON_INTERACTIVE_COMMAND} "${MANAGE} create_test_db"
-	@${NON_INTERACTIVE_COMMAND} "pytest . ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
-else
 	@${COMMAND} "${MANAGE} create_test_db"
 	@${COMMAND} "pytest . ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
-endif
 
 .PHONY: test-with-html
 test-with-html: ## Run the tests with coverage and html report.
 	@${COMMAND} "${MANAGE} create_test_db"
 	@${COMMAND} "pytest . ${PYTEST_SETTINGS} ${HTML_COVERAGE_SETTINGS}"
-
-.PHONY: fast-test
-fast-test: ## Run the tests in parallel. ****
-	@${COMMAND} "${MANAGE} create_test_db"
-	@${COMMAND} "pytest ${TEST_PATH} ${PYTEST_SETTINGS} -n auto"
 
 .PHONY: check-lint
 check-lint: ## Check for linting errors.
