@@ -41,7 +41,7 @@ help:	## Show this help which show all the possible make targets and its descrip
 	@echo "* You can modify the settings with SETTINGS parameter."
 	@echo "** You can grep a string with GREP parameter."
 	@echo "*** You can modify the number of instances created with INSTANCES parameter."
-	@echo "**** You can modify the path that will be tested with PATH parameter."
+	@echo "**** You can modify the path that will be tested with TEST_PATH parameter."
 	@echo ""
 
 ifeq (docker,$(firstword $(MAKECMDGOALS)))
@@ -88,10 +88,10 @@ endif
 .PHONY: test
 test: ## Run the tests. ****
 	@${COMMAND} "${MANAGE} create_test_db"
-ifeq (${PATH},)
+ifeq (${TEST_PATH},)
 	@${COMMAND} "pytest . ${PYTEST_SETTINGS}"
 else
-	@${COMMAND} "pytest ${PATH} -s ${PYTEST_SETTINGS}"
+	@${COMMAND} "pytest ${TEST_PATH} ${PYTEST_SETTINGS}"
 endif
 
 .PHONY: test-with-coverage
@@ -112,7 +112,7 @@ test-with-html: ## Run the tests with coverage and html report.
 .PHONY: fast-test
 fast-test: ## Run the tests in parallel. ****
 	@${COMMAND} "${MANAGE} create_test_db"
-	@${COMMAND} "pytest ${PATH} ${PYTEST_SETTINGS} -n auto"
+	@${COMMAND} "pytest ${TEST_PATH} ${PYTEST_SETTINGS} -n auto"
 
 .PHONY: check-lint
 check-lint: ## Check for linting errors.
