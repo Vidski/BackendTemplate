@@ -97,7 +97,7 @@ endif
 test-with-coverage: ## Run the tests with coverage.
 ifeq (${ENV}, Ci)
 	@${NON_INTERACTIVE_COMMAND} "${MANAGE} create_test_db"
-	@${COMMAND} "pytest . ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
+	@${NON_INTERACTIVE_COMMAND} "pytest . ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
 else
 	@${COMMAND} "${MANAGE} create_test_db"
 	@${COMMAND} "pytest . ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
@@ -115,11 +115,21 @@ fast-test: ## Run the tests in parallel. ****
 
 .PHONY: check-lint
 check-lint: ## Check for linting errors.
-	@${COMMAND} "black . ${BLACK_SETTINGS} --check"
+ifeq (${ENV}, Ci)
+	@pip3 install -r ./Requirements/ci.txt
+	@black . ${BLACK_SETTINGS} --check
+else
+	@${COMMAND} "isort . ${ISORT_SETTINGS} --check"
+endif
 
 .PHONY: check-imports
 check-imports: ## Check for errors on imports ordering.
+ifeq (${ENV}, Ci)
+	@pip3 install -r ./Requirements/ci.txt
+	@isort . ${ISORT_SETTINGS} --check
+else
 	@${COMMAND} "isort . ${ISORT_SETTINGS} --check"
+endif
 
 .PHONY: format
 format: ## Runs the linter and import sorter.
