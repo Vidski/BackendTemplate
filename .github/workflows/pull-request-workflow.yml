@@ -8,16 +8,7 @@ on:
       - 'dev'
 
 jobs:
-  Rise-Container:
-    runs-on: ubuntu-latest
-    steps:
-    - name: 🔀 Checkout
-      uses: actions/checkout@v3
-    - name: 🐳 Set up container
-      run: make docker up FLAGS=--detach ENV=Ci
-
   Check-Lint:
-    needs: [Rise-Container]
     runs-on: ubuntu-latest
     steps:
     - name: 🔀 Checkout
@@ -26,7 +17,6 @@ jobs:
       run:  make check-lint ENV=Ci
 
   Check-Imports:
-    needs: [Rise-Container]
     runs-on: ubuntu-latest
     steps:
     - name: 🔀 Checkout
@@ -40,6 +30,8 @@ jobs:
     steps:
     - name: 🔀 Checkout
       uses: actions/checkout@v3
+    - name: 🐳 Set up container
+      run: make docker up FLAGS=--detach ENV=Ci
     - name: ✅ Test
       run: make test-with-coverage ENV=Ci
 
