@@ -33,7 +33,7 @@ jobs:
     - name: 🐳 Set up container
       run: make docker up FLAGS=--detach ENV=Ci
     - name: ✅ Test
-      run: make test-with-coverage ENV=Ci
+      run: make fast-test ENV=Ci
 
   Done:
     needs: [Testing]
