@@ -243,4 +243,3 @@ OAUTH_PASSWORD: str = ""
 ## Social OAuth
 GOOGLE_CLIENT_ID: str = ""
 GOOGLE_CLIENT_SECRET: str = ""
-
