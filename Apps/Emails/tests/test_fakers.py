@@ -6,11 +6,11 @@ from Emails.fakers.block import BlockTestFaker
 from Emails.fakers.email import EmailTestFaker
 from Emails.fakers.notification import NotificationTestFaker
 from Emails.fakers.suggestion import SuggestionErrorFaker
-from Emails.models.models import BlackList
-from Emails.models.models import Block
-from Emails.models.models import Email
-from Emails.models.models import Notification
-from Emails.models.models import Suggestion
+from Emails.models import BlackList
+from Emails.models import Block
+from Emails.models import Email
+from Emails.models import Notification
+from Emails.models import Suggestion
 from Users.models import User
 
 

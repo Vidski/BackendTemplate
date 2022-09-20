@@ -5,7 +5,7 @@ from django.db.models import Model
 from django.utils import timezone
 
 from Emails.factories.block import BlockFactory
-from Emails.models.models import Notification
+from Emails.models import Notification
 
 
 class NotificationFactory(factory.django.DjangoModelFactory):

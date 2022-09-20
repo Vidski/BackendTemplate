@@ -4,9 +4,9 @@ from rest_framework.response import Response
 from rest_framework.test import APIClient
 
 from Emails.fakers.notification import NotificationTestFaker
-from Emails.models.models import Block
-from Emails.models.models import Email
-from Emails.models.models import Notification
+from Emails.models import Block
+from Emails.models import Email
+from Emails.models import Notification
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker

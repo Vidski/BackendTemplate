@@ -4,22 +4,13 @@ from datetime import datetime
 from django.apps import apps
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
-from django.db import models
-from django.db.models import Model
-from django.db.models.fields import Field
 from django.template.loader import render_to_string
 from django.utils import timezone
 
-from Emails.choices import EmailAffair
 from Project.utils.log import log_information
 
 
-class AbstractEmailFunctionClass(Model):
-    class Meta:
-        abstract: bool = True
-
-    def __str__(self) -> str:
-        return f"{self.id} | {self.subject}"
+class AbstractEmailFunctionClass:
 
     @abstractmethod
     def get_email(self) -> str:
@@ -64,16 +55,3 @@ class AbstractEmailFunctionClass(Model):
             self.save()
         log_information(f"Sent: {self.was_sent}", self)
 
-
-class AbstractEmailClass(AbstractEmailFunctionClass):
-    header: Field = models.CharField(max_length=100, null=True)
-    affair: Field = models.CharField(
-        max_length=100,
-        choices=EmailAffair.choices,
-        default=EmailAffair.NOTIFICATION.value,
-    )
-    sent_date: Field = models.DateTimeField(null=True)
-    was_sent: Field = models.BooleanField(default=False, editable=False)
-    blocks: Field = models.ManyToManyField(
-        "Emails.Block", related_name="%(class)s_blocks"
-    )

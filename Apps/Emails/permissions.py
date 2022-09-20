@@ -3,7 +3,7 @@ from django.views import View
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import BasePermission
 
-from Emails.models.models import BlackList
+from Emails.models import BlackList
 from Users.models import User
 
 

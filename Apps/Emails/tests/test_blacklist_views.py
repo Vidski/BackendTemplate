@@ -5,7 +5,7 @@ from rest_framework.test import APIClient
 
 from Emails.factories.blacklist import BlackListFactory
 from Emails.fakers.blacklist import BlackListTestFaker
-from Emails.models.models import BlackList
+from Emails.models import BlackList
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker
