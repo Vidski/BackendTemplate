@@ -236,10 +236,14 @@ AWS_SECRET_ACCESS_KEY: str = None
 AWS_S3_REGION_NAME: str = None
 AWS_S3_SIGNATURE_VERSION: str = None
 
+## SOCIAL OAUTH
+# Google
+GOOGLE_CLIENT_ID: str = ""
+GOOGLE_CLIENT_SECRET: str = "G"
+# Twitter
+TWITTER_API_KEY: str = ""
+TWITTER_API_SECRET_KEY: str = ""
+TWITTER_API_BEARER_TOKEN: str = ""
 
 ## OAUTH
 OAUTH_PASSWORD: str = ""
-
-## Social OAuth
-GOOGLE_CLIENT_ID: str = ""
-GOOGLE_CLIENT_SECRET: str = ""

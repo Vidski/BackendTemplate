@@ -33,6 +33,7 @@ class RegisterOrLogin:
         creation_data["password"] = settings.OAUTH_PASSWORD
         creation_data["auth_provider"] = self.provider
         creation_data["is_verified"] = True
+        creation_data["email"] = self.user_data["email"]
         user: User = User.objects.create_user(**creation_data)
         return UserSignUpSerializer(user).data
 
@@ -48,7 +49,6 @@ class RegisterOrLoginViaGoogle(RegisterOrLogin):
         return {
             "first_name": self.user_data["given_name"],
             "last_name": self.user_data["family_name"],
-            "email": self.user_data["email"],
         }
 
 
@@ -59,5 +59,14 @@ class RegisterOrLoginViaFacebook(RegisterOrLogin):
         return {
             "first_name": self.user_data["first_name"],
             "last_name": self.user_data["last_name"],
-            "email": self.user_data["email"],
+        }
+
+
+class RegisterOrLoginViaTwitter(RegisterOrLogin):
+    provider: str = "twitter"
+
+    def get_user_creation_data(self) -> dict:
+        return {
+            "first_name": self.user_data["name"],
+            "last_name": "",
         }

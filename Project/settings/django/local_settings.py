@@ -82,9 +82,14 @@ SIMPLE_JWT: dict = {
 CORS_ALLOW_ALL_ORIGINS = True  # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
 CORS_ALLOW_CREDENTIALS = True
 
-## Social OAuth
+## SOCIAL OAUTH
+# Google
 GOOGLE_CLIENT_ID: str = ""
-GOOGLE_CLIENT_SECRET: str = ""
+GOOGLE_CLIENT_SECRET: str = "G"
+# Twitter
+TWITTER_API_KEY: str = ""
+TWITTER_API_SECRET_KEY: str = ""
+TWITTER_API_BEARER_TOKEN: str = ""
 
 ## OAUTH
 OAUTH_PASSWORD: str = ""

@@ -6,6 +6,7 @@ from rest_framework.serializers import Serializer
 
 from SocialAuth.serializers import FacebookOAuthSerializer
 from SocialAuth.serializers import GoogleOAuthSerializer
+from SocialAuth.serializers import TwitterOAuthSerializer
 
 
 class GenericOAuthView(GenericAPIView):
@@ -24,3 +25,7 @@ class GoogleSocialAuthView(GenericOAuthView):
 
 class FacebookSocialAuthView(GenericOAuthView):
     serializer_class: FacebookOAuthSerializer = FacebookOAuthSerializer
+
+
+class TwitterSocialAuthView(GenericOAuthView):
+    serializer_class: TwitterOAuthSerializer = TwitterOAuthSerializer
