@@ -20,4 +20,4 @@ class AuthProviders(TextChoices):
     FACEBOOK: tuple = ("facebook", "Facebook")
     GOOGLE: tuple = ("google", "Google")
     Twitter: tuple = ("twitter", "Twitter")
-    Twitter: tuple = ("apple", "Apple")
+    Apple: tuple = ("apple", "Apple")
