@@ -104,6 +104,7 @@ class Migration(migrations.Migration):
                             ("facebook", "Facebook"),
                             ("google", "Google"),
                             ("twitter", "Twitter"),
+                            ("apple", "Apple"),
                         ],
                         default="email",
                         max_length=10,
