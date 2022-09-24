@@ -7,7 +7,7 @@ from SocialAuth.serializers import FacebookOAuthSerializer
 
 
 @pytest.mark.django_db
-class TestGoogleOAuthSerializer:
+class TestFacebookOAuthSerializer:
     @patch("facebook.GraphAPI.request")
     def test_validate_token_do_not_raises_an_error(
         self, request: MagicMock
