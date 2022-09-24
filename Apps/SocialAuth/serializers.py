@@ -11,6 +11,7 @@ from twitter import User as TwitterUser
 
 from SocialAuth.user_handler import RegisterOrLoginViaFacebook
 from SocialAuth.user_handler import RegisterOrLoginViaGoogle
+from SocialAuth.user_handler import RegisterOrLoginViaTwitter
 
 
 class GoogleOAuthSerializer(Serializer):
@@ -56,7 +57,7 @@ class TwitterOAuthSerializer(Serializer):
     def validate(self, attributes: dict) -> dict:
         twitter_user: TwitterUser = self.get_user_data(attributes)
         user_data: dict = self.get_dictionary_of_user_data(twitter_user)
-        return RegisterOrLoginViaFacebook(user_data).serialized_user
+        return RegisterOrLoginViaTwitter(user_data).serialized_user
 
     def get_user_data(self, attributes: dict) -> TwitterUser:
         try:
@@ -65,7 +66,7 @@ class TwitterOAuthSerializer(Serializer):
         except Exception:
             raise ValidationError("Token is invalid or expired. Try again.")
 
-    def get_dictionary_of_user_data(user: TwitterUser) -> dict:
+    def get_dictionary_of_user_data(self, user: TwitterUser) -> dict:
         if not getattr(user, "email", None):
             raise ValidationError("Email is not available and is required.")
         return {
