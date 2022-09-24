@@ -44,7 +44,6 @@ class TestBlockModel:
 
 @pytest.mark.django_db
 class TestEmailModel:
-
     def test_email_attributes(self) -> None:
         email: Email = EmailFactory()
         dict_keys: dict = email.__dict__.keys()

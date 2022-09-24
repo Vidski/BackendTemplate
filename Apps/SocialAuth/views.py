@@ -1,8 +1,8 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK as OK
 from rest_framework.serializers import Serializer
+from rest_framework.status import HTTP_200_OK as OK
 
 from SocialAuth.serializers import FacebookOAuthSerializer
 from SocialAuth.serializers import GoogleOAuthSerializer

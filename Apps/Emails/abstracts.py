@@ -11,7 +11,6 @@ from Project.utils.log import log_information
 
 
 class AbstractEmailFunctionClass:
-
     @abstractmethod
     def get_email(self) -> str:
         raise ValueError("Abstract method, must be implemented in child class")
@@ -54,4 +53,3 @@ class AbstractEmailFunctionClass:
             self.was_sent: bool = True
             self.save()
         log_information(f"Sent: {self.was_sent}", self)
-

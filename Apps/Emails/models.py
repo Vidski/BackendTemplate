@@ -11,9 +11,9 @@ from django.utils.timezone import timedelta
 from django_mysql.models import ListCharField
 
 from Emails import factories
+from Emails.abstracts import AbstractEmailFunctionClass
 from Emails.choices import CommentType
 from Emails.choices import EmailAffair
-from Emails.abstracts import AbstractEmailFunctionClass
 from Users.fakers.user import EmailTestUserFaker
 from Users.models import User
 
