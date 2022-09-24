@@ -1,7 +1,6 @@
-from unittest.mock import MagicMock
-from unittest.mock import patch
-
 import pytest
+from mock import patch
+from mock.mock import MagicMock
 
 from SocialAuth.user_handler import RegisterOrLogin
 from SocialAuth.user_handler import RegisterOrLoginViaFacebook
