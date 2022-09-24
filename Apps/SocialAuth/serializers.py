@@ -60,14 +60,7 @@ class TwitterOAuthSerializer(Serializer):
 
     def get_user_data(self, attributes: dict) -> TwitterUser:
         try:
-            api = Api(
-                consumer_key=settings.TWITTER_API_KEY,
-                consumer_secret=settings.TWITTER_API_SECRET_KEY,
-                access_token_key=attributes.get("access_token_key", None),
-                access_token_secret=attributes.get(
-                    "access_token_secret", None
-                ),
-            )
+            api: Api = self.get_twitter_api(attributes)
             return api.VerifyCredentials(include_email=True)
         except Exception:
             raise ValidationError("Token is invalid or expired. Try again.")
@@ -79,3 +72,11 @@ class TwitterOAuthSerializer(Serializer):
             "email": getattr(user, "email"),
             "name": getattr(user, "name", None),
         }
+
+    def get_twitter_api(self, attributes: dict) -> Api:
+        return Api(
+            consumer_key=settings.TWITTER_API_KEY,
+            consumer_secret=settings.TWITTER_API_SECRET_KEY,
+            access_token_key=attributes.get("access_token_key", None),
+            access_token_secret=attributes.get("access_token_secret", None),
+        )
