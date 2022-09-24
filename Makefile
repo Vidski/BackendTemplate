@@ -82,12 +82,11 @@ INSTANCES ?= 50
 populate: ## Populates the database with dummy data. ***
 	@${COMMAND} "${MANAGE} populate_db -i $(INSTANCES) ${SETTINGS_FLAG}"
 
-TEST_PATH ?= .
 .PHONY: test
 test: ## Run the tests. ****
 	@${COMMAND} "${MANAGE} create_test_db"
-ifeq (${TEST_PATH}, .)
-	@${COMMAND} "pytest ${TEST_PATH} --reuse-db ${PYTEST_SETTINGS}"
+ifeq (${TEST_PATH},)
+	@${COMMAND} "pytest . --reuse-db ${PYTEST_SETTINGS}"
 else
 	@${COMMAND} "pytest ${TEST_PATH} --reuse-db ${PYTEST_SETTINGS} -s"
 endif
