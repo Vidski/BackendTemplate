@@ -1,8 +1,6 @@
 import pytest
-from django.conf import settings
 from mock import patch
 from mock.mock import MagicMock
-from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.serializers import ValidationError
 
 from SocialAuth.serializers import FacebookOAuthSerializer
