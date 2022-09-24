@@ -4,12 +4,14 @@ from mock.mock import MagicMock
 from rest_framework.serializers import ValidationError
 
 from SocialAuth.serializers import FacebookOAuthSerializer
+from Users.models import User
+from Users.serializers import UserSignUpSerializer
 
 
 @pytest.mark.django_db
 class TestFacebookOAuthSerializer:
     @patch("facebook.GraphAPI.request")
-    def test_validate_token_do_not_raises_an_error(
+    def test_validate_token_returns_user_data(
         self, request: MagicMock
     ) -> None:
         request.return_value = {
@@ -19,10 +21,12 @@ class TestFacebookOAuthSerializer:
         }
         token: str = "token"
         serializer: FacebookOAuthSerializer = FacebookOAuthSerializer()
-        serializer.validate_token(token)
+        data: dict = serializer.validate_token(token)
         request.assert_called_once()
+        user: User = User.objects.get(email="test@test.com")
+        assert data == UserSignUpSerializer(user).data
 
-    def test_validate_token_do_raises_an_error(self) -> None:
+    def test_validate_token_raises_an_error(self) -> None:
         token: str = "token"
         serializer: FacebookOAuthSerializer = FacebookOAuthSerializer()
         with pytest.raises(ValidationError):
