@@ -86,7 +86,11 @@ TEST_PATH ?= .
 .PHONY: test
 test: ## Run the tests. ****
 	@${COMMAND} "${MANAGE} create_test_db"
+ifeq (${TEST_PATH}, .)
 	@${COMMAND} "pytest ${TEST_PATH} --reuse-db ${PYTEST_SETTINGS}"
+else
+	@${COMMAND} "pytest ${TEST_PATH} --reuse-db ${PYTEST_SETTINGS} -s"
+endif
 
 .PHONY: fast-test
 fast-test: ## Run the tests in parallel. ****
