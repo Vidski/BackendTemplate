@@ -10,8 +10,8 @@ from django_rest_passwordreset.models import ResetPasswordToken
 from Emails.factories.block import BlockFactory
 from Emails.factories.block import ResetPasswordBlockFactory
 from Emails.factories.block import VerifyEmailBlockFactory
-from Emails.models.models import Block
-from Emails.models.models import Email
+from Emails.models import Block
+from Emails.models import Email
 from Users.factories.user import UserFactory
 from Users.models import User
 

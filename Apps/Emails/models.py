@@ -11,17 +11,14 @@ from django.utils.timezone import timedelta
 from django_mysql.models import ListCharField
 
 from Emails import factories
+from Emails.abstracts import AbstractEmailFunctionClass
 from Emails.choices import CommentType
 from Emails.choices import EmailAffair
-from Emails.models.abstracts import AbstractEmailClass
 from Users.fakers.user import EmailTestUserFaker
 from Users.models import User
 
 
 class Block(models.Model):
-    """
-    Block model used on email as block content
-    """
 
     title: Field = models.CharField(max_length=100, null=True)
     content: Field = models.TextField(null=True)
@@ -33,17 +30,28 @@ class Block(models.Model):
         return f"{self.id} | {self.title}"
 
 
-class Email(AbstractEmailClass):
-    """
-    Email model
-    """
+class Email(models.Model, AbstractEmailFunctionClass):
 
+    header: Field = models.CharField(max_length=100, null=True)
+    affair: Field = models.CharField(
+        max_length=100,
+        choices=EmailAffair.choices,
+        default=EmailAffair.NOTIFICATION.value,
+    )
+    sent_date: Field = models.DateTimeField(null=True)
+    was_sent: Field = models.BooleanField(default=False, editable=False)
+    blocks: Field = models.ManyToManyField(
+        "Emails.Block", related_name="%(class)s_blocks"
+    )
     subject: Field = models.CharField(max_length=100)
     is_test: Field = models.BooleanField(default=False)
     programed_send_date: Field = models.DateTimeField(null=True)
     to: ForeignObject = models.ForeignKey(
         User, on_delete=models.CASCADE, null=False, related_name="to_user"
     )
+
+    def __str__(self) -> str:
+        return f"{self.id} | {self.subject}"
 
     def get_email(self) -> str:
         return self.to.email
@@ -63,11 +71,19 @@ class Email(AbstractEmailClass):
         super(Email, self).save(*args, **kwargs)
 
 
-class Suggestion(AbstractEmailClass):
-    """
-    Suggestion model, emails that will be sent to admin suggestions email
-    """
+class Suggestion(models.Model, AbstractEmailFunctionClass):
 
+    header: Field = models.CharField(max_length=100, null=True)
+    affair: Field = models.CharField(
+        max_length=100,
+        choices=EmailAffair.choices,
+        default=EmailAffair.NOTIFICATION.value,
+    )
+    sent_date: Field = models.DateTimeField(null=True)
+    was_sent: Field = models.BooleanField(default=False, editable=False)
+    blocks: Field = models.ManyToManyField(
+        "Emails.Block", related_name="%(class)s_blocks"
+    )
     user: ForeignObject = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="suggestion", unique=False
     )
@@ -78,18 +94,32 @@ class Suggestion(AbstractEmailClass):
     )
     was_read: Field = models.BooleanField(default=False)
 
+    def __str__(self) -> str:
+        return f"{self.id} | {self.subject}"
+
     def get_email(self) -> str:
         return settings.SUGGESTIONS_EMAIL
 
 
-class Notification(AbstractEmailClass):
-    """
-    Notification model, it creates an email for each user with this data
-    """
+class Notification(models.Model, AbstractEmailFunctionClass):
 
+    header: Field = models.CharField(max_length=100, null=True)
+    affair: Field = models.CharField(
+        max_length=100,
+        choices=EmailAffair.choices,
+        default=EmailAffair.NOTIFICATION.value,
+    )
+    sent_date: Field = models.DateTimeField(null=True)
+    was_sent: Field = models.BooleanField(default=False, editable=False)
+    blocks: Field = models.ManyToManyField(
+        "Emails.Block", related_name="%(class)s_blocks"
+    )
     subject: Field = models.CharField(max_length=100)
     is_test: Field = models.BooleanField(default=False)
     programed_send_date: Field = models.DateTimeField(null=True)
+
+    def __str__(self) -> str:
+        return f"{self.id} | {self.subject}"
 
     def send(self) -> None:
         if not self.is_test:
