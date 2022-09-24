@@ -14,9 +14,6 @@ from Users.serializers import UserSignUpSerializer
 
 @pytest.mark.django_db
 class TestRegisterOrLoginDataClass:
-    def set_up(self):
-        User.objects.all().delete()
-
     @patch("SocialAuth.user_handler.RegisterOrLogin.get_serialized_user")
     def test_post_init_calls_get_serialized_user(
         self, get_serialized_user: MagicMock
