@@ -15,10 +15,10 @@ from Emails.factories.email import VerifyEmailFactory
 from Emails.factories.notification import NotificationFactory
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Emails.factories.suggestion import get_subject_for_suggestion
-from Emails.models.models import Block
-from Emails.models.models import Email
-from Emails.models.models import Notification
-from Emails.models.models import Suggestion
+from Emails.models import Block
+from Emails.models import Email
+from Emails.models import Notification
+from Emails.models import Suggestion
 from Users.factories.user import UserFactory
 from Users.models import User
 from Users.utils import generate_user_verification_token

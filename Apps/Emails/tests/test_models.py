@@ -8,18 +8,18 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils import timezone
 
+from Emails.abstracts import AbstractEmailFunctionClass
 from Emails.factories.blacklist import BlackListFactory
 from Emails.factories.block import BlockFactory
 from Emails.factories.email import EmailFactory
 from Emails.factories.notification import NotificationFactory
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Emails.fakers.suggestion import SuggestionErrorFaker
-from Emails.models.abstracts import AbstractEmailClass
-from Emails.models.models import BlackList
-from Emails.models.models import Block
-from Emails.models.models import Email
-from Emails.models.models import Notification
-from Emails.models.models import Suggestion
+from Emails.models import BlackList
+from Emails.models import Block
+from Emails.models import Email
+from Emails.models import Notification
+from Emails.models import Suggestion
 from Users.fakers.user import EmailTestUserFaker
 from Users.fakers.user import UserFaker
 from Users.models import User
@@ -44,12 +44,15 @@ class TestBlockModel:
 
 
 @pytest.mark.django_db
-class TestEmailModel:
-    def test_get_emails_abstract_class_fails(self) -> None:
-        abstract: AbstractEmailClass = AbstractEmailClass()
-        with pytest.raises(ValueError):
-            abstract.get_email()
+class TestAbstractEmailModel:
+    def test_get_email_must_be_implemented(self) -> None:
+        email: AbstractEmailFunctionClass = AbstractEmailFunctionClass()
+        with pytest.raises(NotImplementedError):
+            email.get_email()
 
+
+@pytest.mark.django_db
+class TestEmailModel:
     def test_email_attributes(self) -> None:
         email: Email = EmailFactory()
         dict_keys: dict = email.__dict__.keys()
@@ -173,6 +176,16 @@ class TestSuggestionModel:
     only test the attributes of this model, as all the functions are tested
     """
 
+    def test_email_str(self) -> None:
+        type: str = "ERROR"
+        user: User = UserFaker()
+        content: str = "This is the content"
+        email: Email = SuggestionEmailFactory(
+            type=type, content=content, user=user
+        )
+        expected_str: str = f"{email.id} | {email.subject}"
+        assert str(email) == expected_str
+
     def test_email_attributes(self) -> None:
         type: str = "ERROR"
         user: User = UserFaker()
@@ -204,6 +217,11 @@ class TestSuggestionModel:
 
 @pytest.mark.django_db
 class TestNotificationModel:
+    def test_email_str(self) -> None:
+        notification: Notification = NotificationFactory()
+        expected_str: str = f"{notification.id} | {notification.subject}"
+        assert str(notification) == expected_str
+
     def test_notification_attributes(self) -> None:
         notification: Notification = NotificationFactory()
         dict_keys: dict = notification.__dict__.keys()

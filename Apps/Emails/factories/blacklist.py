@@ -2,8 +2,8 @@ import factory
 import factory.fuzzy
 from django.db.models import Model
 
-from Emails.models.models import BlackList
-from Emails.models.models import Email
+from Emails.models import BlackList
+from Emails.models import Email
 from Users.factories.user import UserFactory
 from Users.models import User
 

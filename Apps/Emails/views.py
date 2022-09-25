@@ -11,10 +11,10 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.viewsets import ModelViewSet
 
 from Emails.factories.suggestion import SuggestionEmailFactory
-from Emails.models.models import BlackList
-from Emails.models.models import Email
-from Emails.models.models import Notification
-from Emails.models.models import Suggestion
+from Emails.models import BlackList
+from Emails.models import Email
+from Emails.models import Notification
+from Emails.models import Suggestion
 from Emails.permissions import HasBlacklistPetitionPermission
 from Emails.serializers import BlacklistSerializer
 from Emails.serializers import EmailSerializer

@@ -4,7 +4,7 @@ from celery import shared_task
 from django.db.models import QuerySet
 from django.utils import timezone
 
-from Emails.models.models import Email
+from Emails.models import Email
 from Project.settings.celery_worker.worker import app
 
 

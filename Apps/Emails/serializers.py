@@ -5,11 +5,11 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.relations import RelatedField
 from rest_framework.serializers import ValidationError
 
-from Emails.models.models import BlackList
-from Emails.models.models import Block
-from Emails.models.models import Email
-from Emails.models.models import Notification
-from Emails.models.models import Suggestion
+from Emails.models import BlackList
+from Emails.models import Block
+from Emails.models import Email
+from Emails.models import Notification
+from Emails.models import Suggestion
 from Users.models import User
 
 
@@ -82,8 +82,7 @@ class AbstractEmailSerializer(serializers.ModelSerializer):
 
     def create_blocks(self, data: list) -> list:
         serializer: BlockSerializer = BlockSerializer(data=data, many=True)
-        if not serializer.is_valid():
-            raise ValidationError("Block data is not correct.")
+        serializer.is_valid(raise_exception=True)
         return serializer.create(serializer.validated_data)
 
     def to_representation(self, instance: Model) -> dict:
