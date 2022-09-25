@@ -11,6 +11,7 @@ from twitter import User as TwitterUser
 
 from SocialAuth.user_handler import RegisterOrLoginViaFacebook
 from SocialAuth.user_handler import RegisterOrLoginViaGoogle
+from SocialAuth.user_handler import RegisterOrLoginViaTwitter
 
 
 class GoogleOAuthSerializer(Serializer):
@@ -56,26 +57,27 @@ class TwitterOAuthSerializer(Serializer):
     def validate(self, attributes: dict) -> dict:
         twitter_user: TwitterUser = self.get_user_data(attributes)
         user_data: dict = self.get_dictionary_of_user_data(twitter_user)
-        return RegisterOrLoginViaFacebook(user_data).serialized_user
+        return RegisterOrLoginViaTwitter(user_data).serialized_user
 
     def get_user_data(self, attributes: dict) -> TwitterUser:
         try:
-            api = Api(
-                consumer_key=settings.TWITTER_API_KEY,
-                consumer_secret=settings.TWITTER_API_SECRET_KEY,
-                access_token_key=attributes.get("access_token_key", None),
-                access_token_secret=attributes.get(
-                    "access_token_secret", None
-                ),
-            )
+            api: Api = self.get_twitter_api(attributes)
             return api.VerifyCredentials(include_email=True)
         except Exception:
             raise ValidationError("Token is invalid or expired. Try again.")
 
-    def get_dictionary_of_user_data(user: TwitterUser) -> dict:
+    def get_dictionary_of_user_data(self, user: TwitterUser) -> dict:
         if not getattr(user, "email", None):
             raise ValidationError("Email is not available and is required.")
         return {
             "email": getattr(user, "email"),
             "name": getattr(user, "name", None),
         }
+
+    def get_twitter_api(self, attributes: dict) -> Api:
+        return Api(
+            consumer_key=settings.TWITTER_API_KEY,
+            consumer_secret=settings.TWITTER_API_SECRET_KEY,
+            access_token_key=attributes.get("access_token_key", None),
+            access_token_secret=attributes.get("access_token_secret", None),
+        )

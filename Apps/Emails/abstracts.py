@@ -13,7 +13,7 @@ from Project.utils.log import log_information
 class AbstractEmailFunctionClass:
     @abstractmethod
     def get_email(self) -> str:
-        raise ValueError("Abstract method, must be implemented in child class")
+        raise NotImplementedError
 
     def get_email_data(self) -> dict:
         return {

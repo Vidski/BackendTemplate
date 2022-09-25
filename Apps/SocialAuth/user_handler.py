@@ -14,8 +14,8 @@ class RegisterOrLogin:
     user_data: dict
 
     def __post_init__(self) -> None:
-        email: str = self.user_data["email"]
-        self.queryset: QuerySet = User.objects.filter(email=email)
+        self.email: str = self.user_data["email"]
+        self.queryset: QuerySet = User.objects.filter(email=self.email)
         self.serialized_user: dict = self.get_serialized_user()
 
     @property
@@ -33,9 +33,9 @@ class RegisterOrLogin:
         creation_data["password"] = settings.OAUTH_PASSWORD
         creation_data["auth_provider"] = self.provider
         creation_data["is_verified"] = True
-        creation_data["email"] = self.user_data["email"]
+        creation_data["email"] = self.email
         user: User = User.objects.create_user(**creation_data)
-        return UserSignUpSerializer(user).data
+        return UserLoginSerializer(user).data
 
     @abstractmethod
     def get_user_creation_data(self) -> dict:
