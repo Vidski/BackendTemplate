@@ -49,7 +49,14 @@ class UserAdmin(BaseUserAdmin):
         ("General", {"fields": ("id", "email", "password")}),
         (
             "Personal info",
-            {"fields": ("first_name", "last_name", "phone_number")},
+            {
+                "fields": (
+                    "first_name",
+                    "last_name",
+                    "phone_number",
+                    "auth_provider",
+                )
+            },
         ),
         ("Account status", {"fields": ("is_verified", "is_premium")}),
         ("Permissions", {"fields": ("is_admin",)}),

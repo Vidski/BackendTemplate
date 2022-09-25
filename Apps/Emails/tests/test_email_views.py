@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.test import APIClient
 
 from Emails.fakers.email import EmailTestFaker
-from Emails.models.models import Email
+from Emails.models import Email
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker
@@ -203,6 +203,35 @@ class TestCreateEmailsView:
         response: Response = client.post(url, data=data, format="json")
         assert response.status_code == 201
         assert Email.objects.count() == 1
+
+    def test_post_email_works_fails_due_bad_block_data(
+        self, client: APIClient
+    ) -> None:
+        user: User = UserFaker()
+        data: dict = {
+            "header": "Email header",
+            "affair": "NOTIFICATION",
+            "subject": "Email subject",
+            "to": f"{user.email}",
+            "is_test": True,
+            "programed_send_date": "2050-12-12T10:59.000",
+            "blocks": [
+                {
+                    "title": "Block title",
+                    "content": "Block content",
+                    "link_text": "Click here",
+                    "show_link": "INVALID TYPE HERE",
+                    "link": "google.com",
+                }
+            ],
+        }
+        url: str = self.url()
+        admin: User = AdminFaker()
+        client.force_authenticate(user=admin)
+        assert Email.objects.count() == 0
+        response: Response = client.post(url, data=data, format="json")
+        assert response.status_code == 400
+        assert Email.objects.count() == 0
 
 
 @pytest.mark.django_db

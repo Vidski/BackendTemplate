@@ -7,8 +7,8 @@ import pytest
 from django.core.management import call_command
 from django.test import override_settings
 
-from Emails.models.models import Email
-from Emails.models.models import Suggestion
+from Emails.models import Email
+from Emails.models import Suggestion
 from Project.management.commands.populate_db import Command as PopulateCommand
 from Users.factories.user import UserFactory
 from Users.models import Profile
@@ -40,13 +40,17 @@ class TestPopulateCommand:
         )
         assert [message] == [record.message for record in caplog.records]
 
-    def test_create_fake_users(self) -> None:
+    def test_create_fake_users(self, silent_stdout: TextIOWrapper) -> None:
+        silent_stdout
         command: PopulateCommand = PopulateCommand()
         assert User.objects.all().count() == 0
         command.create_fake_users(3)
         assert User.objects.all().count() == 3
 
-    def test_create_fake_verify_emails(self) -> None:
+    def test_create_fake_verify_emails(
+        self, silent_stdout: TextIOWrapper
+    ) -> None:
+        silent_stdout
         command: PopulateCommand = PopulateCommand()
         users: list = [UserFactory(), UserFactory()]
         assert User.objects.all().count() == 2
@@ -55,7 +59,8 @@ class TestPopulateCommand:
         assert User.objects.all().count() == 2
         assert Email.objects.all().count() == 2
 
-    def test_create_fake_profiles(self) -> None:
+    def test_create_fake_profiles(self, silent_stdout: TextIOWrapper) -> None:
+        silent_stdout
         command: PopulateCommand = PopulateCommand()
         users: list = [UserFactory(), UserFactory()]
         assert User.objects.all().count() == 2
@@ -64,7 +69,10 @@ class TestPopulateCommand:
         assert User.objects.all().count() == 2
         assert Profile.objects.all().count() == 2
 
-    def test_create_fake_suggestions(self) -> None:
+    def test_create_fake_suggestions(
+        self, silent_stdout: TextIOWrapper
+    ) -> None:
+        silent_stdout
         command: PopulateCommand = PopulateCommand()
         users: list = [UserFactory(), UserFactory()]
         assert User.objects.all().count() == 2
@@ -73,13 +81,17 @@ class TestPopulateCommand:
         assert User.objects.all().count() == 2
         assert Suggestion.objects.all().count() == 2
 
-    def test_create_admin_user(self) -> None:
+    def test_create_admin_user(self, silent_stdout: TextIOWrapper) -> None:
+        silent_stdout
         command: PopulateCommand = PopulateCommand()
         assert User.objects.filter(is_admin=True).count() == 0
         command.create_admin_user()
         assert User.objects.filter(is_admin=True).count() == 1
 
-    def test_command_without_admin_flag(self) -> None:
+    def test_command_without_admin_flag(
+        self, silent_stdout: TextIOWrapper
+    ) -> None:
+        silent_stdout
         assert User.objects.all().count() == 0
         assert Email.objects.all().count() == 0
         assert Profile.objects.all().count() == 0
@@ -90,7 +102,10 @@ class TestPopulateCommand:
         assert Profile.objects.all().count() == 6
         assert Suggestion.objects.all().count() == 5
 
-    def test_command_with_admin_flag_in_false(self) -> None:
+    def test_command_with_admin_flag_in_false(
+        self, silent_stdout: TextIOWrapper
+    ) -> None:
+        silent_stdout
         assert User.objects.all().count() == 0
         assert Email.objects.all().count() == 0
         assert Profile.objects.all().count() == 0

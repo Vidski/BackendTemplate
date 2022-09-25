@@ -16,6 +16,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework.views import View
 
 from Project.storage import image_file_upload
+from Users.choices import AuthProviders
 from Users.choices import GenderChoices
 from Users.choices import PreferredLanguageChoices
 
@@ -102,6 +103,13 @@ class User(
     is_verified: Field = models.BooleanField("Verified", default=False)
     is_premium: Field = models.BooleanField("Premium", default=False)
     is_admin: Field = models.BooleanField("Admin", default=False)
+    auth_provider: Field = models.CharField(
+        "Auth provider",
+        max_length=10,
+        choices=AuthProviders.choices,
+        default=AuthProviders.EMAIL,
+        null=True,
+    )
     created_at: Field = models.DateTimeField(
         "Creation date", auto_now_add=True
     )
