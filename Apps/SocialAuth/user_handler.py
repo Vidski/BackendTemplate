@@ -35,7 +35,7 @@ class RegisterOrLogin:
         creation_data["is_verified"] = True
         creation_data["email"] = self.email
         user: User = User.objects.create_user(**creation_data)
-        return UserSignUpSerializer(user).data
+        return UserLoginSerializer(user).data
 
     @abstractmethod
     def get_user_creation_data(self) -> dict:
