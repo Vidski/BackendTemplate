@@ -82,8 +82,7 @@ class AbstractEmailSerializer(serializers.ModelSerializer):
 
     def create_blocks(self, data: list) -> list:
         serializer: BlockSerializer = BlockSerializer(data=data, many=True)
-        if not serializer.is_valid():
-            raise ValidationError("Block data is not correct.")
+        serializer.is_valid(raise_exception=True)
         return serializer.create(serializer.validated_data)
 
     def to_representation(self, instance: Model) -> dict:
