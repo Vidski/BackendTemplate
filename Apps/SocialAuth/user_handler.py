@@ -5,8 +5,7 @@ from django.conf import settings
 from django.db.models import QuerySet
 
 from Users.models import User
-from Users.serializers import UserLoginSerializer
-from Users.serializers import UserSignUpSerializer
+from Users.serializers import UserAuthSerializer
 
 
 @dataclass
@@ -25,7 +24,7 @@ class RegisterOrLogin:
     def get_serialized_user(self) -> dict:
         if self.user_exists:
             user: User = self.queryset.first()
-            return UserLoginSerializer(user).data
+            return UserAuthSerializer(user).data
         return self.register_user()
 
     def register_user(self) -> dict:
@@ -35,7 +34,7 @@ class RegisterOrLogin:
         creation_data["is_verified"] = True
         creation_data["email"] = self.email
         user: User = User.objects.create_user(**creation_data)
-        return UserLoginSerializer(user).data
+        return UserAuthSerializer(user).data
 
     @abstractmethod
     def get_user_creation_data(self) -> dict:

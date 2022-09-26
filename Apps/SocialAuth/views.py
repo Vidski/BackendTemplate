@@ -16,7 +16,7 @@ class GenericOAuthView(GenericAPIView):
     def post(self, request: Request) -> Response:
         serializer: Serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        return Response(serializer.validated_data, status=OK)
+        return Response(serializer.data, status=OK)
 
 
 class GoogleSocialAuthView(GenericOAuthView):
