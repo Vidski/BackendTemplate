@@ -103,11 +103,8 @@ class UserViewSet(viewsets.GenericViewSet):
             data=request.data
         )
         serializer.is_valid(raise_exception=True)
-        data: dict = serializer.save()
-        user: User = data["user"]
-        data["user"] = UserLoginSerializer(user).data
-        log_information("logged in", user)
-        return JsonResponse(data, status=SUCCESS)
+        log_information("logged in", serializer.user)
+        return JsonResponse(serializer.data, status=SUCCESS)
 
     @action(detail=True, methods=["get"], permission_classes=[AllowAny])
     def verify(self, request: HttpRequest, pk: int = None) -> JsonResponse:

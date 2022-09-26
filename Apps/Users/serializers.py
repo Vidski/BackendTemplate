@@ -154,67 +154,54 @@ class UserAuthSerializer(serializers.Serializer):
     id: Field = serializers.IntegerField(read_only=True)
     first_name: Field = serializers.CharField(required=False, max_length=255)
     last_name: Field = serializers.CharField(required=False, max_length=255)
-    is_verified: Field = serializers.BooleanField(read_only=True)
-    is_premium: Field = serializers.BooleanField(read_only=True)
-    created_at: Field = serializers.DateTimeField(read_only=True)
-    updated_at: Field = serializers.DateTimeField(read_only=True)
-    is_admin: Field = serializers.BooleanField(read_only=True)
     email: Field = serializers.EmailField(required=True)
-    profile: ProfileSerializer = ProfileSerializer(read_only=True)
     phone_number: PhoneNumberField = PhoneNumberField(
         required=False, max_length=22
     )
-    password: Field = serializers.CharField(
-        write_only=True, min_length=8, max_length=64, required=True
-    )
+    is_verified: Field = serializers.BooleanField(read_only=True)
+    is_premium: Field = serializers.BooleanField(read_only=True)
+    is_admin: Field = serializers.BooleanField(read_only=True)
+    created_at: Field = serializers.DateTimeField(read_only=True)
+    updated_at: Field = serializers.DateTimeField(read_only=True)
+    profile: ProfileSerializer = ProfileSerializer(read_only=True)
+    token: Field = serializers.SerializerMethodField(read_only=True)
+    refresh_token: Field = serializers.SerializerMethodField(read_only=True)
+
+    def get_token(self, object: User) -> str:
+        return str(AccessToken.for_user(object))
+
+    def get_refresh_token(self, object: User) -> str:
+        return str(RefreshToken.for_user(object).access_token)
+
+    class Meta:
+        model: Model = User
 
 
-class UserLoginSerializer(UserAuthSerializer):
+class UserLoginSerializer(serializers.Serializer):
     """
     User login serializer
     """
+    email: Field = serializers.EmailField(required=True)
+    password: Field = serializers.CharField(write_only=True, required=True)
 
-    def validate(self, data: dict) -> dict:
-        """
-        Validate user login data
-        """
-        email, password = self.check_email_and_password(data)
-        user: User = authenticate(email=email, password=password)
+    def is_valid(self, raise_exception: bool = False) -> bool:
+        super().is_valid(raise_exception)
+        self.validate_login(self.initial_data)
+        self._data = UserAuthSerializer(self.user).data
+        return True
+
+    def validate_login(self, data: dict) -> None:
+        user: User = authenticate(
+            email=data["email"], password=data["password"]
+        )
         if not user:
             raise ValidationError("Invalid credentials")
         if not user.is_verified:
             raise ValidationError("User is not verified")
-        self.context["user"] = user
-        return data
-
-    def check_email_and_password(self, data: dict) -> tuple:
-        email: str = data.get("email")
-        password: str = data.get("password")
-        if not email or not password:
-            raise ValidationError("Email and password are required")
-        return email, password
-
-    def create(self, data: dict) -> dict:
-        user: User = self.context["user"]
-        refresh: RefreshToken = RefreshToken.for_user(user)
-        refresh_token: str = refresh.access_token
-        token: str = AccessToken.for_user(user)
-        return {
-            "user": user,
-            "refresh_token": str(refresh_token),
-            "token": str(token),
-        }
+        self.user: User = user
 
     class Meta:
         model: Model = User
-        fields: list = [
-            "first_name",
-            "last_name",
-            "phone_number",
-            "email",
-            "created_at",
-            "updated_at",
-        ]
 
 
 class UserSignUpSerializer(UserAuthSerializer):
