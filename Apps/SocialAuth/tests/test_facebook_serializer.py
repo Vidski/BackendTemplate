@@ -5,7 +5,7 @@ from rest_framework.serializers import ValidationError
 
 from SocialAuth.serializers import FacebookOAuthSerializer
 from Users.models import User
-from Users.serializers import UserSignUpSerializer
+from Users.serializers import UserAuthSerializer
 
 
 @pytest.mark.django_db
@@ -21,10 +21,16 @@ class TestFacebookOAuthSerializer:
         }
         token: str = "token"
         serializer: FacebookOAuthSerializer = FacebookOAuthSerializer()
-        data: dict = serializer.validate_token(token)
+        serializer.validate_token(token)
+        data: dict = serializer.data
+        del data["token"]
+        del data["refresh_token"]
         request.assert_called_once()
         user: User = User.objects.get(email="test@test.com")
-        assert data == UserSignUpSerializer(user).data
+        expected_data: dict = UserAuthSerializer(user).data
+        del expected_data["token"]
+        del expected_data["refresh_token"]
+        assert data == expected_data
 
     def test_validate_token_raises_an_error(self) -> None:
         token: str = "token"

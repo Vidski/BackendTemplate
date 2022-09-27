@@ -130,7 +130,7 @@ class TestUserLogInEndpoint:
         )
         message: str = "Invalid credentials"
         assert response.status_code == 400
-        assert message in response.data["non_field_errors"][0]
+        assert message in response.data
 
     def test_login_fails_with_wrong_password(self, client: APIClient) -> None:
         UserFactory(email="rightemail@appname.me", password="RightPassword")
@@ -143,7 +143,7 @@ class TestUserLogInEndpoint:
         )
         message: str = "Invalid credentials"
         assert response.status_code == 400
-        assert message in response.data["non_field_errors"][0]
+        assert message in response.data
 
     def test_login_fails_with_user_not_verified(
         self, client: APIClient
@@ -158,7 +158,7 @@ class TestUserLogInEndpoint:
         )
         message: str = "User is not verified"
         assert response.status_code == 400
-        assert message in response.data["non_field_errors"][0]
+        assert message in response.data
 
     def test_log_in_is_successful_with_a_verified_user(
         self, client: APIClient
@@ -176,10 +176,10 @@ class TestUserLogInEndpoint:
         assert response.status_code == 200
         data: dict = json.loads(response.content)
         assert "token" in data
-        assert "user" in data
-        assert data["user"]["first_name"] == testing_user.first_name
-        assert data["user"]["last_name"] == testing_user.last_name
-        assert data["user"]["email"] == testing_user.email
+        assert "refresh_token" in data
+        assert data["first_name"] == testing_user.first_name
+        assert data["last_name"] == testing_user.last_name
+        assert data["email"] == testing_user.email
 
 
 @pytest.mark.django_db

@@ -18,7 +18,29 @@ from Users.models import User
 from Users.utils import check_e164_format
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserRetrieveSerializer(serializers.Serializer):
+    """
+    User authentication serializer
+    """
+
+    id: Field = serializers.IntegerField(read_only=True)
+    first_name: Field = serializers.CharField(required=False, max_length=255)
+    last_name: Field = serializers.CharField(required=False, max_length=255)
+    email: Field = serializers.EmailField(required=True)
+    phone_number: PhoneNumberField = PhoneNumberField(
+        required=False, max_length=22
+    )
+    is_verified: Field = serializers.BooleanField(read_only=True)
+    is_premium: Field = serializers.BooleanField(read_only=True)
+    is_admin: Field = serializers.BooleanField(read_only=True)
+    created_at: Field = serializers.DateTimeField(read_only=True)
+    updated_at: Field = serializers.DateTimeField(read_only=True)
+
+    class Meta:
+        model: Model = User
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
     """
     User custom serializer
     """
@@ -184,8 +206,8 @@ class UserLoginSerializer(serializers.Serializer):
     email: Field = serializers.EmailField(required=True)
     password: Field = serializers.CharField(write_only=True, required=True)
 
-    def is_valid(self, raise_exception: bool = False) -> bool:
-        super().is_valid(raise_exception)
+    def is_valid(self, raise_exception: bool = True) -> bool:
+        super().is_valid(raise_exception=raise_exception)
         self.validate_login(self.initial_data)
         self._data = UserAuthSerializer(self.user).data
         return True
@@ -204,19 +226,31 @@ class UserLoginSerializer(serializers.Serializer):
         model: Model = User
 
 
-class UserSignUpSerializer(UserAuthSerializer):
+class UserSignUpSerializer(serializers.Serializer):
     """
     User sign up serializer
     """
 
+    id: Field = serializers.IntegerField(read_only=True)
     first_name = serializers.CharField(required=True, max_length=255)
     last_name = serializers.CharField(required=True, max_length=255)
     email = serializers.EmailField(
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all())],
     )
+    phone_number: PhoneNumberField = PhoneNumberField(
+        required=False, max_length=22
+    )
+    is_verified: Field = serializers.BooleanField(read_only=True)
+    is_premium: Field = serializers.BooleanField(read_only=True)
+    is_admin: Field = serializers.BooleanField(read_only=True)
+    created_at: Field = serializers.DateTimeField(read_only=True)
+    updated_at: Field = serializers.DateTimeField(read_only=True)
+    password = serializers.CharField(
+        write_only=True, min_length=8, max_length=64, required=True
+    )
     password_confirmation = serializers.CharField(
-        write_only=True, min_length=8, max_length=64, required=False
+        write_only=True, min_length=8, max_length=64, required=True
     )
 
     def validate(self, data):

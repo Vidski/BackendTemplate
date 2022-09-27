@@ -18,9 +18,9 @@ from Users.permissions import IsAdmin
 from Users.permissions import IsProfileOwner
 from Users.permissions import IsUserOwner
 from Users.permissions import IsVerified
-from Users.serializers import ProfileSerializer
+from Users.serializers import ProfileSerializer, UserRetrieveSerializer
 from Users.serializers import UserLoginSerializer
-from Users.serializers import UserSerializer
+from Users.serializers import UserUpdateSerializer
 from Users.serializers import UserSignUpSerializer
 from Users.utils import verify_user_query_token
 
@@ -37,7 +37,7 @@ class UserViewSet(viewsets.GenericViewSet):
     """
 
     queryset: QuerySet = User.objects.all().order_by("-created_at")
-    serializer_class: UserSerializer = UserSerializer
+    serializer_class: UserUpdateSerializer = UserUpdateSerializer
     user_permissions: bool = IsAuthenticated & IsVerified & IsUserOwner
     admin_user_permissions: bool = IsAuthenticated & IsAdmin
     permission_classes: list = [user_permissions | admin_user_permissions]
@@ -48,7 +48,7 @@ class UserViewSet(viewsets.GenericViewSet):
         API endpoint that allows to list all users
         """
         page: list = self.paginate_queryset(self.queryset)
-        serializer: UserSerializer = UserSerializer(page, many=True)
+        serializer: UserRetrieveSerializer = UserRetrieveSerializer(page, many=True)
         return self.get_paginated_response(serializer.data)
 
     def retrieve(self, request: HttpRequest, pk: int = None) -> Response:
@@ -56,7 +56,7 @@ class UserViewSet(viewsets.GenericViewSet):
         API endpoint that allow to get information of one user
         """
         instance: User = self.queryset.get(pk=pk)
-        data: UserLoginSerializer = UserLoginSerializer(instance).data
+        data: UserRetrieveSerializer = UserRetrieveSerializer(instance).data
         return Response(data, status=SUCCESS)
 
     def update(self, request: HttpRequest, pk: int = None) -> Response:
@@ -64,10 +64,10 @@ class UserViewSet(viewsets.GenericViewSet):
         API endpoint that allow to edit an user
         """
         instance: User = self.queryset.get(pk=pk)
-        serializer: UserSerializer = UserSerializer(data=request.data)
+        serializer: UserUpdateSerializer = UserUpdateSerializer(data=request.data)
         serializer.is_valid(request.data, request.user)
         user: User = serializer.update(instance, request.data)
-        data: dict = UserSerializer(user).data
+        data: dict = UserUpdateSerializer(user).data
         log_information("updated", user)
         return Response(data, status=SUCCESS)
 
@@ -90,9 +90,8 @@ class UserViewSet(viewsets.GenericViewSet):
         )
         serializer.is_valid(raise_exception=True)
         user: User = serializer.save()
-        data: dict = UserSignUpSerializer(user).data
         log_information("registered", user)
-        return Response(data, status=CREATED)
+        return Response(serializer.data, status=CREATED)
 
     @action(detail=False, methods=["post"], permission_classes=[AllowAny])
     def login(self, request: HttpRequest) -> JsonResponse:

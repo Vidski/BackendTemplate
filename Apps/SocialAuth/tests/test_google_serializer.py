@@ -7,7 +7,7 @@ from rest_framework.serializers import ValidationError
 
 from SocialAuth.serializers import GoogleOAuthSerializer
 from Users.models import User
-from Users.serializers import UserSignUpSerializer
+from Users.serializers import UserAuthSerializer
 
 
 @pytest.mark.django_db
@@ -24,10 +24,16 @@ class TestGoogleOAuthSerializer:
         }
         token: str = "token"
         serializer: GoogleOAuthSerializer = GoogleOAuthSerializer()
-        data: dict = serializer.validate_token(token)
+        serializer.validate_token(token)
+        data: dict = serializer.data
+        del data["token"]
+        del data["refresh_token"]
         mock_verify_oauth2_token.assert_called_once()
         user: User = User.objects.get(email="test@test.com")
-        assert data == UserSignUpSerializer(user).data
+        expected_data: dict = UserAuthSerializer(user).data
+        del expected_data["token"]
+        del expected_data["refresh_token"]
+        assert data == expected_data
 
     def test_validate_token_do_raises_an_error(self) -> None:
         token: str = "token"
