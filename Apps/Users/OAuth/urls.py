@@ -1,8 +1,8 @@
 from django.urls import path
 
-from OAuth.views import FacebookOAuthView
-from OAuth.views import GoogleOAuthView
-from OAuth.views import TwitterOAuthView
+from Users.OAuth.views import FacebookOAuthView
+from Users.OAuth.views import GoogleOAuthView
+from Users.OAuth.views import TwitterOAuthView
 
 
 urlpatterns = [

@@ -2,10 +2,10 @@ import pytest
 from mock import patch
 from mock.mock import MagicMock
 
-from OAuth.user_handler import RegisterOrLogin
-from OAuth.user_handler import RegisterOrLoginViaFacebook
-from OAuth.user_handler import RegisterOrLoginViaGoogle
-from OAuth.user_handler import RegisterOrLoginViaTwitter
+from Users.OAuth.user_handler import RegisterOrLogin
+from Users.OAuth.user_handler import RegisterOrLoginViaFacebook
+from Users.OAuth.user_handler import RegisterOrLoginViaGoogle
+from Users.OAuth.user_handler import RegisterOrLoginViaTwitter
 from Users.fakers.user import UserFaker
 from Users.models import User
 from Users.serializers import UserAuthSerializer, UserLoginSerializer
@@ -14,7 +14,7 @@ from Users.serializers import UserSignUpSerializer
 
 @pytest.mark.django_db
 class TestRegisterOrLoginDataClass:
-    @patch("OAuth.user_handler.RegisterOrLogin.get_serialized_user")
+    @patch("Users.OAuth.user_handler.RegisterOrLogin.get_serialized_user")
     def test_post_init_calls_get_serialized_user(
         self, get_serialized_user: MagicMock
     ) -> None:
@@ -28,7 +28,7 @@ class TestRegisterOrLoginDataClass:
         object: RegisterOrLogin = RegisterOrLogin(user_data)
         assert object.user_exists
 
-    @patch("OAuth.user_handler.RegisterOrLogin.get_serialized_user")
+    @patch("Users.OAuth.user_handler.RegisterOrLogin.get_serialized_user")
     def test_user_exists_returns_false(
         self, get_serialized_user: MagicMock
     ) -> None:

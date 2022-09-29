@@ -5,14 +5,14 @@ from mock.mock import MagicMock
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.serializers import ValidationError
 
-from OAuth.serializers import GoogleOAuthSerializer
+from Users.OAuth.serializers import GoogleOAuthSerializer
 from Users.models import User
 from Users.serializers import UserAuthSerializer
 
 
 @pytest.mark.django_db
 class TestGoogleOAuthSerializer:
-    @patch("OAuth.serializers.verify_oauth2_token")
+    @patch("Users.OAuth.serializers.verify_oauth2_token")
     def test_validate_token_returns_user_data(
         self, mock_verify_oauth2_token: MagicMock
     ) -> None:
@@ -41,7 +41,7 @@ class TestGoogleOAuthSerializer:
         with pytest.raises(ValidationError):
             serializer.validate_token(token)
 
-    @patch("OAuth.serializers.verify_oauth2_token")
+    @patch("Users.OAuth.serializers.verify_oauth2_token")
     def test_validate_aud_do_raises_an_error(
         self, mock_verify_oauth2_token: MagicMock
     ) -> None:
