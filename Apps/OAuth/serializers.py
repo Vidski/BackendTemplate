@@ -9,9 +9,9 @@ from rest_framework.serializers import ValidationError
 from twitter import Api
 from twitter import User as TwitterUser
 
-from SocialAuth.user_handler import RegisterOrLoginViaFacebook
-from SocialAuth.user_handler import RegisterOrLoginViaGoogle
-from SocialAuth.user_handler import RegisterOrLoginViaTwitter
+from OAuth.user_handler import RegisterOrLoginViaFacebook
+from OAuth.user_handler import RegisterOrLoginViaGoogle
+from OAuth.user_handler import RegisterOrLoginViaTwitter
 
 
 class GoogleOAuthSerializer(Serializer):

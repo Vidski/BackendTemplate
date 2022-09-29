@@ -3,7 +3,7 @@ from mock import patch
 from mock.mock import MagicMock
 from rest_framework.serializers import ValidationError
 
-from SocialAuth.serializers import FacebookOAuthSerializer
+from OAuth.serializers import FacebookOAuthSerializer
 from Users.models import User
 from Users.serializers import UserAuthSerializer
 
