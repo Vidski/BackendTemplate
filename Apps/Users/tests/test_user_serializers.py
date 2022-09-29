@@ -259,17 +259,16 @@ class TestUserSignUpSerializer:
         assert actual_data == expected_data
 
     def test_validate_fails_with_wrong_email(self) -> None:
-        serializer: UserSignUpSerializer = UserSignUpSerializer()
         data: dict = {
             "first_name": "Name",
             "last_name": "Lastname",
             "email": "wrong",
         }
+        serializer: UserSignUpSerializer = UserSignUpSerializer(data=data)
         with pytest.raises(serializers.ValidationError):
-            serializer.validate(data)
+            serializer.is_valid(raise_exception=True)
 
     def test_validate_fails_with_wrong_password(self) -> None:
-        serializer: UserSignUpSerializer = UserSignUpSerializer()
         data: dict = {
             "first_name": "Name",
             "last_name": "Lastname",
@@ -277,22 +276,22 @@ class TestUserSignUpSerializer:
             "password": "wrong",
             "password_confirmation": "Wrong",
         }
+        serializer: UserSignUpSerializer = UserSignUpSerializer(data=data)
         with pytest.raises(serializers.ValidationError):
-            serializer.validate(data)
+            serializer.is_valid(raise_exception=True)
 
     def test_validate_fails_with_missing_password_confirmation(self) -> None:
-        serializer: UserSignUpSerializer = UserSignUpSerializer()
         data: dict = {
             "first_name": "Name",
             "last_name": "Lastname",
             "email": "email@appname.me",
             "password": "wrong",
         }
+        serializer: UserSignUpSerializer = UserSignUpSerializer(data=data)
         with pytest.raises(serializers.ValidationError):
-            serializer.validate(data)
+            serializer.is_valid(raise_exception=True)
 
     def test_validate_fails_with_common_password(self) -> None:
-        serializer: UserSignUpSerializer = UserSignUpSerializer()
         data: dict = {
             "first_name": "Name",
             "last_name": "Lastname",
@@ -300,11 +299,11 @@ class TestUserSignUpSerializer:
             "password": "123456",
             "password_confirmation": "123456",
         }
-        with pytest.raises(ValidationError):
-            serializer.validate(data)
+        serializer: UserSignUpSerializer = UserSignUpSerializer(data=data)
+        with pytest.raises(serializers.ValidationError):
+            serializer.is_valid(raise_exception=True)
 
     def test_validate_is_successful(self) -> None:
-        serializer: UserSignUpSerializer = UserSignUpSerializer()
         data: dict = {
             "first_name": "Name",
             "last_name": "Lastname",
@@ -312,7 +311,8 @@ class TestUserSignUpSerializer:
             "password": "strong password 123",
             "password_confirmation": "strong password 123",
         }
-        serializer.validate(data)
+        serializer: UserSignUpSerializer = UserSignUpSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
 
     def test_create_function(self) -> None:
         serializer: UserSignUpSerializer = UserSignUpSerializer()

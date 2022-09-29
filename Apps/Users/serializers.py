@@ -231,21 +231,12 @@ class UserSignUpSerializer(serializers.Serializer):
     User sign up serializer
     """
 
-    id: Field = serializers.IntegerField(read_only=True)
     first_name = serializers.CharField(required=True, max_length=255)
     last_name = serializers.CharField(required=True, max_length=255)
     email = serializers.EmailField(
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all())],
     )
-    phone_number: PhoneNumberField = PhoneNumberField(
-        required=False, max_length=22
-    )
-    is_verified: Field = serializers.BooleanField(read_only=True)
-    is_premium: Field = serializers.BooleanField(read_only=True)
-    is_admin: Field = serializers.BooleanField(read_only=True)
-    created_at: Field = serializers.DateTimeField(read_only=True)
-    updated_at: Field = serializers.DateTimeField(read_only=True)
     password = serializers.CharField(
         write_only=True, min_length=8, max_length=64, required=True
     )
@@ -253,26 +244,15 @@ class UserSignUpSerializer(serializers.Serializer):
         write_only=True, min_length=8, max_length=64, required=True
     )
 
-    def validate(self, data):
-        """
-        Validate to create a new user
-        """
-        password = data.get("password")
-        password_confirmation = data.get("password_confirmation", None)
-        if not password_confirmation:
-            raise ValidationError("Password confirmation is required")
+    def validate_password(self, password: str) -> str:
+        password_confirmation = self.initial_data["password_confirmation"]
         if password != password_confirmation:
             raise ValidationError("Password confirmation does not match")
         password_validation.validate_password(password)
-        return data
+        return password
 
     def create(self, data):
-        """
-        Create a new user
-        """
         data.pop("password_confirmation")
-        if "phone_number" in data:
-            data.pop("phone_number")
         user = User.objects.create_user(**data, is_verified=False)
         send_email("verify_email", user)
         return user

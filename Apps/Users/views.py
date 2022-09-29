@@ -91,7 +91,8 @@ class UserViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
         user: User = serializer.save()
         log_information("registered", user)
-        return Response(serializer.data, status=CREATED)
+        user_data: dict = UserRetrieveSerializer(user).data
+        return Response(user_data, status=CREATED)
 
     @action(detail=False, methods=["post"], permission_classes=[AllowAny])
     def login(self, request: HttpRequest) -> JsonResponse:

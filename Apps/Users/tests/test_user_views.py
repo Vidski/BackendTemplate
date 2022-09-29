@@ -61,7 +61,7 @@ class TestUserSignUpEndpoint:
         )
         message: str = "This password is too common."
         assert response.status_code == 400
-        assert message in response.data["non_field_errors"][0]
+        assert message in response.data["password"][0]
         assert len(mail.outbox) == 0
 
     def test_create_user_is_successfull(self, client: APIClient) -> None:
