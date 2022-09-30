@@ -39,7 +39,9 @@ class FacebookOAuthSerializer(Serializer):
 
     def validate_token(self, token: str) -> bool:
         user_data = self.get_user_data(token)
-        self._data: dict = RegisterOrLoginViaFacebook(user_data).serialized_user
+        self._data: dict = RegisterOrLoginViaFacebook(
+            user_data
+        ).serialized_user
         return True
 
     def get_user_data(self, token: str) -> dict:

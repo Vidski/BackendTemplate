@@ -4,9 +4,9 @@ from mock import patch
 from mock.mock import MagicMock
 from rest_framework.serializers import ValidationError
 
-from Users.OAuth.serializers import TwitterOAuthSerializer
+from Users.Auth.serializers import UserAuthSerializer
 from Users.models import User
-from Users.serializers import UserAuthSerializer
+from Users.OAuth.serializers import TwitterOAuthSerializer
 
 
 @pytest.mark.django_db

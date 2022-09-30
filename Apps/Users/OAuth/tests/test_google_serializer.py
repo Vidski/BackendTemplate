@@ -5,9 +5,9 @@ from mock.mock import MagicMock
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.serializers import ValidationError
 
-from Users.OAuth.serializers import GoogleOAuthSerializer
+from Users.Auth.serializers import UserAuthSerializer
 from Users.models import User
-from Users.serializers import UserAuthSerializer
+from Users.OAuth.serializers import GoogleOAuthSerializer
 
 
 @pytest.mark.django_db

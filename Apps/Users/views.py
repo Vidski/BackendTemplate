@@ -18,10 +18,9 @@ from Users.permissions import IsAdmin
 from Users.permissions import IsProfileOwner
 from Users.permissions import IsUserOwner
 from Users.permissions import IsVerified
-from Users.serializers import ProfileSerializer, UserRetrieveSerializer
-from Users.serializers import UserLoginSerializer
+from Users.serializers import ProfileSerializer
+from Users.serializers import UserRetrieveSerializer
 from Users.serializers import UserUpdateSerializer
-from Users.serializers import UserSignUpSerializer
 from Users.utils import verify_user_query_token
 
 
@@ -48,7 +47,9 @@ class UserViewSet(viewsets.GenericViewSet):
         API endpoint that allows to list all users
         """
         page: list = self.paginate_queryset(self.queryset)
-        serializer: UserRetrieveSerializer = UserRetrieveSerializer(page, many=True)
+        serializer: UserRetrieveSerializer = UserRetrieveSerializer(
+            page, many=True
+        )
         return self.get_paginated_response(serializer.data)
 
     def retrieve(self, request: HttpRequest, pk: int = None) -> Response:
@@ -64,7 +65,9 @@ class UserViewSet(viewsets.GenericViewSet):
         API endpoint that allow to edit an user
         """
         instance: User = self.queryset.get(pk=pk)
-        serializer: UserUpdateSerializer = UserUpdateSerializer(data=request.data)
+        serializer: UserUpdateSerializer = UserUpdateSerializer(
+            data=request.data
+        )
         serializer.is_valid(request.data, request.user)
         user: User = serializer.update(instance, request.data)
         data: dict = UserUpdateSerializer(user).data
@@ -80,32 +83,6 @@ class UserViewSet(viewsets.GenericViewSet):
         instance.delete()
         return Response(status=DELETED)
 
-    @action(detail=False, methods=["post"], permission_classes=[AllowAny])
-    def signup(self, request: HttpRequest) -> Response:
-        """
-        API endpoint that allows to signup
-        """
-        serializer: UserSignUpSerializer = UserSignUpSerializer(
-            data=request.data
-        )
-        serializer.is_valid(raise_exception=True)
-        user: User = serializer.save()
-        log_information("registered", user)
-        user_data: dict = UserRetrieveSerializer(user).data
-        return Response(user_data, status=CREATED)
-
-    @action(detail=False, methods=["post"], permission_classes=[AllowAny])
-    def login(self, request: HttpRequest) -> JsonResponse:
-        """
-        API endpoint that allows to login
-        """
-        serializer: UserLoginSerializer = UserLoginSerializer(
-            data=request.data
-        )
-        serializer.is_valid(raise_exception=True)
-        log_information("logged in", serializer.user)
-        return JsonResponse(serializer.data, status=SUCCESS)
-
     @action(detail=True, methods=["get"], permission_classes=[AllowAny])
     def verify(self, request: HttpRequest, pk: int = None) -> JsonResponse:
         """
@@ -115,8 +92,8 @@ class UserViewSet(viewsets.GenericViewSet):
         user: User = self.queryset.get(pk=pk)
         verify_user_query_token(user, query_token)
         user.verify()
-        data: dict = {"user": UserLoginSerializer(user).data}
         log_information("verified", user)
+        data: dict = {"user": user.id, "verified": True}
         return JsonResponse(data, status=SUCCESS)
 
 

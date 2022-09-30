@@ -2,14 +2,15 @@ import pytest
 from mock import patch
 from mock.mock import MagicMock
 
+from Users.Auth.serializers import UserAuthSerializer
+from Users.Auth.serializers import UserLoginSerializer
+from Users.Auth.serializers import UserSignUpSerializer
+from Users.fakers.user import UserFaker
+from Users.models import User
 from Users.OAuth.user_handler import RegisterOrLogin
 from Users.OAuth.user_handler import RegisterOrLoginViaFacebook
 from Users.OAuth.user_handler import RegisterOrLoginViaGoogle
 from Users.OAuth.user_handler import RegisterOrLoginViaTwitter
-from Users.fakers.user import UserFaker
-from Users.models import User
-from Users.serializers import UserAuthSerializer, UserLoginSerializer
-from Users.serializers import UserSignUpSerializer
 
 
 @pytest.mark.django_db

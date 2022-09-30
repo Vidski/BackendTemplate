@@ -18,7 +18,7 @@ def client() -> APIClient:
 @pytest.mark.django_db
 class TestGoogleAuthView:
     def url(self) -> str:
-        return reverse("auth:google")
+        return reverse("oauth:google")
 
     def test_url(self) -> None:
         assert self.url() == "/api/oauth/google/"

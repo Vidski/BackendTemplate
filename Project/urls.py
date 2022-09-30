@@ -22,9 +22,12 @@ urlpatterns: list = [
     path("admin/", admin.site.urls),
     path("api/", include(("Users.urls", "users"), namespace="users")),
     path("api/", include(("Emails.urls", "emails"), namespace="emails")),
-    path("api/oauth/", include(("Users.OAuth.urls", "auth"), namespace="oauth")),
     path(
-        "api/password_reset/",
+        "api/oauth/", include(("Users.OAuth.urls", "oauth"), namespace="oauth")
+    ),
+    path("api/", include(("Users.Auth.urls", "auth"), namespace="auth")),
+    path(
+        "api/reset_password/",
         include("django_rest_passwordreset.urls", namespace="password_reset"),
     ),
     path(

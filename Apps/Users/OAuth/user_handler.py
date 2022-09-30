@@ -4,8 +4,8 @@ from dataclasses import dataclass
 from django.conf import settings
 from django.db.models import QuerySet
 
+from Users.Auth.serializers import UserAuthSerializer
 from Users.models import User
-from Users.serializers import UserAuthSerializer
 
 
 @dataclass
