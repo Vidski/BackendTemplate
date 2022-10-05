@@ -9,18 +9,19 @@ from rest_framework.serializers import ValidationError
 from twitter import Api
 from twitter import User as TwitterUser
 
-from SocialAuth.user_handler import RegisterOrLoginViaFacebook
-from SocialAuth.user_handler import RegisterOrLoginViaGoogle
-from SocialAuth.user_handler import RegisterOrLoginViaTwitter
+from Users.OAuth.user_handler import RegisterOrLoginViaFacebook
+from Users.OAuth.user_handler import RegisterOrLoginViaGoogle
+from Users.OAuth.user_handler import RegisterOrLoginViaTwitter
 
 
 class GoogleOAuthSerializer(Serializer):
     token: CharField = CharField()
 
-    def validate_token(self, token: str) -> dict:
+    def validate_token(self, token: str) -> bool:
         user_data: dict = self.get_user_data(token)
         self.validate_aud(user_data["aud"])
-        return RegisterOrLoginViaGoogle(user_data).serialized_user
+        self._data: dict = RegisterOrLoginViaGoogle(user_data).serialized_user
+        return True
 
     def get_user_data(self, token: str) -> dict:
         try:
@@ -36,9 +37,12 @@ class GoogleOAuthSerializer(Serializer):
 class FacebookOAuthSerializer(Serializer):
     token: CharField = CharField()
 
-    def validate_token(self, token: str) -> dict:
+    def validate_token(self, token: str) -> bool:
         user_data = self.get_user_data(token)
-        return RegisterOrLoginViaFacebook(user_data).serialized_user
+        self._data: dict = RegisterOrLoginViaFacebook(
+            user_data
+        ).serialized_user
+        return True
 
     def get_user_data(self, token: str) -> dict:
         try:
@@ -54,10 +58,11 @@ class TwitterOAuthSerializer(Serializer):
     access_token_key: CharField = CharField()
     access_token_secret: CharField = CharField()
 
-    def validate(self, attributes: dict) -> dict:
+    def validate(self, attributes: dict) -> bool:
         twitter_user: TwitterUser = self.get_user_data(attributes)
         user_data: dict = self.get_dictionary_of_user_data(twitter_user)
-        return RegisterOrLoginViaTwitter(user_data).serialized_user
+        self._data: dict = RegisterOrLoginViaTwitter(user_data).serialized_user
+        return True
 
     def get_user_data(self, attributes: dict) -> TwitterUser:
         try:
