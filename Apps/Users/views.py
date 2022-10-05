@@ -8,6 +8,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.serializers import Serializer
 
 from Project.pagination import ListTenResultsSetPagination
 from Project.utils.log import log_information
@@ -30,58 +31,22 @@ DELETED: int = status.HTTP_204_NO_CONTENT
 NOT_FOUND: int = status.HTTP_404_NOT_FOUND
 
 
-class UserViewSet(viewsets.GenericViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows to interact with User model
     """
 
     queryset: QuerySet = User.objects.all().order_by("-created_at")
-    serializer_class: UserUpdateSerializer = UserUpdateSerializer
     user_permissions: bool = IsAuthenticated & IsVerified & IsUserOwner
     admin_user_permissions: bool = IsAuthenticated & IsAdmin
     permission_classes: list = [user_permissions | admin_user_permissions]
     pagination_class: PageNumberPagination = ListTenResultsSetPagination
 
-    def list(self, request: HttpRequest) -> Response:
-        """
-        API endpoint that allows to list all users
-        """
-        page: list = self.paginate_queryset(self.queryset)
-        serializer: UserRetrieveSerializer = UserRetrieveSerializer(
-            page, many=True
-        )
-        return self.get_paginated_response(serializer.data)
+    def get_serializer_class(self) -> Serializer:
+        if self.action == "update":
+            return UserUpdateSerializer
+        return UserRetrieveSerializer
 
-    def retrieve(self, request: HttpRequest, pk: int = None) -> Response:
-        """
-        API endpoint that allow to get information of one user
-        """
-        instance: User = self.queryset.get(pk=pk)
-        data: UserRetrieveSerializer = UserRetrieveSerializer(instance).data
-        return Response(data, status=SUCCESS)
-
-    def update(self, request: HttpRequest, pk: int = None) -> Response:
-        """
-        API endpoint that allow to edit an user
-        """
-        instance: User = self.queryset.get(pk=pk)
-        serializer: UserUpdateSerializer = UserUpdateSerializer(
-            data=request.data
-        )
-        serializer.is_valid(request.data, request.user)
-        user: User = serializer.update(instance, request.data)
-        data: dict = UserUpdateSerializer(user).data
-        log_information("updated", user)
-        return Response(data, status=SUCCESS)
-
-    def destroy(self, request: HttpRequest, pk: int = None) -> Response:
-        """
-        API endpoint that allow to delete an user
-        """
-        instance: User = self.queryset.get(pk=pk)
-        log_information("deleted", instance)
-        instance.delete()
-        return Response(status=DELETED)
 
     @action(detail=True, methods=["get"], permission_classes=[AllowAny])
     def verify(self, request: HttpRequest, pk: int = None) -> JsonResponse:
