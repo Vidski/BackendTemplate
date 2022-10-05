@@ -47,7 +47,6 @@ class UserViewSet(viewsets.ModelViewSet):
             return UserUpdateSerializer
         return UserRetrieveSerializer
 
-
     @action(detail=True, methods=["get"], permission_classes=[AllowAny])
     def verify(self, request: HttpRequest, pk: int = None) -> JsonResponse:
         """

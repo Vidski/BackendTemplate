@@ -1,7 +1,7 @@
 import pytest
-from rest_framework import serializers
-from mock import PropertyMock
 from mock import MagicMock
+from mock import PropertyMock
+from rest_framework import serializers
 
 from Users.factories.user import UserFactory
 from Users.fakers.user import UserFaker
