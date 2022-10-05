@@ -225,7 +225,7 @@ class TestUserUpdateEndpoint:
             f"{ENDPOINT}/{normal_user.id}/", data, format="json"
         )
         assert response.status_code == 400
-        assert "Email is taken" in response.data
+        assert "Email is taken" in response.data["email"]
 
     def test_update_user_fails_as_an_authenticated_verified_user_with_an_used_phone_number(
         self, client: APIClient
@@ -244,7 +244,7 @@ class TestUserUpdateEndpoint:
             f"{ENDPOINT}/{normal_user.id}/", data, format="json"
         )
         assert response.status_code == 400
-        assert "Phone number is taken" in response.data
+        assert "Phone number is taken" in response.data["phone_number"]
 
     def test_update_user_fails_as_an_authenticated_verified_user_with_a_wrong_old_password(
         self, client: APIClient
@@ -264,7 +264,7 @@ class TestUserUpdateEndpoint:
         )
         message: str = "Wrong password"
         assert response.status_code == 400
-        assert message in response.data
+        assert message in response.data["password"]
 
     def test_update_user_fails_as_an_authenticated_verified_user_without_old_password(
         self, client: APIClient
@@ -281,9 +281,9 @@ class TestUserUpdateEndpoint:
         response: Response = client.put(
             f"{ENDPOINT}/{normal_user.id}/", data, format="json"
         )
-        message: str = "Old password is required to set a new one"
+        message: str = "Old password is required"
         assert response.status_code == 400
-        assert message in response.data
+        assert message in response.data["password"]
 
     def test_update_user_is_successful_as_an_authenticated_verified_user_with_just_a_new_password(
         self, client: APIClient

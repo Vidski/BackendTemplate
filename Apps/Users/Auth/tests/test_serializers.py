@@ -109,8 +109,8 @@ class TestUserSignUpSerializer:
             "first_name": "Name",
             "last_name": "Lastname",
             "email": "email@appname.me",
-            "password": "wrong",
-            "password_confirmation": "Wrong",
+            "password": "wrongpassword",
+            "password_confirmation": "Wrong_password",
         }
         serializer: UserSignUpSerializer = UserSignUpSerializer(data=data)
         with pytest.raises(serializers.ValidationError):
