@@ -4,12 +4,17 @@ from celery import shared_task
 from django.db.models import QuerySet
 from django.utils import timezone
 
-from Emails.models import Email
+from Emails.models import Email, Notification
 from Project.settings.celery_worker.worker import app
 
 
 SECONDS: float = 10.0
 
+@shared_task
+def create_notifications_emails() -> None:
+    notifications: QuerySet = Notification.objects.filter(was_sent=False)
+    for notification in notifications:
+        notification.send()
 
 @shared_task
 def send_emails() -> None:
@@ -26,6 +31,10 @@ def each_seconds() -> float:
 
 
 app.conf.beat_schedule = {
+    "create_notifications_emails": {
+        "task": "Emails.tasks.create_notifications_emails",
+        "schedule": each_seconds(),
+    },
     "send_emails": {
         "task": "Emails.tasks.send_emails",
         "schedule": each_seconds(),
