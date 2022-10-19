@@ -11,9 +11,7 @@ from Users.OAuth.serializers import FacebookOAuthSerializer
 @pytest.mark.django_db
 class TestFacebookOAuthSerializer:
     @patch("facebook.GraphAPI.request")
-    def test_validate_token_returns_user_data(
-        self, request: MagicMock
-    ) -> None:
+    def test_validate_token_returns_user_data(self, request: MagicMock) -> None:
         request.return_value = {
             "email": "test@test.com",
             "first_name": "Test",

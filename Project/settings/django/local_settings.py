@@ -39,12 +39,6 @@ DATABASES: dict = {
 # TOKEN TO VERIFY USER VIA EMAIL
 EMAIL_VERIFICATION_TOKEN_SECRET: str = "hu712dkej_803h7719)a4n-5!5n0cr((2l"
 
-# SMTP CONFIG
-EMAIL_HOST: str = ""
-EMAIL_HOST_USER: str = ""
-EMAIL_HOST_PASSWORD: str = ""
-EMAIL_PORT: str = ""
-
 # Email settings
 TEST_EMAIL: str = "test@ing.email"
 SUGGESTIONS_EMAIL: str = "test@suggestion.email"
@@ -78,18 +72,24 @@ SIMPLE_JWT: dict = {
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 }
 
+# SMTP CONFIG
+EMAIL_HOST: str = ""
+EMAIL_HOST_USER: str = ""
+EMAIL_HOST_PASSWORD: str = ""
+EMAIL_PORT: str = ""
+
 ## CORS
-CORS_ALLOW_ALL_ORIGINS = True  # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
+# If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
 ## SOCIAL OAUTH
 # Google
 GOOGLE_CLIENT_ID: str = ""
-GOOGLE_CLIENT_SECRET: str = "G"
+GOOGLE_CLIENT_SECRET: str = ""
 # Twitter
 TWITTER_API_KEY: str = ""
 TWITTER_API_SECRET_KEY: str = ""
 TWITTER_API_BEARER_TOKEN: str = ""
-
-## OAUTH
+## OAUTH PASSWORD
 OAUTH_PASSWORD: str = ""

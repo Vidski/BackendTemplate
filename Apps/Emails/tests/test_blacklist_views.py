@@ -278,9 +278,7 @@ class TestDeleteBlacklistViews:
         response: Response = client.delete(url)
         assert response.status_code == 204
 
-    def test_delete_blacklist_works_with_admin(
-        self, client: APIClient
-    ) -> None:
+    def test_delete_blacklist_works_with_admin(self, client: APIClient) -> None:
         user: User = VerifiedUserFaker()
         blacklist: BlackList = BlackListTestFaker(user=user)
         url: str = self.url(blacklist.id)

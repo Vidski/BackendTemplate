@@ -12,9 +12,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     first_name: str = factory.Faker("first_name")
     last_name: str = factory.Faker("last_name")
     email: str = factory.Faker("email")
-    password: str = factory.PostGenerationMethodCall(
-        "set_password", "password"
-    )
+    password: str = factory.PostGenerationMethodCall("set_password", "password")
     is_admin: bool = False
     is_verified: bool = False
     phone_number: str = factory.Faker("msisdn")

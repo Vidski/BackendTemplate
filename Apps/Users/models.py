@@ -110,9 +110,7 @@ class User(
         default=AuthProviders.EMAIL,
         null=True,
     )
-    created_at: Field = models.DateTimeField(
-        "Creation date", auto_now_add=True
-    )
+    created_at: Field = models.DateTimeField("Creation date", auto_now_add=True)
     updated_at: Field = models.DateTimeField("Update date", auto_now=True)
 
     USERNAME_FIELD: str = "email"
@@ -193,9 +191,7 @@ class Profile(models.Model):
     birth_date: Field = models.DateField(
         "Birth date", null=True, auto_now_add=False
     )
-    created_at: Field = models.DateTimeField(
-        "Creation date", auto_now_add=True
-    )
+    created_at: Field = models.DateTimeField("Creation date", auto_now_add=True)
     updated_at: Field = models.DateTimeField("Update date", auto_now=True)
 
     def __str__(self) -> str:
@@ -205,9 +201,7 @@ class Profile(models.Model):
         if not self.birth_date:
             return None
         adultness: datetime = datetime.now() - relativedelta(years=18)
-        birthday: datetime = datetime.strptime(
-            str(self.birth_date), "%Y-%m-%d"
-        )
+        birthday: datetime = datetime.strptime(str(self.birth_date), "%Y-%m-%d")
         return birthday < adultness
 
 
