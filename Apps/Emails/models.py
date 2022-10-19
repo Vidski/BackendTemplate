@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.fields import Field
 from django.db.models.fields.related import ForeignObject
@@ -23,8 +22,8 @@ class Block(models.Model):
     title: Field = models.CharField(max_length=100, null=True)
     content: Field = models.TextField(null=True)
     show_link: Field = models.BooleanField(default=False)
-    link_text: Field = models.CharField(max_length=100, null=True)
-    link: Field = models.URLField(max_length=100, null=True)
+    link_text: Field = models.CharField(max_length=100, null=True, blank=True)
+    link: Field = models.URLField(max_length=100, null=True, blank=True)
 
     def __str__(self) -> str:
         return f"{self.id} | {self.title}"
@@ -57,17 +56,15 @@ class Email(models.Model, AbstractEmailFunctionClass):
         return self.to.email
 
     def set_programed_send_date(self) -> None:
-        if self.programed_send_date and self.programed_send_date <= now():
-            message: str = "Programed send date must be future"
-            raise ValidationError(message, code="invalid")
-        if not self.programed_send_date:
+        if not self.programed_send_date or self.programed_send_date <= now():
             five_minutes_ahead: datetime = now() + timedelta(minutes=5)
             self.programed_send_date = five_minutes_ahead
 
     def save(self, *args: tuple, **kwargs: dict) -> None:
         if self.is_test:
             self.to = EmailTestUserFaker()
-        self.set_programed_send_date()
+        if not self.was_sent:
+            self.set_programed_send_date()
         super(Email, self).save(*args, **kwargs)
 
 
