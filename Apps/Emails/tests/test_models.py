@@ -1,12 +1,8 @@
-from datetime import datetime
-
 import pytest
 from django.conf import settings
 from django.core import mail
-from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-from django.utils import timezone
 
 from Emails.abstracts import AbstractEmailFunctionClass
 from Emails.factories.blacklist import BlackListFactory
