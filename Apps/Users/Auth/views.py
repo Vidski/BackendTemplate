@@ -41,9 +41,7 @@ class UserAuthViewSet(ViewSet):
         """
         API endpoint that allows to login
         """
-        serializer: UserLoginSerializer = UserLoginSerializer(
-            data=request.data
-        )
+        serializer: UserLoginSerializer = UserLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         log_information("logged in", serializer.user)
         return JsonResponse(serializer.data, status=SUCCESS)

@@ -92,9 +92,7 @@ class TestProfileRetrieveEndpoint:
         self, client: APIClient
     ) -> None:
         user: User = VerifiedUserFaker()
-        other_user: User = UserFactory(
-            email="other@user.com", is_verified=True
-        )
+        other_user: User = UserFactory(email="other@user.com", is_verified=True)
         client.force_authenticate(user=user)
         profile_id: int = other_user.profile.id
         response: Response = client.get(
@@ -118,9 +116,7 @@ class TestProfileRetrieveEndpoint:
         assert response.data["nickname"] == profile.nickname
         assert response.data["bio"] == profile.bio
         assert response.data["gender"] == profile.gender
-        assert (
-            response.data["preferred_language"] == profile.preferred_language
-        )
+        assert response.data["preferred_language"] == profile.preferred_language
         assert response.data["image"] == profile.image
         assert response.data["birth_date"] == profile.birth_date
         assert response.data["is_adult"] == profile.is_adult()
@@ -143,9 +139,7 @@ class TestProfileRetrieveEndpoint:
         assert response.data["nickname"] == profile.nickname
         assert response.data["bio"] == profile.bio
         assert response.data["gender"] == profile.gender
-        assert (
-            response.data["preferred_language"] == profile.preferred_language
-        )
+        assert response.data["preferred_language"] == profile.preferred_language
         assert response.data["image"] == profile.image
         assert response.data["birth_date"] == profile.birth_date
         assert response.data["is_adult"] == profile.is_adult()

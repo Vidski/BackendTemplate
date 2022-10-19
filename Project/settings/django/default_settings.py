@@ -208,9 +208,7 @@ RESET_PASSWORD_EMAIL_CONTENT: str = (
     "Click in the link below to change your password."
 )
 RESET_PASSWORD_EMAIL_LINK_TEXT: str = "Reset password"
-RESET_PASSWORD_URL: str = (
-    f""  # Must redirect a front url with the token in url
-)
+RESET_PASSWORD_URL: str = f""  # Must redirect a front url with the token in url
 
 # Verify email settings
 VERIFY_EMAIL_SUBJECT: str = "Verify your email"

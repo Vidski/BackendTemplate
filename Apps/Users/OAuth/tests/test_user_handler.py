@@ -105,9 +105,7 @@ class TestRegisterOrLoginViaTwitter:
             "email": "test@test.com",
             "name": "test",
         }
-        object: RegisterOrLoginViaTwitter = RegisterOrLoginViaTwitter(
-            user_data
-        )
+        object: RegisterOrLoginViaTwitter = RegisterOrLoginViaTwitter(user_data)
         user: User = User.objects.get(email=user_data["email"])
         object: RegisterOrLogin = RegisterOrLogin(user_data)
         del object.serialized_user["token"]
