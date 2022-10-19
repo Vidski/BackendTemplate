@@ -47,9 +47,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         required=False,
         max_length=22,
     )
-    old_password: Field = serializers.CharField(
-        write_only=True, required=False
-    )
+    old_password: Field = serializers.CharField(write_only=True, required=False)
     password: Field = serializers.CharField(write_only=True, required=False)
 
     def update(self, instance: User, validated_data: dict) -> User:

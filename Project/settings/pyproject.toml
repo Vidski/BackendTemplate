@@ -1,7 +1,7 @@
 [tool.black]
 extend-exclude = '(.*\/migrations/*|\.env)'
 icons = true
-line-length = 79
+line-length = 80
 
 [tool.isort]
 skip_glob = ['*/migrations/**']
