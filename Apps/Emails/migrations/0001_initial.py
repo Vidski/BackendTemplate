@@ -31,8 +31,18 @@ class Migration(migrations.Migration):
                 ("title", models.CharField(max_length=100, null=True)),
                 ("content", models.TextField(null=True)),
                 ("show_link", models.BooleanField(default=False)),
-                ("link_text", models.CharField(max_length=100, null=True)),
-                ("link", models.URLField(max_length=100, null=True)),
+                ("link_text", models.CharField(
+                        max_length=100,
+                        null=True,
+                        blank=True
+                    )
+                ),
+                ("link", models.URLField(
+                        max_length=100,
+                        null=True,
+                        blank=True
+                    )
+                ),
             ],
         ),
         migrations.CreateModel(

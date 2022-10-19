@@ -1,12 +1,8 @@
-from datetime import datetime
-
 import pytest
 from django.conf import settings
 from django.core import mail
-from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-from django.utils import timezone
 
 from Emails.abstracts import AbstractEmailFunctionClass
 from Emails.factories.blacklist import BlackListFactory
@@ -93,13 +89,6 @@ class TestEmailModel:
         assert email.is_test is False
         email.save()
         assert email.programed_send_date is not None
-
-    def test_saving_fails_with_wrong_programed_date(self) -> None:
-        now: datetime = timezone.now()
-        one_year_before: datetime = now - timezone.timedelta(days=365)
-        with pytest.raises(ValidationError):
-            user = EmailTestUserFaker()
-            EmailFactory(to=user, programed_send_date=one_year_before)
 
     def test_saving_an_email_with_emails(self) -> None:
         user: User = UserFaker()

@@ -4,9 +4,9 @@ from mock import patch
 from mock.mock import MagicMock
 from rest_framework.serializers import ValidationError
 
-from SocialAuth.serializers import TwitterOAuthSerializer
+from Users.Auth.serializers import UserAuthSerializer
 from Users.models import User
-from Users.serializers import UserSignUpSerializer
+from Users.OAuth.serializers import TwitterOAuthSerializer
 
 
 @pytest.mark.django_db
@@ -26,10 +26,16 @@ class TestTwitterOAuthSerializer:
             "access_token_secret": "access_token_secret",
         }
         serializer: TwitterOAuthSerializer = TwitterOAuthSerializer()
-        data: dict = serializer.validate(data)
+        serializer.validate(data)
+        data: dict = serializer.data
+        del data["token"]
+        del data["refresh_token"]
         VerifyCredentials.assert_called_once()
         user: User = User.objects.get(email=twitter_user.email)
-        assert data == UserSignUpSerializer(user).data
+        expected_data: dict = UserAuthSerializer(user).data
+        del expected_data["token"]
+        del expected_data["refresh_token"]
+        assert data == expected_data
 
     def test_validate_token_do_raises_an_error(self) -> None:
         data: dict = {

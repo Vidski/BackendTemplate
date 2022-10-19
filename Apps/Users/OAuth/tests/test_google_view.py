@@ -18,12 +18,12 @@ def client() -> APIClient:
 @pytest.mark.django_db
 class TestGoogleAuthView:
     def url(self) -> str:
-        return reverse("auth:google")
+        return reverse("oauth:google")
 
     def test_url(self) -> None:
         assert self.url() == "/api/oauth/google/"
 
-    @patch("SocialAuth.serializers.verify_oauth2_token")
+    @patch("Users.OAuth.serializers.verify_oauth2_token")
     def test_google_view_creates_new_user(
         self, mock_verify_oauth2_token: MagicMock, client: APIClient
     ) -> None:
@@ -39,7 +39,7 @@ class TestGoogleAuthView:
         assert response.status_code == 200
         assert User.objects.filter(email=email).exists()
 
-    @patch("SocialAuth.serializers.verify_oauth2_token")
+    @patch("Users.OAuth.serializers.verify_oauth2_token")
     def test_google_view_returns_user_login_data(
         self, mock_verify_oauth2_token: MagicMock, client: APIClient
     ) -> None:

@@ -2,19 +2,20 @@ import pytest
 from mock import patch
 from mock.mock import MagicMock
 
-from SocialAuth.user_handler import RegisterOrLogin
-from SocialAuth.user_handler import RegisterOrLoginViaFacebook
-from SocialAuth.user_handler import RegisterOrLoginViaGoogle
-from SocialAuth.user_handler import RegisterOrLoginViaTwitter
+from Users.Auth.serializers import UserAuthSerializer
+from Users.Auth.serializers import UserLoginSerializer
+from Users.Auth.serializers import UserSignUpSerializer
 from Users.fakers.user import UserFaker
 from Users.models import User
-from Users.serializers import UserLoginSerializer
-from Users.serializers import UserSignUpSerializer
+from Users.OAuth.user_handler import RegisterOrLogin
+from Users.OAuth.user_handler import RegisterOrLoginViaFacebook
+from Users.OAuth.user_handler import RegisterOrLoginViaGoogle
+from Users.OAuth.user_handler import RegisterOrLoginViaTwitter
 
 
 @pytest.mark.django_db
 class TestRegisterOrLoginDataClass:
-    @patch("SocialAuth.user_handler.RegisterOrLogin.get_serialized_user")
+    @patch("Users.OAuth.user_handler.RegisterOrLogin.get_serialized_user")
     def test_post_init_calls_get_serialized_user(
         self, get_serialized_user: MagicMock
     ) -> None:
@@ -28,7 +29,7 @@ class TestRegisterOrLoginDataClass:
         object: RegisterOrLogin = RegisterOrLogin(user_data)
         assert object.user_exists
 
-    @patch("SocialAuth.user_handler.RegisterOrLogin.get_serialized_user")
+    @patch("Users.OAuth.user_handler.RegisterOrLogin.get_serialized_user")
     def test_user_exists_returns_false(
         self, get_serialized_user: MagicMock
     ) -> None:
@@ -41,7 +42,13 @@ class TestRegisterOrLoginDataClass:
         user: User = UserFaker()
         user_data: dict = {"email": f"{user.email}"}
         object: RegisterOrLogin = RegisterOrLogin(user_data)
-        assert object.serialized_user == UserLoginSerializer(user).data
+        del object.serialized_user["token"]
+        del object.serialized_user["refresh_token"]
+        user: User = User.objects.get(email=user.email)
+        expected_data: dict = UserAuthSerializer(user).data
+        del expected_data["token"]
+        del expected_data["refresh_token"]
+        assert object.serialized_user == expected_data
 
     def test_get_user_creation_data_raises_not_implemented_error(self) -> None:
         user_data: dict = {"email": "test@test.com"}
@@ -59,7 +66,14 @@ class TestRegisterOrLoginViaGoogle:
         }
         object: RegisterOrLoginViaGoogle = RegisterOrLoginViaGoogle(user_data)
         user: User = User.objects.get(email=user_data["email"])
-        assert object.serialized_user == UserSignUpSerializer(user).data
+        object: RegisterOrLogin = RegisterOrLogin(user_data)
+        del object.serialized_user["token"]
+        del object.serialized_user["refresh_token"]
+        user: User = User.objects.get(email=user.email)
+        expected_data: dict = UserAuthSerializer(user).data
+        del expected_data["token"]
+        del expected_data["refresh_token"]
+        assert object.serialized_user == expected_data
 
 
 @pytest.mark.django_db
@@ -74,7 +88,14 @@ class TestRegisterOrLoginViaFacebook:
             user_data
         )
         user: User = User.objects.get(email=user_data["email"])
-        assert object.serialized_user == UserSignUpSerializer(user).data
+        object: RegisterOrLogin = RegisterOrLogin(user_data)
+        del object.serialized_user["token"]
+        del object.serialized_user["refresh_token"]
+        user: User = User.objects.get(email=user.email)
+        expected_data: dict = UserAuthSerializer(user).data
+        del expected_data["token"]
+        del expected_data["refresh_token"]
+        assert object.serialized_user == expected_data
 
 
 @pytest.mark.django_db
@@ -88,4 +109,11 @@ class TestRegisterOrLoginViaTwitter:
             user_data
         )
         user: User = User.objects.get(email=user_data["email"])
-        assert object.serialized_user == UserSignUpSerializer(user).data
+        object: RegisterOrLogin = RegisterOrLogin(user_data)
+        del object.serialized_user["token"]
+        del object.serialized_user["refresh_token"]
+        user: User = User.objects.get(email=user.email)
+        expected_data: dict = UserAuthSerializer(user).data
+        del expected_data["token"]
+        del expected_data["refresh_token"]
+        assert object.serialized_user == expected_data
