@@ -94,13 +94,6 @@ class TestEmailModel:
         email.save()
         assert email.programed_send_date is not None
 
-    def test_saving_fails_with_wrong_programed_date(self) -> None:
-        now: datetime = timezone.now()
-        one_year_before: datetime = now - timezone.timedelta(days=365)
-        with pytest.raises(ValidationError):
-            user = EmailTestUserFaker()
-            EmailFactory(to=user, programed_send_date=one_year_before)
-
     def test_saving_an_email_with_emails(self) -> None:
         user: User = UserFaker()
         email: Email = EmailFactory.build()

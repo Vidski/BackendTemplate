@@ -3,6 +3,7 @@ from datetime import datetime
 
 from django.apps import apps
 from django.conf import settings
+from django.db.models import Model
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils import timezone
