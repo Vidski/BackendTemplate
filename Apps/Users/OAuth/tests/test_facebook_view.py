@@ -18,7 +18,7 @@ def client() -> APIClient:
 @pytest.mark.django_db
 class TestFacebookAuthView:
     def url(self) -> str:
-        return reverse("auth:facebook")
+        return reverse("oauth:facebook")
 
     def test_url(self) -> None:
         assert self.url() == "/api/oauth/facebook/"

@@ -19,7 +19,7 @@ def client() -> APIClient:
 @pytest.mark.django_db
 class TestTwitterAuthView:
     def url(self) -> str:
-        return reverse("auth:twitter")
+        return reverse("oauth:twitter")
 
     def test_url(self) -> None:
         assert self.url() == "/api/oauth/twitter/"
