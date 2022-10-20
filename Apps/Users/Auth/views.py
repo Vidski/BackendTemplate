@@ -19,14 +19,11 @@ CREATED: int = status.HTTP_201_CREATED
 
 class UserAuthViewSet(ViewSet):
     """
-    API endpoint that allows to interact with User model
+    API endpoint that allows to authenticate users
     """
 
     @action(detail=False, methods=["post"], permission_classes=[AllowAny])
     def signup(self, request: HttpRequest) -> Response:
-        """
-        API endpoint that allows to signup
-        """
         serializer: UserSignUpSerializer = UserSignUpSerializer(
             data=request.data
         )
@@ -38,9 +35,6 @@ class UserAuthViewSet(ViewSet):
 
     @action(detail=False, methods=["post"], permission_classes=[AllowAny])
     def login(self, request: HttpRequest) -> JsonResponse:
-        """
-        API endpoint that allows to login
-        """
         serializer: UserLoginSerializer = UserLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         log_information("logged in", serializer.user)

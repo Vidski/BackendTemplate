@@ -3,6 +3,7 @@ from io import BufferedReader
 
 import pytest
 from django.conf import settings
+from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 
@@ -11,9 +12,6 @@ from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker
 from Users.models import Profile
 from Users.models import User
-
-
-ENDPOINT: str = "/api/profiles"
 
 
 @pytest.fixture(scope="function")
@@ -31,10 +29,16 @@ def base64_image() -> bytes:
 
 @pytest.mark.django_db
 class TestProfileListEndpoint:
+    def url(self) -> str:
+        return reverse("users:profiles-list")
+
+    def test_url(self) -> None:
+        assert self.url() == "/api/profiles/"
+
     def test_list_fails_as_unauthenticated_user(
         self, client: APIClient
     ) -> None:
-        response: Response = client.get(f"{ENDPOINT}/", format="json")
+        response: Response = client.get(self.url(), format="json")
         assert response.status_code == 401
 
     def test_list_fails_as_authenticated_unverified_user(
@@ -42,7 +46,7 @@ class TestProfileListEndpoint:
     ) -> None:
         user: User = UserFaker()
         client.force_authenticate(user=user)
-        response: Response = client.get(f"{ENDPOINT}/", format="json")
+        response: Response = client.get(self.url(), format="json")
         assert response.status_code == 403
 
     def test_list_fails_as_authenticated_verified_user(
@@ -50,13 +54,13 @@ class TestProfileListEndpoint:
     ) -> None:
         user: User = VerifiedUserFaker()
         client.force_authenticate(user=user)
-        response: Response = client.get(f"{ENDPOINT}/", format="json")
+        response: Response = client.get(self.url(), format="json")
         assert response.status_code == 403
 
     def test_list_success_as_admin_user(self, client: APIClient) -> None:
         user: User = AdminFaker()
         client.force_authenticate(user=user)
-        response: Response = client.get(f"{ENDPOINT}/", format="json")
+        response: Response = client.get(self.url(), format="json")
         assert response.status_code == 200
         assert len(response.data["results"]) == Profile.objects.count()
         assert response.data["count"] == Profile.objects.count()
@@ -64,15 +68,19 @@ class TestProfileListEndpoint:
 
 @pytest.mark.django_db
 class TestProfileRetrieveEndpoint:
+    def url(self, pk: int = None) -> str:
+        return reverse("users:profiles-detail", args=[pk])
+
+    def test_url(self) -> None:
+        assert self.url(1) == "/api/profiles/1/"
+
     def test_retrieve_fails_as_unauthenticated_user(
         self, client: APIClient
     ) -> None:
         user: User = UserFaker()
         user.create_profile()
         profile_id: int = user.profile.id
-        response: Response = client.get(
-            f"{ENDPOINT}/{profile_id}/", format="json"
-        )
+        response: Response = client.get(self.url(profile_id), format="json")
         assert response.status_code == 401
 
     def test_retrieve_fails_as_authenticated_unverified_user(
@@ -82,9 +90,7 @@ class TestProfileRetrieveEndpoint:
         user.create_profile()
         client.force_authenticate(user=user)
         profile_id: int = user.profile.id
-        response: Response = client.get(
-            f"{ENDPOINT}/{profile_id}/", format="json"
-        )
+        response: Response = client.get(self.url(profile_id), format="json")
         assert response.status_code == 403
 
     def test_retrieve_fails_as_authenticated_verified_user_to_other_user_data(
@@ -94,9 +100,7 @@ class TestProfileRetrieveEndpoint:
         other_user: User = UserFaker(email="other@user.com", is_verified=True)
         client.force_authenticate(user=user)
         profile_id: int = other_user.profile.id
-        response: Response = client.get(
-            f"{ENDPOINT}/{profile_id}/", format="json"
-        )
+        response: Response = client.get(self.url(profile_id), format="json")
         assert response.status_code == 403
 
     def test_retrieve_success_as_authenticated_verified_user_to_its_data(
@@ -105,9 +109,7 @@ class TestProfileRetrieveEndpoint:
         user: User = VerifiedUserFaker()
         client.force_authenticate(user=user)
         profile_id: int = user.profile.id
-        response: Response = client.get(
-            f"{ENDPOINT}/{profile_id}/", format="json"
-        )
+        response: Response = client.get(self.url(profile_id), format="json")
         profile: Profile = user.profile
         assert response.status_code == 200
         assert response.data["id"] == profile_id
@@ -128,9 +130,7 @@ class TestProfileRetrieveEndpoint:
         admin: User = AdminFaker()
         client.force_authenticate(user=admin)
         profile_id: int = user.profile.id
-        response: Response = client.get(
-            f"{ENDPOINT}/{profile_id}/", format="json"
-        )
+        response: Response = client.get(self.url(profile_id), format="json")
         profile: Profile = user.profile
         assert response.status_code == 200
         assert response.data["id"] == profile_id
@@ -146,13 +146,17 @@ class TestProfileRetrieveEndpoint:
 
 @pytest.mark.django_db
 class TestProfileCreateEndpoint:
+    def url(self) -> str:
+        return reverse("users:profiles-list")
+
+    def test_url(self) -> None:
+        assert self.url() == "/api/profiles/"
+
     def test_create_fails_as_unauthenticated_user(
         self, client: APIClient
     ) -> None:
         data: dict = {}
-        response: Response = client.post(
-            f"{ENDPOINT}/", data=data, format="json"
-        )
+        response: Response = client.post(self.url(), data=data, format="json")
         assert response.status_code == 401
 
     def test_create_fails_as_authenticated_unverified_user(
@@ -161,9 +165,7 @@ class TestProfileCreateEndpoint:
         data: dict = {}
         user: User = UserFaker()
         client.force_authenticate(user=user)
-        response: Response = client.post(
-            f"{ENDPOINT}/", data=data, format="json"
-        )
+        response: Response = client.post(self.url(), data=data, format="json")
         assert response.status_code == 403
 
     def test_create_fails_as_authenticated_verified_user(
@@ -175,9 +177,7 @@ class TestProfileCreateEndpoint:
         data: dict = {"user_id": user.pk, "nickname": "test", "bio": "test"}
         user: User = VerifiedUserFaker()
         client.force_authenticate(user=user)
-        response: Response = client.post(
-            f"{ENDPOINT}/", data=data, format="json"
-        )
+        response: Response = client.post(self.url(), data=data, format="json")
         assert response.status_code == 403
 
     def test_create_fails_with_used_user_id_as_admin(
@@ -187,9 +187,7 @@ class TestProfileCreateEndpoint:
         data: dict = {"user_id": user.pk, "nickname": "test", "bio": "test"}
         admin: User = AdminFaker()
         client.force_authenticate(user=admin)
-        response: Response = client.post(
-            f"{ENDPOINT}/", data=data, format="json"
-        )
+        response: Response = client.post(self.url(), data=data, format="json")
         error_message: str = "User profile already exists"
         assert response.status_code == 400
         assert response.data == [error_message]
@@ -208,9 +206,7 @@ class TestProfileCreateEndpoint:
         }
         admin: User = AdminFaker()
         client.force_authenticate(user=admin)
-        response: Response = client.post(
-            f"{ENDPOINT}/", data=data, format="json"
-        )
+        response: Response = client.post(self.url(), data=data, format="json")
         error_message: str = "This nickname already exists."
         assert response.status_code == 400
         assert response.data["nickname"] == [error_message]
@@ -220,9 +216,7 @@ class TestProfileCreateEndpoint:
         data: str = {"user_id": user.pk, "nickname": "test", "bio": "test"}
         admin: User = AdminFaker()
         client.force_authenticate(user=admin)
-        response: Response = client.post(
-            f"{ENDPOINT}/", data=data, format="json"
-        )
+        response: Response = client.post(self.url(), data=data, format="json")
         assert response.status_code == 201
         user.refresh_from_db()
         assert response.data["id"] == user.profile.id
@@ -233,6 +227,12 @@ class TestProfileCreateEndpoint:
 
 @pytest.mark.django_db
 class TestProfileUpdateEndpoint:
+    def url(self, pk: int = None) -> str:
+        return reverse("users:profiles-detail", args=[pk])
+
+    def test_url(self) -> None:
+        assert self.url(1) == "/api/profiles/1/"
+
     def test_update_fails_as_unauthenticated_user(
         self, client: APIClient
     ) -> None:
@@ -240,7 +240,7 @@ class TestProfileUpdateEndpoint:
         data: dict = {}
         profile_id: int = user.profile.id
         response: Response = client.put(
-            f"{ENDPOINT}/{profile_id}/", data=data, format="json"
+            self.url(profile_id), data=data, format="json"
         )
         assert response.status_code == 401
 
@@ -254,7 +254,7 @@ class TestProfileUpdateEndpoint:
         user.save()
         client.force_authenticate(user=user)
         response: Response = client.put(
-            f"{ENDPOINT}/{profile_id}/", data=data, format="json"
+            self.url(profile_id), data=data, format="json"
         )
         assert response.status_code == 403
 
@@ -267,7 +267,7 @@ class TestProfileUpdateEndpoint:
         profile_id: int = other_user.profile.id
         client.force_authenticate(user=user)
         response: Response = client.put(
-            f"{ENDPOINT}/{profile_id}/", data=data, format="json"
+            self.url(profile_id), data=data, format="json"
         )
         assert response.status_code == 403
 
@@ -282,7 +282,7 @@ class TestProfileUpdateEndpoint:
         profile_id: int = user.profile.id
         client.force_authenticate(user=user)
         response: Response = client.put(
-            f"{ENDPOINT}/{profile_id}/", data=data, format="json"
+            self.url(profile_id), data=data, format="json"
         )
         assert response.status_code == 200
         assert response.data["id"] == profile_id
@@ -304,7 +304,7 @@ class TestProfileUpdateEndpoint:
         profile_id: int = user.profile.id
         client.force_authenticate(user=user)
         response: Response = client.put(
-            f"{ENDPOINT}/{profile_id}/", data=data, format="json"
+            self.url(profile_id), data=data, format="json"
         )
         assert response.status_code == 200
         assert response.data["id"] == profile_id
@@ -325,7 +325,7 @@ class TestProfileUpdateEndpoint:
         profile_id: int = user.profile.id
         client.force_authenticate(user=user)
         response: Response = client.put(
-            f"{ENDPOINT}/{profile_id}/", data=data, format="json"
+            self.url(profile_id), data=data, format="json"
         )
         assert response.status_code == 200
         assert response.data["id"] == profile_id
@@ -352,7 +352,7 @@ class TestProfileUpdateEndpoint:
         profile_id: int = user.profile.id
         client.force_authenticate(user=admin)
         response: Response = client.put(
-            f"{ENDPOINT}/{profile_id}/", data=data, format="json"
+            self.url(profile_id), data=data, format="json"
         )
         assert response.status_code == 200
         assert response.data["id"] == profile_id
@@ -376,7 +376,7 @@ class TestProfileUpdateEndpoint:
         profile_id: int = user.profile.id
         client.force_authenticate(user=admin)
         response: Response = client.put(
-            f"{ENDPOINT}/{profile_id}/", data=data, format="json"
+            self.url(profile_id), data=data, format="json"
         )
         assert response.status_code == 400
         error_message = "User profile already exists"
@@ -395,21 +395,25 @@ class TestProfileUpdateEndpoint:
         profile_id: int = user.profile.id
         client.force_authenticate(user=admin)
         response: Response = client.put(
-            f"{ENDPOINT}/{profile_id}/", data=data, format="json"
+            self.url(profile_id), data=data, format="json"
         )
         assert response.status_code == 200
 
 
 @pytest.mark.django_db
 class TestProfileDeleteEndpoint:
+    def url(self, pk: int = None) -> str:
+        return reverse("users:profiles-detail", args=[pk])
+
+    def test_url(self) -> None:
+        assert self.url(1) == "/api/profiles/1/"
+
     def test_delete_fails_as_unauthenticated_user(
         self, client: APIClient
     ) -> None:
         user: User = VerifiedUserFaker()
         profile_id: int = user.profile.id
-        response: Response = client.delete(
-            f"{ENDPOINT}/{profile_id}/", format="json"
-        )
+        response: Response = client.delete(self.url(profile_id), format="json")
         assert response.status_code == 401
 
     def test_delete_fails_as_authenticated_unverified_user(self, client):
@@ -418,9 +422,7 @@ class TestProfileDeleteEndpoint:
         user.is_verified = False
         user.save()
         client.force_authenticate(user=user)
-        response: Response = client.delete(
-            f"{ENDPOINT}/{profile_id}/", format="json"
-        )
+        response: Response = client.delete(self.url(profile_id), format="json")
         assert response.status_code == 403
 
     def test_delete_fails_as_authenticated_verified_user_to_other_user_profile(
@@ -430,9 +432,7 @@ class TestProfileDeleteEndpoint:
         other_user: User = VerifiedUserFaker(email="other@email.com")
         profile_id: int = other_user.profile.id
         client.force_authenticate(user=user)
-        response: Response = client.delete(
-            f"{ENDPOINT}/{profile_id}/", format="json"
-        )
+        response: Response = client.delete(self.url(profile_id), format="json")
         assert response.status_code == 403
 
     def test_delete_fails_as_authenticate_verified_user_to_its_profile(
@@ -443,9 +443,7 @@ class TestProfileDeleteEndpoint:
         user: User = VerifiedUserFaker()
         profile_id: int = user.profile.id
         client.force_authenticate(user=user)
-        response: Response = client.delete(
-            f"{ENDPOINT}/{profile_id}/", format="json"
-        )
+        response: Response = client.delete(self.url(profile_id), format="json")
         assert response.status_code == 403
 
     def test_delete_success_as_admin(self, client: APIClient) -> None:
@@ -455,8 +453,6 @@ class TestProfileDeleteEndpoint:
         profile_id: int = user.profile.id
         client.force_authenticate(user=admin)
         assert Profile.objects.count() == 1
-        response: Response = client.delete(
-            f"{ENDPOINT}/{profile_id}/", format="json"
-        )
+        response: Response = client.delete(self.url(profile_id), format="json")
         assert response.status_code == 204
         assert Profile.objects.count() == 0

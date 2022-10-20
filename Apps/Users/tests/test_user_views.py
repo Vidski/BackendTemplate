@@ -1,4 +1,5 @@
 import pytest
+from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 
@@ -10,9 +11,6 @@ from Users.models import User
 from Users.utils import generate_user_verification_token
 
 
-ENDPOINT: str = "/api/users"
-
-
 @pytest.fixture(scope="function")
 def client() -> APIClient:
     return APIClient()
@@ -20,10 +18,16 @@ def client() -> APIClient:
 
 @pytest.mark.django_db
 class TestUserListEndpoint:
+    def url(self) -> str:
+        return reverse("users:users-list")
+
+    def test_url(self) -> None:
+        assert self.url() == "/api/users/"
+
     def test_list_users_fails_as_an_unauthenticated_user(
         self, client: APIClient
     ) -> None:
-        response: Response = client.get(f"{ENDPOINT}/", format="json")
+        response: Response = client.get(self.url(), format="json")
         assert response.status_code == 401
 
     def test_list_users_fails_as_an_authenticated_unverified_normal_user(
@@ -31,7 +35,7 @@ class TestUserListEndpoint:
     ) -> None:
         normal_user: User = UserFaker()
         client.force_authenticate(user=normal_user)
-        response: Response = client.get(f"{ENDPOINT}/", format="json")
+        response: Response = client.get(self.url(), format="json")
         assert response.status_code == 403
 
     def test_list_users_fails_as_an_authenticated_verified_normal_user(
@@ -39,7 +43,7 @@ class TestUserListEndpoint:
     ) -> None:
         normal_user: User = VerifiedUserFaker()
         client.force_authenticate(user=normal_user)
-        response: Response = client.get(f"{ENDPOINT}/", format="json")
+        response: Response = client.get(self.url(), format="json")
         assert response.status_code == 403
 
     def test_list_users_is_successful_as_an_admin_user(
@@ -47,7 +51,7 @@ class TestUserListEndpoint:
     ) -> None:
         admin_user: User = AdminFaker()
         client.force_authenticate(user=admin_user)
-        response: Response = client.get(f"{ENDPOINT}/", format="json")
+        response: Response = client.get(self.url(), format="json")
         assert response.status_code == 200
         assert len(response.data["results"]) == 1
 
@@ -57,13 +61,13 @@ class TestUserListEndpoint:
         user: User = UserFaker()
         admin_user: User = AdminFaker()
         client.force_authenticate(user=admin_user)
-        url: str = f"{ENDPOINT}/?page=1&page_size=1"
+        url: str = f"{self.url()}?page=1&page_size=1"
         response: Response = client.get(url, format="json")
         assert response.status_code == 200
         assert len(response.data["results"]) == 1
         admin_name = admin_user.first_name
         assert response.data["results"][0]["first_name"] == admin_name
-        url: str = f"{ENDPOINT}/?page=2&page_size=1"
+        url: str = f"{self.url()}?page=2&page_size=1"
         response: Response = client.get(url, format="json")
         assert response.status_code == 200
         assert len(response.data["results"]) == 1
@@ -72,14 +76,18 @@ class TestUserListEndpoint:
 
 
 @pytest.mark.django_db
-class TestUserGetEndpoint:
+class TestUserRetrieveEndpoint:
+    def url(self, pk: int = None) -> str:
+        return reverse("users:users-detail", args=[pk])
+
+    def test_url(self) -> None:
+        assert self.url(1) == "/api/users/1/"
+
     def test_get_user_fails_as_an_unauthenticated_user(
         self, client: APIClient
     ) -> None:
         normal_user: User = VerifiedUserFaker()
-        response: Response = client.get(
-            f"{ENDPOINT}/{normal_user.id}/", format="json"
-        )
+        response: Response = client.get(self.url(normal_user.id), format="json")
         assert response.status_code == 401
 
     def test_get_user_fails_as_an_authenticated_unverified_user(
@@ -87,9 +95,7 @@ class TestUserGetEndpoint:
     ) -> None:
         normal_user: User = UserFaker()
         client.force_authenticate(user=normal_user)
-        response: Response = client.get(
-            f"{ENDPOINT}/{normal_user.id}/", format="json"
-        )
+        response: Response = client.get(self.url(normal_user.id), format="json")
         assert response.status_code == 403
 
     def test_get_user_fails_as_an_authenticated_verified_user_to_other_users_data(
@@ -98,9 +104,7 @@ class TestUserGetEndpoint:
         normal_user: User = VerifiedUserFaker()
         admin_user: User = AdminFaker()
         client.force_authenticate(user=normal_user)
-        response: Response = client.get(
-            f"{ENDPOINT}/{admin_user.id}/", format="json"
-        )
+        response: Response = client.get(self.url(admin_user.id), format="json")
         assert response.status_code == 403
 
     def test_get_user_is_successful_as_an_authenticated_verified_user_to_its_data(
@@ -108,9 +112,7 @@ class TestUserGetEndpoint:
     ) -> None:
         normal_user: User = VerifiedUserFaker()
         client.force_authenticate(user=normal_user)
-        response: Response = client.get(
-            f"{ENDPOINT}/{normal_user.id}/", format="json"
-        )
+        response: Response = client.get(self.url(normal_user.id), format="json")
         assert response.status_code == 200
         assert response.data["id"] == normal_user.id
         assert response.data["email"] == normal_user.email
@@ -121,14 +123,18 @@ class TestUserGetEndpoint:
         admin_user: User = AdminFaker()
         normal_user: User = VerifiedUserFaker()
         client.force_authenticate(user=admin_user)
-        response: Response = client.get(
-            f"{ENDPOINT}/{normal_user.id}/", format="json"
-        )
+        response: Response = client.get(self.url(normal_user.id), format="json")
         assert response.status_code == 200
 
 
 @pytest.mark.django_db
 class TestUserUpdateEndpoint:
+    def url(self, pk: int = None) -> str:
+        return reverse("users:users-detail", args=[pk])
+
+    def test_url(self) -> None:
+        assert self.url(1) == "/api/users/1/"
+
     def test_update_user_fails_as_an_unauthenticated_user(
         self, client: APIClient
     ) -> None:
@@ -142,7 +148,7 @@ class TestUserUpdateEndpoint:
             "password": "NewPassword95",
         }
         response: Response = client.put(
-            f"{ENDPOINT}/{normal_user.id}/", data, format="json"
+            self.url(normal_user.id), data, format="json"
         )
         assert response.status_code == 401
 
@@ -160,7 +166,7 @@ class TestUserUpdateEndpoint:
         }
         client.force_authenticate(user=normal_user)
         response: Response = client.put(
-            f"{ENDPOINT}/{normal_user.id}/", data, format="json"
+            self.url(normal_user.id), data, format="json"
         )
         assert response.status_code == 403
 
@@ -179,7 +185,7 @@ class TestUserUpdateEndpoint:
         }
         client.force_authenticate(user=normal_user)
         response: Response = client.put(
-            f"{ENDPOINT}/{admin_user.id}/", data, format="json"
+            self.url(admin_user.id), data, format="json"
         )
         assert response.status_code == 403
         assert normal_user.email != data["email"]
@@ -198,7 +204,7 @@ class TestUserUpdateEndpoint:
         }
         client.force_authenticate(user=normal_user)
         response: Response = client.put(
-            f"{ENDPOINT}/{normal_user.id}/", data, format="json"
+            self.url(normal_user.id), data, format="json"
         )
         assert response.status_code == 200
         normal_user.refresh_from_db()
@@ -221,7 +227,7 @@ class TestUserUpdateEndpoint:
         }
         client.force_authenticate(user=normal_user)
         response: Response = client.put(
-            f"{ENDPOINT}/{normal_user.id}/", data, format="json"
+            self.url(normal_user.id), data, format="json"
         )
         assert response.status_code == 400
         assert "Email is taken" in response.data["email"]
@@ -240,7 +246,7 @@ class TestUserUpdateEndpoint:
         }
         client.force_authenticate(user=normal_user)
         response: Response = client.put(
-            f"{ENDPOINT}/{normal_user.id}/", data, format="json"
+            self.url(normal_user.id), data, format="json"
         )
         assert response.status_code == 400
         assert "Phone number is taken" in response.data["phone_number"]
@@ -259,7 +265,7 @@ class TestUserUpdateEndpoint:
         }
         client.force_authenticate(user=normal_user)
         response: Response = client.put(
-            f"{ENDPOINT}/{normal_user.id}/", data, format="json"
+            self.url(normal_user.id), data, format="json"
         )
         message: str = "Wrong password"
         assert response.status_code == 400
@@ -278,7 +284,7 @@ class TestUserUpdateEndpoint:
             "password": "This is a password",
         }
         response: Response = client.put(
-            f"{ENDPOINT}/{normal_user.id}/", data, format="json"
+            self.url(normal_user.id), data, format="json"
         )
         message: str = "Old password is required"
         assert response.status_code == 400
@@ -291,7 +297,7 @@ class TestUserUpdateEndpoint:
         normal_user: User = VerifiedUserFaker()
         client.force_authenticate(user=normal_user)
         response: Response = client.put(
-            f"{ENDPOINT}/{normal_user.id}/", data, format="json"
+            self.url(normal_user.id), data, format="json"
         )
         assert response.status_code == 200
         normal_user.refresh_from_db()
@@ -314,7 +320,7 @@ class TestUserUpdateEndpoint:
         }
         client.force_authenticate(user=normal_user)
         response: Response = client.put(
-            f"{ENDPOINT}/{normal_user.id}/", data, format="json"
+            self.url(normal_user.id), data, format="json"
         )
         assert response.status_code == 200
         normal_user.refresh_from_db()
@@ -345,7 +351,7 @@ class TestUserUpdateEndpoint:
         }
         client.force_authenticate(user=admin_user)
         response: Response = client.put(
-            f"{ENDPOINT}/{normal_user.id}/", data, format="json"
+            self.url(normal_user.id), data, format="json"
         )
         assert response.status_code == 200
         normal_user.refresh_from_db()
@@ -376,20 +382,26 @@ class TestUserUpdateEndpoint:
         }
         client.force_authenticate(user=admin_user)
         response: Response = client.put(
-            f"{ENDPOINT}/{normal_user.id}/", data, format="json"
+            self.url(normal_user.id), data, format="json"
         )
         assert response.status_code == 400
 
 
 @pytest.mark.django_db
 class TestUserDeleteEndpoint:
+    def url(self, pk: int = None) -> str:
+        return reverse("users:users-detail", args=[pk])
+
+    def test_url(self) -> None:
+        assert self.url(1) == "/api/users/1/"
+
     def test_delete_user_fails_as_an_unauthenticated_user(
         self, client: APIClient
     ) -> None:
         normal_user: User = VerifiedUserFaker()
         assert User.objects.count() == 1
         response: Response = client.delete(
-            f"{ENDPOINT}/{normal_user.id}/", format="json"
+            self.url(normal_user.id), format="json"
         )
         assert response.status_code == 401
         assert User.objects.count() == 1
@@ -400,7 +412,7 @@ class TestUserDeleteEndpoint:
         normal_user: User = UserFaker()
         client.force_authenticate(user=normal_user)
         response: Response = client.delete(
-            f"{ENDPOINT}/{normal_user.id}/", format="json"
+            self.url(normal_user.id), format="json"
         )
         assert response.status_code == 403
         assert User.objects.count() == 1
@@ -412,7 +424,7 @@ class TestUserDeleteEndpoint:
         admin_user: User = AdminFaker()
         client.force_authenticate(user=normal_user)
         response: Response = client.delete(
-            f"{ENDPOINT}/{admin_user.id}/", format="json"
+            self.url(admin_user.id), format="json"
         )
         assert response.status_code == 403
         assert User.objects.count() == 2
@@ -423,7 +435,7 @@ class TestUserDeleteEndpoint:
         normal_user: User = VerifiedUserFaker()
         client.force_authenticate(user=normal_user)
         response: Response = client.delete(
-            f"{ENDPOINT}/{normal_user.id}/", format="json"
+            self.url(normal_user.id), format="json"
         )
         assert response.status_code == 204
         assert User.objects.count() == 0
@@ -435,7 +447,7 @@ class TestUserDeleteEndpoint:
         admin_user: User = AdminFaker()
         client.force_authenticate(user=admin_user)
         response: Response = client.delete(
-            f"{ENDPOINT}/{normal_user.id}/", format="json"
+            self.url(normal_user.id), format="json"
         )
         assert response.status_code == 204
         assert User.objects.count() == 1
@@ -443,6 +455,12 @@ class TestUserDeleteEndpoint:
 
 @pytest.mark.django_db
 class TestUserVerifyEndpoint:
+    def url(self, pk: int = None, token: str = None) -> str:
+        return f"{reverse('users:users-verify', args=[pk])}?token={token}"
+
+    def test_url(self) -> None:
+        assert self.url(1, "token") == "/api/users/1/verify/?token=token"
+
     def test_verify_user(self, client: APIClient) -> None:
         # Test that any user can verify its user with a get
         # request with it id and token
@@ -450,9 +468,7 @@ class TestUserVerifyEndpoint:
         normal_user: User = UserFaker()
         token = generate_user_verification_token(normal_user)
         assert normal_user.is_verified is False
-        response: Response = client.get(
-            f"{ENDPOINT}/{normal_user.id}/verify/?token={token}"
-        )
+        response: Response = client.get(self.url(normal_user.id, token))
         assert response.status_code == 200
         normal_user.refresh_from_db()
         assert normal_user.is_verified is True
