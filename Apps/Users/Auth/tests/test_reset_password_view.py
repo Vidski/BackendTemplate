@@ -1,5 +1,6 @@
 import pytest
 from django.core import mail
+from django.urls import reverse
 from django_rest_passwordreset.models import ResetPasswordToken
 from rest_framework.response import Response
 from rest_framework.test import APIClient
@@ -10,12 +11,18 @@ from Users.models import User
 
 @pytest.mark.django_db
 class TestUserPasswordResetTests:
+    def url(self) -> str:
+        return reverse("password_reset:reset-password-request")
+
+    def test_url(self) -> None:
+        assert self.url() == "/api/reset_password/"
+
     def test_reset_password(self, client: APIClient) -> None:
         # Test that any user can reset its password via API
         normal_user: User = UserFaker()
         assert normal_user.check_password("password") is True
         response: Response = client.post(
-            f"/api/reset_password/", {"email": normal_user.email}
+            self.url(), {"email": normal_user.email}
         )
         assert response.status_code == 200
         tokens: ResetPasswordToken = ResetPasswordToken.objects.all()

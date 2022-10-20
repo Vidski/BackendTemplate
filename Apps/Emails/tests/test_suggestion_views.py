@@ -1,5 +1,6 @@
 import pytest
 from django.core import mail
+from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 
@@ -17,21 +18,20 @@ def client() -> APIClient:
     return APIClient()
 
 
-BASE_ENDPOINT: str = "/api/suggestions"
-
-
 @pytest.mark.django_db
 class TestSubmitSuggestionViews:
+    def url(self) -> str:
+        return f"{reverse('emails:suggestions-submit')}"
 
-    ACTION: str = "submit"
-    ENDPOINT: str = f"{BASE_ENDPOINT}/{ACTION}/"
+    def test_url(self) -> None:
+        assert self.url() == "/api/suggestions/submit/"
 
     def test_suggestion_fails_as_unauthenticated_user(
         self, client: APIClient
     ) -> None:
         assert len(mail.outbox) == 0
         data: dict = {"type": "Error", "content": "Error found"}
-        response: Response = client.post(self.ENDPOINT, data, format="json")
+        response: Response = client.post(self.url(), data, format="json")
         assert response.status_code == 401
         assert len(mail.outbox) == 0
 
@@ -45,7 +45,7 @@ class TestSubmitSuggestionViews:
         type: str = CommentType.ERROR.value
         data: dict = {"type": type, "content": "Error found"}
         client.force_authenticate(user=normal_user)
-        response: Response = client.post(self.ENDPOINT, data, format="json")
+        response: Response = client.post(self.url(), data, format="json")
         email_count: Suggestion = Suggestion.objects.all().count()
         expected_header: str = f"ERROR from user with id: {normal_user.id}"
         assert response.status_code == 201
@@ -67,7 +67,7 @@ class TestSubmitSuggestionViews:
         assert email_count == 0
         data: dict = {"type": "Wrong", "content": "Error found"}
         client.force_authenticate(user=normal_user)
-        response: Response = client.post(self.ENDPOINT, data, format="json")
+        response: Response = client.post(self.url(), data, format="json")
         email_count: Suggestion = Suggestion.objects.all().count()
         expected_error_message: str = "Type not allowed"
         assert response.status_code == 400
@@ -78,8 +78,11 @@ class TestSubmitSuggestionViews:
 
 @pytest.mark.django_db
 class TestReadSuggestionViews:
+    def url(self, suggestion_id: int) -> str:
+        return f"{reverse('emails:suggestions-read', args=[suggestion_id])}"
 
-    ACTION: str = "read"
+    def test_url(self) -> None:
+        assert self.url(1) == "/api/suggestions/1/read/"
 
     def test_read_suggestion_fails_as_unauthenticated_user(
         self, client: APIClient
@@ -91,8 +94,7 @@ class TestReadSuggestionViews:
             type=type, content=content, user=user
         )
         pk: int = suggestion.pk
-        url: str = f"{BASE_ENDPOINT}/{pk}/{self.ACTION}/"
-        response: Response = client.post(url, format="json")
+        response: Response = client.post(self.url(pk), format="json")
         assert response.status_code == 401
 
     def test_read_suggestion_fails_as_unverified_user(
@@ -106,8 +108,7 @@ class TestReadSuggestionViews:
             type=type, content=content, user=user
         )
         pk: int = suggestion.pk
-        url: str = f"{BASE_ENDPOINT}/{pk}/{self.ACTION}/"
-        response: Response = client.post(url, format="json")
+        response: Response = client.post(self.url(pk), format="json")
         assert response.status_code == 403
 
     def test_suggestion_is_read_as_admin(self, client: APIClient) -> None:
@@ -120,8 +121,7 @@ class TestReadSuggestionViews:
         )
         assert suggestion.was_read == False
         pk: int = suggestion.pk
-        url: str = f"{BASE_ENDPOINT}/{pk}/{self.ACTION}/"
-        response: Response = client.post(url, format="json")
+        response: Response = client.post(self.url(pk), format="json")
         assert response.status_code == 200
         suggestion.refresh_from_db()
         assert suggestion.was_read == True
@@ -132,19 +132,26 @@ class TestUserSuggestionViews:
 
     ACTION: str = "user"
 
+    def url(self, user_id: int = None) -> str:
+        if user_id is None:
+            return f"{reverse('emails:suggestions-user')}"
+        return f"{reverse('emails:suggestions-user')}?user_id={user_id}"
+
+    def test_url(self) -> None:
+        assert self.url(1) == "/api/suggestions/user/?user_id=1"
+        assert self.url() == "/api/suggestions/user/"
+
     def test_list_user_suggestion_without_user_id_fails_as_unauthenticated(
         self, client: APIClient
     ) -> None:
-        response: Response = client.get(f"{BASE_ENDPOINT}/{self.ACTION}/")
+        response: Response = client.get(self.url())
         assert response.status_code == 401
 
     def test_list_user_suggestion_with_user_id_fails_as_unauthenticated(
         self, client: APIClient
     ) -> None:
         user: User = UserFaker()
-        response: Response = client.get(
-            f"{BASE_ENDPOINT}/{self.ACTION}/?user={user.id}"
-        )
+        response: Response = client.get(self.url(user.id))
         assert response.status_code == 401
 
     def test_list_user_suggestion_with_user_id_fails_as_other_user(
@@ -156,8 +163,7 @@ class TestUserSuggestionViews:
         type: str = CommentType.ERROR.value
         content: str = "Error found"
         SuggestionEmailFactory(type=type, content=content, user=other_user)
-        url: str = f"{BASE_ENDPOINT}/{self.ACTION}/?user_id={other_user.id}"
-        response: Response = client.get(url)
+        response: Response = client.get(self.url(other_user.id))
         assert response.status_code == 403
 
     def test_list_user_suggestion_with_user_id_returns_suggestions_as_admin(
@@ -169,8 +175,7 @@ class TestUserSuggestionViews:
         type: str = CommentType.ERROR.value
         content: str = "Error found"
         SuggestionEmailFactory(type=type, content=content, user=user)
-        url: str = f"{BASE_ENDPOINT}/{self.ACTION}/?user_id={user.id}"
-        response: Response = client.get(url)
+        response: Response = client.get(self.url(user.id))
         assert response.status_code == 200
         assert len(response.data["results"]) == 1
         assert response.data["count"] == Suggestion.objects.count()
@@ -183,8 +188,7 @@ class TestUserSuggestionViews:
         type: str = CommentType.ERROR.value
         content: str = "Error found"
         SuggestionEmailFactory(type=type, content=content, user=user)
-        url: str = f"{BASE_ENDPOINT}/{self.ACTION}/"
-        response: Response = client.get(url)
+        response: Response = client.get(self.url())
         assert response.status_code == 200
         assert len(response.data["results"]) == 1
         assert response.data["count"] == Suggestion.objects.count()
@@ -197,8 +201,7 @@ class TestUserSuggestionViews:
         type: str = CommentType.ERROR.value
         content: str = "Error found"
         SuggestionEmailFactory(type=type, content=content, user=user)
-        url: str = f"{BASE_ENDPOINT}/{self.ACTION}/?user_id={user.id}"
-        response: Response = client.get(url)
+        response: Response = client.get(self.url(user.id))
         assert response.status_code == 200
         assert len(response.data["results"]) == 1
         assert response.data["count"] == Suggestion.objects.count()

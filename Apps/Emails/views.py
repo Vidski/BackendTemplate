@@ -56,11 +56,6 @@ class NotificationViewSet(ModelViewSet):
 
 
 class SuggestionViewSet(GenericViewSet):
-    """
-    API endpoint that allows users to create and list suggestions email.
-    Allows also to admins to mark a suggestions as read.
-    """
-
     SUBMIT_PERMISSIONS: list = [IsAuthenticated & IsVerified]
     LIST_PERMISSIONS: list = [IsAuthenticated & (IsAdmin | IsSameUserId)]
     READ_PERMISSIONS: list = [IsAuthenticated & IsAdmin]
