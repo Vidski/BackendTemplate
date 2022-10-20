@@ -1,7 +1,7 @@
 import pytest
 
 from Emails.choices import CommentType
-from Emails.fakers.blacklist import BlackListTestFaker
+from Emails.fakers.blacklist import BlackListFaker
 from Emails.fakers.block import BlockTestFaker
 from Emails.fakers.email import EmailTestFaker
 from Emails.fakers.notification import NotificationTestFaker
@@ -104,7 +104,7 @@ class TestNotificationFakers:
 class TestBlackListFakers:
     def test_blacklist_faker_creates_blacklist(self) -> None:
         assert BlackList.objects.count() == 0
-        black_list_item: BlackList = BlackListTestFaker()
+        black_list_item: BlackList = BlackListFaker()
         assert BlackList.objects.count() == 1
         assert isinstance(black_list_item.user, User)
         assert black_list_item.affairs is not None

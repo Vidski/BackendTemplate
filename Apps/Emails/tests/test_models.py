@@ -5,11 +5,11 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 from Emails.abstracts import AbstractEmailFunctionClass
-from Emails.factories.blacklist import BlackListFactory
 from Emails.factories.block import BlockFactory
 from Emails.factories.email import EmailFactory
 from Emails.factories.notification import NotificationFactory
 from Emails.factories.suggestion import SuggestionEmailFactory
+from Emails.fakers.blacklist import BlackListFaker
 from Emails.fakers.suggestion import SuggestionErrorFaker
 from Emails.models import BlackList
 from Emails.models import Block
@@ -152,7 +152,7 @@ class TestEmailModel:
     def test_send_email_fails_because_is_in_blacklist(self) -> None:
         assert len(mail.outbox) == 0
         email: Email = EmailFactory(affair="GENERAL")
-        BlackListFactory(user=email.to, affairs="GENERAL")
+        BlackListFaker(user=email.to, affairs="GENERAL")
         email.send()
         assert email.was_sent is False
         assert len(mail.outbox) == 0
@@ -271,7 +271,7 @@ class TestNotificationModel:
 @pytest.mark.django_db
 class TestBlackListModel:
     def test_black_list_item_attributes(self) -> None:
-        black_list_item: BlackList = BlackListFactory()
+        black_list_item: BlackList = BlackListFaker()
         dict_keys: dict = black_list_item.__dict__.keys()
         attributes: list = [attribute for attribute in dict_keys]
         assert "user_id" in attributes
