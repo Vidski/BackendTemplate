@@ -12,8 +12,6 @@ class NotificationTestFaker(NotificationFactory):
     header: str = "Test header"
     is_test: bool = True
     programed_send_date: datetime = None
-    sent_date: datetime = None
-    was_sent: bool = False
 
     @factory.post_generation
     def blocks(self, create: bool, extracted: Model, **kwargs: dict) -> None:
