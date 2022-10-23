@@ -5,6 +5,7 @@ from Users.factories.user import UserFactory
 from Users.fakers.profile import AdultProfileFaker
 from Users.fakers.profile import KidProfileFaker
 from Users.fakers.user import AdminFaker
+from Users.fakers.user import UserFaker
 from Users.models import Profile
 from Users.models import User
 
@@ -71,7 +72,7 @@ class TestUserModel:
 @pytest.mark.django_db
 class TestProfileModel:
     def test_model_has_attributes(self) -> None:
-        profile: Profile = ProfileFactory()
+        profile: Profile = ProfileFactory(user=UserFaker())
         dict_keys: dict = profile.__dict__.keys()
         attributes: list = [attribute for attribute in dict_keys]
         assert "user_id" in attributes
@@ -85,7 +86,7 @@ class TestProfileModel:
         assert "updated_at" in attributes
 
     def test_profile_str(self) -> None:
-        profile: Profile = ProfileFactory()
+        profile: Profile = ProfileFactory(user=UserFaker())
         expected_str: str = f"User ({profile.user_id}) profile ({profile.pk})"
         assert str(profile) == expected_str
 
@@ -100,6 +101,6 @@ class TestProfileModel:
         assert kid_profile.is_adult() == expected_result
 
     def test_is_adult_without_birth_date(self) -> None:
-        profile: Profile = ProfileFactory(birth_date=None)
+        profile: Profile = ProfileFactory(user=UserFaker(), birth_date=None)
         expected_result: None = None
         assert profile.is_adult() == expected_result
