@@ -11,11 +11,9 @@ class BlockFactory(factory.django.DjangoModelFactory):
     class Meta:
         model: Model = Block
 
-    title: str = factory.Faker("word")
-    content: str = factory.Faker("sentence")
-    show_link: bool = factory.Faker("boolean")
-    link_text: str = factory.Faker("word")
-    link: str = factory.Faker("url")
+    show_link: bool = False
+    link_text: str = ""
+    link: str = ""
 
 
 class ResetPasswordBlockFactory(BlockFactory):
