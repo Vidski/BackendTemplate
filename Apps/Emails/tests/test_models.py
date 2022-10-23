@@ -50,7 +50,7 @@ class TestAbstractEmailModel:
 @pytest.mark.django_db
 class TestEmailModel:
     def test_email_attributes(self) -> None:
-        email: Email = EmailFactory()
+        email: Email = EmailFactory(to=UserFaker())
         dict_keys: dict = email.__dict__.keys()
         attributes: list = [attribute for attribute in dict_keys]
         assert "subject" in attributes
@@ -62,13 +62,13 @@ class TestEmailModel:
         assert "was_sent" in attributes
 
     def test_email_str(self) -> None:
-        email: Email = EmailFactory()
+        email: Email = EmailFactory(to=UserFaker())
         expected_str: str = f"{email.id} | {email.subject}"
         assert str(email) == expected_str
 
     def test_save(self) -> None:
         user: User = UserFaker()
-        email: Email = EmailFactory.build()
+        email: Email = EmailFactory.build(to=UserFaker())
         email.programed_send_date = None
         email.to = user
         email.is_test = False
@@ -81,7 +81,7 @@ class TestEmailModel:
 
     def test_saving_an_email_without_date(self) -> None:
         user: User = UserFaker()
-        email: Email = EmailFactory.build()
+        email: Email = EmailFactory.build(to=UserFaker())
         email.programed_send_date = None
         email.to = user
         email.is_test = False
@@ -92,7 +92,7 @@ class TestEmailModel:
 
     def test_saving_an_email_with_emails(self) -> None:
         user: User = UserFaker()
-        email: Email = EmailFactory.build()
+        email: Email = EmailFactory.build(to=UserFaker())
         email.to = user
         email.is_test = False
         assert email.to == user
@@ -102,7 +102,7 @@ class TestEmailModel:
 
     def test_saving_an_email_with_emails_as_test(self) -> None:
         user: User = UserFaker()
-        email: Email = EmailFactory.build()
+        email: Email = EmailFactory.build(to=UserFaker())
         email.to = user
         email.is_test = True
         assert email.to == user
@@ -118,40 +118,40 @@ class TestEmailModel:
 
     def test_get_emails_data_with_blocks(self) -> None:
         block: Block = BlockFaker()
-        email: Email = EmailFactory(blocks=[block])
+        email: Email = EmailFactory(to=UserFaker(), blocks=[block])
         data: dict = email.get_email_data()
         assert data["header"] == email.header
         assert list(data["blocks"]) == list(email.blocks.all())
 
     def test_get_emails_data_without_blocks(self) -> None:
-        email: Email = EmailFactory(blocks=None)
+        email: Email = EmailFactory(to=UserFaker(), blocks=None)
         email.blocks.all().delete()
         data: dict = email.get_email_data()
         assert data["header"] == email.header
         assert data["blocks"] == []
 
     def test_get_template(self) -> None:
-        email: Email = EmailFactory()
+        email: Email = EmailFactory(to=UserFaker())
         data: dict = email.get_email_data()
         template: str = email.get_template()
         expected_template: str = render_to_string("email.html", data)
         assert template == expected_template
 
     def test_get_email_object(self) -> None:
-        email: Email = EmailFactory()
+        email: Email = EmailFactory(to=UserFaker())
         email_object: EmailMultiAlternatives = email.get_email_object()
         assert isinstance(email_object, EmailMultiAlternatives)
 
     def test_send_email(self) -> None:
         assert len(mail.outbox) == 0
-        email: Email = EmailFactory()
+        email: Email = EmailFactory(to=UserFaker())
         email.send()
         assert email.was_sent is True
         assert len(mail.outbox) == 1
 
     def test_send_email_fails_because_is_in_blacklist(self) -> None:
         assert len(mail.outbox) == 0
-        email: Email = EmailFactory(affair="GENERAL")
+        email: Email = EmailFactory(to=UserFaker(), affair="GENERAL")
         BlackListFaker(user=email.to, affairs="GENERAL")
         email.send()
         assert email.was_sent is False

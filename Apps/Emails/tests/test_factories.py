@@ -21,6 +21,7 @@ from Emails.models import Email
 from Emails.models import Notification
 from Emails.models import Suggestion
 from Users.factories.user import UserFactory
+from Users.fakers.user import UserFaker
 from Users.models import User
 from Users.utils import generate_user_verification_token
 
@@ -31,13 +32,12 @@ class TestEmailFactories:
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
         email: Email = EmailFactory(
+            to=UserFaker(),
             subject="Test subject",
             header="Test header",
         )
         assert Email.objects.count() == 1
         assert Block.objects.count() == 1
-        assert email.subject == "Test subject"
-        assert email.header == "Test header"
         assert email.is_test is False
         assert email.to is not None
         assert email.programed_send_date is not None
