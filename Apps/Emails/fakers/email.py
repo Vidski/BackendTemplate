@@ -4,7 +4,7 @@ import factory
 from django.db.models import Model
 
 from Emails.factories.email import EmailFactory
-from Emails.fakers.block import BlockTestFaker
+from Emails.fakers.block import BlockFaker
 from Users.factories.user import UserFactory
 from Users.models import User
 
@@ -20,4 +20,4 @@ class EmailTestFaker(EmailFactory):
 
     @factory.post_generation
     def blocks(self, create: bool, extracted: Model, **kwargs: dict) -> None:
-        self.blocks.add(BlockTestFaker())
+        self.blocks.add(BlockFaker())

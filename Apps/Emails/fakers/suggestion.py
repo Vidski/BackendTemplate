@@ -5,7 +5,7 @@ from django.db.models import Model
 
 from Emails.choices import CommentType
 from Emails.factories.suggestion import SuggestionEmailFactory
-from Emails.fakers.block import BlockTestFaker
+from Emails.fakers.block import BlockFaker
 from Users.factories.user import UserFactory
 
 
@@ -19,4 +19,4 @@ class SuggestionErrorFaker(SuggestionEmailFactory):
 
     @factory.post_generation
     def blocks(self, create: bool, extracted: Model, **kwargs: dict) -> None:
-        self.blocks.add(BlockTestFaker())
+        self.blocks.add(BlockFaker())

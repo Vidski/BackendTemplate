@@ -15,6 +15,7 @@ from Emails.factories.email import VerifyEmailFactory
 from Emails.factories.notification import NotificationFactory
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Emails.factories.suggestion import get_subject_for_suggestion
+from Emails.fakers.block import BlockFaker
 from Emails.models import Block
 from Emails.models import Email
 from Emails.models import Notification
@@ -42,8 +43,8 @@ class TestEmailFactories:
         assert email.programed_send_date is not None
         assert email.blocks is not None
         block: Block = email.blocks.first()
-        assert block.title is not None
-        assert block.content is not None
+        assert block.title is None
+        assert block.content is None
         assert block.show_link is not None
         assert block.link_text is not None
         assert block.link is not None
@@ -121,8 +122,8 @@ class TestBlockFactories:
         assert Block.objects.count() == 0
         block: Block = BlockFactory()
         assert Block.objects.count() == 1
-        assert block.title is not None
-        assert block.content is not None
+        assert block.title is None
+        assert block.content is None
         assert block.show_link is not None
         assert block.link_text is not None
         assert block.link is not None
@@ -176,8 +177,8 @@ class TestBlockFactories:
         assert Block.objects.count() == 0
         block: Block = SuggestionBlockFactory()
         assert Block.objects.count() == 1
-        assert block.title is not None
-        assert block.content is not None
+        assert block.title is None
+        assert block.content is None
         assert block.show_link is False
 
 
@@ -271,8 +272,8 @@ class TestNotificationFactory:
         assert notification.programed_send_date is not None
         assert notification.blocks is not None
         block: Block = notification.blocks.first()
-        assert block.title is not None
-        assert block.content is not None
+        assert block.title is None
+        assert block.content is None
         assert block.show_link is not None
         assert block.link_text is not None
         assert block.link is not None
@@ -282,7 +283,7 @@ class TestNotificationFactory:
     ) -> None:
         assert Notification.objects.count() == 0
         assert Block.objects.count() == 0
-        block: Block = BlockFactory()
+        block: Block = BlockFaker()
         notification: Notification = NotificationFactory(
             subject="Test subject", header="Test header", blocks=[block]
         )

@@ -2,7 +2,7 @@ import pytest
 
 from Emails.choices import CommentType
 from Emails.fakers.blacklist import BlackListFaker
-from Emails.fakers.block import BlockTestFaker
+from Emails.fakers.block import BlockFaker
 from Emails.fakers.email import EmailTestFaker
 from Emails.fakers.notification import NotificationTestFaker
 from Emails.fakers.suggestion import SuggestionErrorFaker
@@ -39,7 +39,7 @@ class TestEmailFakers:
 class TestBlockFakers:
     def test_block_faker_creates_block(self) -> None:
         assert Block.objects.count() == 0
-        block: Block = BlockTestFaker()
+        block: Block = BlockFaker()
         assert Block.objects.count() == 1
         assert block.title == "test"
         assert block.content == "test"

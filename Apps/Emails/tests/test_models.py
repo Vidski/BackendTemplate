@@ -5,11 +5,11 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 from Emails.abstracts import AbstractEmailFunctionClass
-from Emails.factories.block import BlockFactory
 from Emails.factories.email import EmailFactory
 from Emails.factories.notification import NotificationFactory
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Emails.fakers.blacklist import BlackListFaker
+from Emails.fakers.block import BlockFaker
 from Emails.fakers.suggestion import SuggestionErrorFaker
 from Emails.models import BlackList
 from Emails.models import Block
@@ -24,7 +24,7 @@ from Users.models import User
 @pytest.mark.django_db
 class TestBlockModel:
     def test_block_attributes(self) -> None:
-        block: Block = BlockFactory()
+        block: Block = BlockFaker()
         dict_keys: dict = block.__dict__.keys()
         attributes: list = [attribute for attribute in dict_keys]
         assert "title" in attributes
@@ -34,7 +34,7 @@ class TestBlockModel:
         assert "link" in attributes
 
     def test_block_str(self) -> None:
-        block: Block = BlockFactory()
+        block: Block = BlockFaker()
         expected_str: str = f"{block.id} | {block.title}"
         assert str(block) == expected_str
 
@@ -117,7 +117,7 @@ class TestEmailModel:
         assert user != EmailTestUserFaker()
 
     def test_get_emails_data_with_blocks(self) -> None:
-        block: Block = BlockFactory()
+        block: Block = BlockFaker()
         email: Email = EmailFactory(blocks=[block])
         data: dict = email.get_email_data()
         assert data["header"] == email.header
