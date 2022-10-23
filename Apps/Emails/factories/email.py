@@ -20,27 +20,10 @@ class EmailFactory(factory.django.DjangoModelFactory):
     class Meta:
         model: Model = Email
 
-    subject: str = factory.Faker("sentence")
-    header: str = factory.Faker("word")
-    is_test: bool = False
-    to: User = factory.SubFactory(UserFactory)
     programed_send_date: datetime = timezone.now() + timezone.timedelta(
         minutes=10
     )
-    sent_date: datetime = factory.Faker(
-        "date_time", tzinfo=timezone.get_current_timezone()
-    )
     was_sent: bool = False
-    affair: str = factory.fuzzy.FuzzyChoice(
-        (
-            "NOTIFICATION",
-            "PROMOTION",
-            "GENERAL",
-            "SETTINGS",
-            "INVOICE",
-            "SUGGESTION",
-        )
-    )
 
     @factory.post_generation
     def blocks(self, create: bool, extracted: Model, **kwargs: dict) -> None:

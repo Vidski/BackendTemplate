@@ -16,7 +16,16 @@ class EmailTestFaker(EmailFactory):
     to: User = factory.SubFactory(UserFactory)
     programed_send_date: datetime = None
     sent_date: datetime = None
-    was_sent: bool = False
+    affair: str = factory.fuzzy.FuzzyChoice(
+        (
+            "NOTIFICATION",
+            "PROMOTION",
+            "GENERAL",
+            "SETTINGS",
+            "INVOICE",
+            "SUGGESTION",
+        )
+    )
 
     @factory.post_generation
     def blocks(self, create: bool, extracted: Model, **kwargs: dict) -> None:
