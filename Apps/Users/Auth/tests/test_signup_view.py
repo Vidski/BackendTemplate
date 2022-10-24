@@ -4,7 +4,7 @@ from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 
-from Users.factories.user import UserFactory
+from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker
 from Users.models import User
 
@@ -25,7 +25,7 @@ class TestUserSignUpEndpoint:
     def test_create_user_fails_with_an_used_email(
         self, client: APIClient
     ) -> None:
-        UserFactory(email="emailused@appname.me")
+        UserFaker(email="emailused@appname.me")
         data: dict = {
             "first_name": "Test",
             "last_name": "Tested",

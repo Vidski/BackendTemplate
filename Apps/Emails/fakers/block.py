@@ -1,7 +1,7 @@
 from Emails.factories.block import BlockFactory
 
 
-class BlockTestFaker(BlockFactory):
+class BlockFaker(BlockFactory):
     title: str = "test"
     content: str = "test"
     show_link: bool = True

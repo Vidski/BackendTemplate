@@ -3,14 +3,14 @@ from rest_framework import serializers
 
 from Users.Auth.serializers import UserLoginSerializer
 from Users.Auth.serializers import UserSignUpSerializer
-from Users.factories.user import UserFactory
+from Users.fakers.user import UserFaker
 from Users.models import User
 
 
 @pytest.mark.django_db
 class TestUserLoginSerializer:
     def test_data_serialized_from_data(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         user.verify()
         expected_data: dict = {"email": user.email}
         data: dict = {"email": user.email, "password": "password"}
@@ -51,7 +51,7 @@ class TestUserLoginSerializer:
             serializer.is_valid()
 
     def test_validate_passes_with_right_data(self) -> None:
-        user: User = UserFactory(
+        user: User = UserFaker(
             email="normaluser@appname.me", password="password"
         )
         user.verify()
@@ -60,7 +60,7 @@ class TestUserLoginSerializer:
         serializer.is_valid()
 
     def test_create_function(self) -> None:
-        user: User = UserFactory(
+        user: User = UserFaker(
             email="normaluser@appname.me", password="password"
         )
         user.verify()

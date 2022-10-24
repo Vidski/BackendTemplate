@@ -10,7 +10,7 @@ from django.test import override_settings
 from Emails.models import Email
 from Emails.models import Suggestion
 from Project.management.commands.populate_db import Command as PopulateCommand
-from Users.factories.user import UserFactory
+from Users.fakers.user import UserFaker
 from Users.models import Profile
 from Users.models import User
 
@@ -52,7 +52,7 @@ class TestPopulateCommand:
     ) -> None:
         silent_stdout
         command: PopulateCommand = PopulateCommand()
-        users: list = [UserFactory(), UserFactory()]
+        users: list = [UserFaker(), UserFaker()]
         assert User.objects.all().count() == 2
         assert Email.objects.all().count() == 0
         command.create_fake_verify_emails(users)
@@ -62,7 +62,7 @@ class TestPopulateCommand:
     def test_create_fake_profiles(self, silent_stdout: TextIOWrapper) -> None:
         silent_stdout
         command: PopulateCommand = PopulateCommand()
-        users: list = [UserFactory(), UserFactory()]
+        users: list = [UserFaker(), UserFaker()]
         assert User.objects.all().count() == 2
         assert Profile.objects.all().count() == 0
         command.create_fake_profiles(users)
@@ -74,7 +74,7 @@ class TestPopulateCommand:
     ) -> None:
         silent_stdout
         command: PopulateCommand = PopulateCommand()
-        users: list = [UserFactory(), UserFactory()]
+        users: list = [UserFaker(), UserFaker()]
         assert User.objects.all().count() == 2
         assert Suggestion.objects.all().count() == 0
         command.create_fake_suggestions(users)
