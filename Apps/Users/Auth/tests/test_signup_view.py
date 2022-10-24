@@ -5,7 +5,7 @@ from django.core import mail
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 
-from Users.factories.user import UserFactory
+from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker
 from Users.models import User
 
@@ -23,7 +23,7 @@ class TestUserSignUpEndpoint:
     def test_create_user_fails_with_an_used_email(
         self, client: APIClient
     ) -> None:
-        UserFactory(email="emailused@appname.me")
+        UserFaker(email="emailused@appname.me")
         data: dict = {
             "first_name": "Test",
             "last_name": "Tested",
@@ -128,7 +128,7 @@ class TestUserLogInEndpoint:
         assert message in response.data
 
     def test_login_fails_with_wrong_password(self, client: APIClient) -> None:
-        UserFactory(email="rightemail@appname.me", password="RightPassword")
+        UserFaker(email="rightemail@appname.me", password="RightPassword")
         data: dict = {
             "email": "rightemail@appname.me",
             "password": "WrongPassword",
@@ -143,7 +143,7 @@ class TestUserLogInEndpoint:
     def test_login_fails_with_user_not_verified(
         self, client: APIClient
     ) -> None:
-        UserFactory(email="rightemail@appname.me", password="RightPassword")
+        UserFaker(email="rightemail@appname.me", password="RightPassword")
         data: dict = {
             "email": "rightemail@appname.me",
             "password": "RightPassword",

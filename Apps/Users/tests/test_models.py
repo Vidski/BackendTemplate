@@ -1,7 +1,6 @@
 import pytest
 
 from Users.factories.profile import ProfileFactory
-from Users.factories.user import UserFactory
 from Users.fakers.profile import AdultProfileFaker
 from Users.fakers.profile import KidProfileFaker
 from Users.fakers.user import AdminFaker
@@ -13,7 +12,7 @@ from Users.models import User
 @pytest.mark.django_db
 class TestUserModel:
     def test_model_has_attributes(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         assert hasattr(user, "email")
         assert hasattr(user, "first_name")
         assert hasattr(user, "last_name")
@@ -25,30 +24,30 @@ class TestUserModel:
         assert hasattr(user, "updated_at")
 
     def test_model_do_not_has_attributes(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         assert user.username == None
         assert user.is_superuser == None
         assert user.last_login == None
 
     def test_model_has_custom_properties(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         assert user.name == user.first_name + " " + user.last_name
         assert user.is_staff == user.is_admin
 
     def test_model_verify_function(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         assert user.is_verified == False
         user.verify()
         assert user.is_verified == True
 
     def test_has_permission_returns_false(self) -> None:
-        user: User = UserFactory()
-        user2: User = UserFactory()
+        user: User = UserFaker()
+        user2: User = UserFaker()
         has_permission: bool = user.has_permission(user2)
         assert has_permission == False
 
     def test_has_permission_returns_true(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         has_permission: bool = user.has_permission(user)
         assert has_permission == True
 
@@ -59,13 +58,13 @@ class TestUserModel:
         assert user.has_module_perms("Logs") == True
 
     def test_has_module_perms_as_not_admin(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         assert user.has_module_perms("Users") == False
         assert user.has_module_perms("Emails") == False
         assert user.has_module_perms("Logs") == False
 
     def test_str_user(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         assert str(user) == f"{user.email}"
 
 

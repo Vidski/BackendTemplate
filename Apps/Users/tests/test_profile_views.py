@@ -6,7 +6,6 @@ from django.conf import settings
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 
-from Users.factories.user import UserFactory
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker
@@ -92,7 +91,7 @@ class TestProfileRetrieveEndpoint:
         self, client: APIClient
     ) -> None:
         user: User = VerifiedUserFaker()
-        other_user: User = UserFactory(email="other@user.com", is_verified=True)
+        other_user: User = UserFaker(email="other@user.com", is_verified=True)
         client.force_authenticate(user=user)
         profile_id: int = other_user.profile.id
         response: Response = client.get(

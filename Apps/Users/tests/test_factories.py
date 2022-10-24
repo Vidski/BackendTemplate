@@ -11,15 +11,19 @@ from Users.models import User
 class TestUserFactory:
     def test_user_factory(self) -> None:
         assert User.objects.count() == 0
-        user: User = UserFactory()
+        user: User = UserFactory(email="email@test.com")
         assert User.objects.count() == 1
         assert user.name is not None
         assert user.email is not None
-        assert user.phone_number is not None
+        assert user.phone_number is None
         assert user.password is not None
         assert user.check_password("password") is True
         assert user.is_admin is False
         assert user.is_verified is False
+
+    def test_factory_raises_error_without_email(self) -> None:
+        with pytest.raises(ValueError):
+            UserFactory()
 
 
 @pytest.mark.django_db

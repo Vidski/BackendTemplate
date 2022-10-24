@@ -3,7 +3,6 @@ from mock import MagicMock
 from mock import PropertyMock
 from rest_framework import serializers
 
-from Users.factories.user import UserFactory
 from Users.fakers.user import UserFaker
 from Users.models import User
 from Users.serializers import UserUpdateSerializer
@@ -12,7 +11,7 @@ from Users.serializers import UserUpdateSerializer
 @pytest.mark.django_db
 class TestUserUpdateSerializer:
     def test_data_serialized_from_user(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         expected_data: dict = {
             "first_name": user.first_name,
             "last_name": user.last_name,
@@ -23,7 +22,7 @@ class TestUserUpdateSerializer:
         assert actual_data == expected_data
 
     def test_check_password_fails_without_old_password(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         data: dict = {
             "password": "newpassword",
         }
@@ -36,7 +35,7 @@ class TestUserUpdateSerializer:
             serializer.is_valid(raise_exception=True)
 
     def test_check_password_fails_with_wrong_old_password(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         data: dict = {
             "password": "newpassword",
             "old_password": "wrongpassword",
@@ -50,7 +49,7 @@ class TestUserUpdateSerializer:
             serializer.is_valid(raise_exception=True)
 
     def test_check_password_fails_with_common_password(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         data: dict = {
             "password": "123456",
             "old_password": "password",
@@ -103,7 +102,7 @@ class TestUserUpdateSerializer:
 
     def test_check_email_fails_with_existing_email(self) -> None:
         email: str = "normaluser@appname.me"
-        UserFactory(email=email)
+        UserFaker(email=email)
         user: User = UserFaker()
         data: dict = {"email": email}
         serializer: UserUpdateSerializer = UserUpdateSerializer(data=data)
@@ -115,7 +114,7 @@ class TestUserUpdateSerializer:
             serializer.is_valid(raise_exception=True)
 
     def test_check_email_passes(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         email: str = "normaluser2@appname.me"
         data: dict = {"email": email}
         serializer: UserUpdateSerializer = UserUpdateSerializer(data=data)
@@ -126,7 +125,7 @@ class TestUserUpdateSerializer:
         serializer.is_valid(raise_exception=True)
 
     def test_update(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         data: dict = {
             "first_name": "newfirstname",
             "last_name": "newlastname",
@@ -150,7 +149,7 @@ class TestUserUpdateSerializer:
         assert user.check_password(data["password"]) == True
 
     def test_is_valid_fails_with_phone_number_with_bad_format(self) -> None:
-        UserFactory(phone_number="+1123123123")
+        UserFaker(phone_number="+1123123123")
         data: dict = {"phone_number": "123123123"}
         serializer: UserUpdateSerializer = UserUpdateSerializer(data=data)
         with pytest.raises(serializers.ValidationError):
