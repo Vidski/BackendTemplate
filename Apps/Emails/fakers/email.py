@@ -5,7 +5,7 @@ from django.db.models import Model
 
 from Emails.factories.email import EmailFactory
 from Emails.fakers.block import BlockFaker
-from Users.factories.user import UserFactory
+from Users.fakers.user import UserFaker
 from Users.models import User
 
 
@@ -13,7 +13,7 @@ class EmailTestFaker(EmailFactory):
     subject: str = "Test subject"
     header: str = "Test header"
     is_test: bool = True
-    to: User = factory.SubFactory(UserFactory)
+    to: User = factory.SubFactory(UserFaker)
     programed_send_date: datetime = None
     sent_date: datetime = None
     affair: str = factory.fuzzy.FuzzyChoice(
