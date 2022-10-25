@@ -3,8 +3,7 @@ from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 
-from Emails.factories.blacklist import BlackListFactory
-from Emails.fakers.blacklist import BlackListTestFaker
+from Emails.fakers.blacklist import BlackListFaker
 from Emails.models import BlackList
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
@@ -55,7 +54,7 @@ class TestListBlacklistViews:
     ) -> None:
         user: User = AdminFaker()
         url: str = self.url()
-        BlackListFactory.create_batch(15)
+        BlackListFaker.create_batch(15)
         client.force_authenticate(user=user)
         response: Response = client.get(url)
         assert response.status_code == 200
@@ -91,7 +90,7 @@ class TestRetrieveBlacklistViews:
         self, client: APIClient
     ) -> None:
         user: User = VerifiedUserFaker()
-        blacklist: BlackList = BlackListTestFaker()
+        blacklist: BlackList = BlackListFaker()
         url: str = self.url(blacklist.id)
         client.force_authenticate(user=user)
         response: Response = client.get(url)
@@ -101,7 +100,7 @@ class TestRetrieveBlacklistViews:
         self, client: APIClient
     ) -> None:
         user: User = AdminFaker()
-        blacklist: BlackList = BlackListTestFaker()
+        blacklist: BlackList = BlackListFaker()
         url: str = self.url(blacklist.id)
         client.force_authenticate(user=user)
         response: Response = client.get(url)
@@ -111,7 +110,7 @@ class TestRetrieveBlacklistViews:
     def test_retrieve_blacklist_works_with_owner_normal_user(
         self, client: APIClient
     ) -> None:
-        blacklist: BlackList = BlackListTestFaker()
+        blacklist: BlackList = BlackListFaker()
         url: str = self.url(blacklist.id)
         client.force_authenticate(user=blacklist.user)
         response: Response = client.get(url)
@@ -183,7 +182,7 @@ class TestUpdateBlacklistViews:
     def test_post_blacklist_fails_as_unauthenticated(
         self, client: APIClient
     ) -> None:
-        blacklist: BlackList = BlackListTestFaker()
+        blacklist: BlackList = BlackListFaker()
         data: dict = {"user": blacklist.user, "affairs": ""}
         url: str = self.url(pk=blacklist.id)
         response: Response = client.put(url, data=data)
@@ -194,7 +193,7 @@ class TestUpdateBlacklistViews:
     ) -> None:
         data: dict = {"user": 2, "affairs": ""}
         user: User = UserFaker()
-        blacklist: BlackList = BlackListTestFaker(user=user)
+        blacklist: BlackList = BlackListFaker(user=user)
         url: str = self.url(blacklist.id)
         client.force_authenticate(user=user)
         response: Response = client.put(url, data=data)
@@ -206,7 +205,7 @@ class TestUpdateBlacklistViews:
         other_user: User = VerifiedUserFaker()
         data: dict = {"user": other_user.id}
         user: User = VerifiedUserFaker()
-        blacklist: BlackList = BlackListTestFaker(user=user)
+        blacklist: BlackList = BlackListFaker(user=user)
         url: str = self.url(blacklist.id)
         client.force_authenticate(user=user)
         response: Response = client.put(url, data=data)
@@ -214,7 +213,7 @@ class TestUpdateBlacklistViews:
 
     def test_post_blacklist_works_with_user(self, client: APIClient) -> None:
         user: User = VerifiedUserFaker()
-        blacklist: BlackList = BlackListTestFaker(user=user)
+        blacklist: BlackList = BlackListFaker(user=user)
         data: dict = {"user": user.id}
         url: str = self.url(blacklist.id)
         client.force_authenticate(user=user)
@@ -223,7 +222,7 @@ class TestUpdateBlacklistViews:
 
     def test_post_blacklist_works_with_admin(self, client: APIClient) -> None:
         user: User = VerifiedUserFaker()
-        blacklist: BlackList = BlackListTestFaker(user=user)
+        blacklist: BlackList = BlackListFaker(user=user)
         other_user: User = VerifiedUserFaker()
         data: dict = {"user": other_user.id}
         url: str = self.url(blacklist.id)
@@ -244,7 +243,7 @@ class TestDeleteBlacklistViews:
     def test_delete_blacklist_fails_as_unauthenticated(
         self, client: APIClient
     ) -> None:
-        blacklist: BlackList = BlackListTestFaker()
+        blacklist: BlackList = BlackListFaker()
         url: str = self.url(pk=blacklist.id)
         response: Response = client.delete(url)
         assert response.status_code == 401
@@ -253,7 +252,7 @@ class TestDeleteBlacklistViews:
         self, client: APIClient
     ) -> None:
         user: User = UserFaker()
-        blacklist: BlackList = BlackListTestFaker(user=user)
+        blacklist: BlackList = BlackListFaker(user=user)
         url: str = self.url(blacklist.id)
         client.force_authenticate(user=user)
         response: Response = client.delete(url)
@@ -264,7 +263,7 @@ class TestDeleteBlacklistViews:
     ) -> None:
         other_user: User = VerifiedUserFaker()
         user: User = VerifiedUserFaker()
-        blacklist: BlackList = BlackListTestFaker(user=user)
+        blacklist: BlackList = BlackListFaker(user=user)
         url: str = self.url(blacklist.id)
         client.force_authenticate(user=other_user)
         response: Response = client.delete(url)
@@ -272,7 +271,7 @@ class TestDeleteBlacklistViews:
 
     def test_delete_blacklist_works_with_user(self, client: APIClient) -> None:
         user: User = VerifiedUserFaker()
-        blacklist: BlackList = BlackListTestFaker(user=user)
+        blacklist: BlackList = BlackListFaker(user=user)
         url: str = self.url(blacklist.id)
         client.force_authenticate(user=user)
         response: Response = client.delete(url)
@@ -280,7 +279,7 @@ class TestDeleteBlacklistViews:
 
     def test_delete_blacklist_works_with_admin(self, client: APIClient) -> None:
         user: User = VerifiedUserFaker()
-        blacklist: BlackList = BlackListTestFaker(user=user)
+        blacklist: BlackList = BlackListFaker(user=user)
         url: str = self.url(blacklist.id)
         admin: User = AdminFaker()
         client.force_authenticate(user=admin)

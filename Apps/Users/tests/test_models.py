@@ -1,10 +1,10 @@
 import pytest
 
 from Users.factories.profile import ProfileFactory
-from Users.factories.user import UserFactory
 from Users.fakers.profile import AdultProfileFaker
 from Users.fakers.profile import KidProfileFaker
 from Users.fakers.user import AdminFaker
+from Users.fakers.user import UserFaker
 from Users.models import Profile
 from Users.models import User
 
@@ -12,7 +12,7 @@ from Users.models import User
 @pytest.mark.django_db
 class TestUserModel:
     def test_model_has_attributes(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         assert hasattr(user, "email")
         assert hasattr(user, "first_name")
         assert hasattr(user, "last_name")
@@ -24,30 +24,30 @@ class TestUserModel:
         assert hasattr(user, "updated_at")
 
     def test_model_do_not_has_attributes(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         assert user.username == None
         assert user.is_superuser == None
         assert user.last_login == None
 
     def test_model_has_custom_properties(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         assert user.name == user.first_name + " " + user.last_name
         assert user.is_staff == user.is_admin
 
     def test_model_verify_function(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         assert user.is_verified == False
         user.verify()
         assert user.is_verified == True
 
     def test_has_permission_returns_false(self) -> None:
-        user: User = UserFactory()
-        user2: User = UserFactory()
+        user: User = UserFaker()
+        user2: User = UserFaker()
         has_permission: bool = user.has_permission(user2)
         assert has_permission == False
 
     def test_has_permission_returns_true(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         has_permission: bool = user.has_permission(user)
         assert has_permission == True
 
@@ -58,20 +58,20 @@ class TestUserModel:
         assert user.has_module_perms("Logs") == True
 
     def test_has_module_perms_as_not_admin(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         assert user.has_module_perms("Users") == False
         assert user.has_module_perms("Emails") == False
         assert user.has_module_perms("Logs") == False
 
     def test_str_user(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         assert str(user) == f"{user.email}"
 
 
 @pytest.mark.django_db
 class TestProfileModel:
     def test_model_has_attributes(self) -> None:
-        profile: Profile = ProfileFactory()
+        profile: Profile = ProfileFactory(user=UserFaker())
         dict_keys: dict = profile.__dict__.keys()
         attributes: list = [attribute for attribute in dict_keys]
         assert "user_id" in attributes
@@ -85,7 +85,7 @@ class TestProfileModel:
         assert "updated_at" in attributes
 
     def test_profile_str(self) -> None:
-        profile: Profile = ProfileFactory()
+        profile: Profile = ProfileFactory(user=UserFaker())
         expected_str: str = f"User ({profile.user_id}) profile ({profile.pk})"
         assert str(profile) == expected_str
 
@@ -100,6 +100,6 @@ class TestProfileModel:
         assert kid_profile.is_adult() == expected_result
 
     def test_is_adult_without_birth_date(self) -> None:
-        profile: Profile = ProfileFactory(birth_date=None)
+        profile: Profile = ProfileFactory(user=UserFaker(), birth_date=None)
         expected_result: None = None
         assert profile.is_adult() == expected_result
