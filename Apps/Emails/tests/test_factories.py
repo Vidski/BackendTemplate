@@ -15,11 +15,12 @@ from Emails.factories.email import VerifyEmailFactory
 from Emails.factories.notification import NotificationFactory
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Emails.factories.suggestion import get_subject_for_suggestion
+from Emails.fakers.block import BlockFaker
 from Emails.models import Block
 from Emails.models import Email
 from Emails.models import Notification
 from Emails.models import Suggestion
-from Users.factories.user import UserFactory
+from Users.fakers.user import UserFaker
 from Users.models import User
 from Users.utils import generate_user_verification_token
 
@@ -30,20 +31,19 @@ class TestEmailFactories:
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
         email: Email = EmailFactory(
+            to=UserFaker(),
             subject="Test subject",
             header="Test header",
         )
         assert Email.objects.count() == 1
         assert Block.objects.count() == 1
-        assert email.subject == "Test subject"
-        assert email.header == "Test header"
         assert email.is_test is False
         assert email.to is not None
         assert email.programed_send_date is not None
         assert email.blocks is not None
         block: Block = email.blocks.first()
-        assert block.title is not None
-        assert block.content is not None
+        assert block.title is None
+        assert block.content is None
         assert block.show_link is not None
         assert block.link_text is not None
         assert block.link is not None
@@ -59,7 +59,7 @@ class TestEmailFactories:
     def test_reset_password_email_factory_creates_email_with_block(
         self,
     ) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         instance: ResetPasswordToken = ResetPasswordToken.objects.create(
             user=user
         )
@@ -92,7 +92,7 @@ class TestEmailFactories:
         assert Block.objects.count() == 0
 
     def test_verify_email_factory_creates_email_with_block(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
         email: Email = VerifyEmailFactory(instance=user)
@@ -121,8 +121,8 @@ class TestBlockFactories:
         assert Block.objects.count() == 0
         block: Block = BlockFactory()
         assert Block.objects.count() == 1
-        assert block.title is not None
-        assert block.content is not None
+        assert block.title is None
+        assert block.content is None
         assert block.show_link is not None
         assert block.link_text is not None
         assert block.link is not None
@@ -139,7 +139,7 @@ class TestBlockFactories:
 
     def test_reset_password_block_factory(self) -> None:
         assert Block.objects.count() == 0
-        user: User = UserFactory()
+        user: User = UserFaker()
         instance: ResetPasswordToken = ResetPasswordToken.objects.create(
             user=user
         )
@@ -163,7 +163,7 @@ class TestBlockFactories:
 
     def test_verify_email_block_factory(self) -> None:
         assert Block.objects.count() == 0
-        user: User = UserFactory()
+        user: User = UserFaker()
         block: Block = VerifyEmailBlockFactory(user=user)
         assert Block.objects.count() == 1
         assert block.title is not None
@@ -176,8 +176,8 @@ class TestBlockFactories:
         assert Block.objects.count() == 0
         block: Block = SuggestionBlockFactory()
         assert Block.objects.count() == 1
-        assert block.title is not None
-        assert block.content is not None
+        assert block.title is None
+        assert block.content is None
         assert block.show_link is False
 
 
@@ -195,7 +195,7 @@ class TestSuggestionFactory:
     def test_suggestion_email_factory_raises_exception_due_wrong_type(
         self,
     ) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         content: str = "I found a bug"
         type: str = "wrong_suggestion_type"
         assert Suggestion.objects.count() == 0
@@ -206,7 +206,7 @@ class TestSuggestionFactory:
         assert Block.objects.count() == 0
 
     def test_suggestion_email_factor_creates_email_with_block(self) -> None:
-        user: User = UserFactory()
+        user: User = UserFaker()
         content: str = "I found a bug"
         type: str = "ERROR"
         assert Suggestion.objects.count() == 0
@@ -271,8 +271,8 @@ class TestNotificationFactory:
         assert notification.programed_send_date is not None
         assert notification.blocks is not None
         block: Block = notification.blocks.first()
-        assert block.title is not None
-        assert block.content is not None
+        assert block.title is None
+        assert block.content is None
         assert block.show_link is not None
         assert block.link_text is not None
         assert block.link is not None
@@ -282,7 +282,7 @@ class TestNotificationFactory:
     ) -> None:
         assert Notification.objects.count() == 0
         assert Block.objects.count() == 0
-        block: Block = BlockFactory()
+        block: Block = BlockFaker()
         notification: Notification = NotificationFactory(
             subject="Test subject", header="Test header", blocks=[block]
         )

@@ -12,8 +12,6 @@ class NotificationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model: Model = Notification
 
-    subject: str = factory.Faker("sentence")
-    header: str = factory.Faker("word")
     is_test: bool = False
     programed_send_date: datetime = timezone.now() + timezone.timedelta(
         minutes=10

@@ -11,7 +11,8 @@ from Emails.choices import CommentType
 from Emails.factories.email import VerifyEmailFactory
 from Emails.factories.suggestion import SuggestionEmailFactory
 from Users.factories.profile import ProfileFactory
-from Users.factories.user import UserFactory
+from Users.fakers.user import AdminFaker
+from Users.fakers.user import UserFaker
 from Users.models import User
 
 
@@ -52,7 +53,7 @@ class Command(BaseCommand):
         self.stdout.write("Creating fake users")
         users: list = []
         for _ in progress(instances_number):
-            user: User = UserFactory()
+            user: User = UserFaker()
             users.append(user)
         self.stdout.write("Fake users created")
         return users
@@ -85,10 +86,8 @@ class Command(BaseCommand):
 
     def create_admin_user(self) -> None:
         self.stdout.write("Creating admin user")
-        UserFactory(
-            is_admin=True,
+        AdminFaker(
             email="admin@admin.com",
             password="adminpassword",
-            is_verified=True,
         )
         self.stdout.write("Admin user created")

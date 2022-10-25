@@ -4,8 +4,8 @@ import factory
 from django.db.models import Model
 
 from Emails.factories.email import EmailFactory
-from Emails.fakers.block import BlockTestFaker
-from Users.factories.user import UserFactory
+from Emails.fakers.block import BlockFaker
+from Users.fakers.user import UserFaker
 from Users.models import User
 
 
@@ -13,11 +13,20 @@ class EmailTestFaker(EmailFactory):
     subject: str = "Test subject"
     header: str = "Test header"
     is_test: bool = True
-    to: User = factory.SubFactory(UserFactory)
+    to: User = factory.SubFactory(UserFaker)
     programed_send_date: datetime = None
     sent_date: datetime = None
-    was_sent: bool = False
+    affair: str = factory.fuzzy.FuzzyChoice(
+        (
+            "NOTIFICATION",
+            "PROMOTION",
+            "GENERAL",
+            "SETTINGS",
+            "INVOICE",
+            "SUGGESTION",
+        )
+    )
 
     @factory.post_generation
     def blocks(self, create: bool, extracted: Model, **kwargs: dict) -> None:
-        self.blocks.add(BlockTestFaker())
+        self.blocks.add(BlockFaker())
