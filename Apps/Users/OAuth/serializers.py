@@ -16,10 +16,13 @@ from Users.OAuth.user_handler import RegisterOrLoginViaTwitter
 
 class GoogleOAuthSerializer(Serializer):
     token: CharField = CharField()
+    preferred_language = CharField(required=False)
 
     def validate_token(self, token: str) -> bool:
         user_data: dict = self.get_user_data(token)
         self.validate_aud(user_data["aud"])
+        language: str = self.get_initial().get("preferred_language", None)
+        user_data["preferred_language"] = language
         self._data: dict = RegisterOrLoginViaGoogle(user_data).serialized_user
         return True
 
@@ -36,9 +39,12 @@ class GoogleOAuthSerializer(Serializer):
 
 class FacebookOAuthSerializer(Serializer):
     token: CharField = CharField()
+    preferred_language = CharField(required=False)
 
     def validate_token(self, token: str) -> bool:
         user_data = self.get_user_data(token)
+        language: str = self.get_initial().get("preferred_language", None)
+        user_data["preferred_language"] = language
         self._data: dict = RegisterOrLoginViaFacebook(user_data).serialized_user
         return True
 
@@ -55,10 +61,13 @@ class FacebookOAuthSerializer(Serializer):
 class TwitterOAuthSerializer(Serializer):
     access_token_key: CharField = CharField()
     access_token_secret: CharField = CharField()
+    preferred_language = CharField(required=False)
 
     def validate(self, attributes: dict) -> bool:
         twitter_user: TwitterUser = self.get_user_data(attributes)
         user_data: dict = self.get_dictionary_of_user_data(twitter_user)
+        language: str = self.get_initial().get("preferred_language", None)
+        user_data["preferred_language"] = language
         self._data: dict = RegisterOrLoginViaTwitter(user_data).serialized_user
         return True
 
