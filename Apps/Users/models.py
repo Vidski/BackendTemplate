@@ -126,7 +126,10 @@ class User(
         if not has_profile and self.is_verified:
             self.create_profile()
 
-    def create_profile(self, preferred_language: str = "EN") -> None:
+    def create_profile(self, preferred_language: str = None) -> None:
+        possible_choices: list = PreferredLanguageChoices.values
+        if not preferred_language or preferred_language not in possible_choices:
+            preferred_language = PreferredLanguageChoices.ENGLISH
         Profile.objects.create(user=self, preferred_language=preferred_language)
 
     def has_perm(self, permission: str, object: Model = None) -> bool:
@@ -184,7 +187,7 @@ class Profile(models.Model):
         "Preferred language",
         max_length=2,
         choices=PreferredLanguageChoices.choices,
-        default=PreferredLanguageChoices.OTHER,
+        default=PreferredLanguageChoices.ENGLISH,
         null=True,
     )
     birth_date: Field = models.DateField(

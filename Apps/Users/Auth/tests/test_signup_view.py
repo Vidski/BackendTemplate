@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from rest_framework.test import APIClient
 
 from Users.fakers.user import UserFaker
-from Users.fakers.user import VerifiedUserFaker
 from Users.models import User
 
 
@@ -92,7 +91,6 @@ class TestUserSignUpEndpoint:
             "is_admin": True,
             "is_premium": True,
         }
-        # Normal and admin user already in database
         assert User.objects.count() == 0
         response: Response = client.post(self.url(), data, format="json")
         assert User.objects.count() == 1
@@ -104,4 +102,57 @@ class TestUserSignUpEndpoint:
         assert response.data["is_verified"] == False
         assert response.data["is_admin"] == False
         assert response.data["is_premium"] == False
+        assert len(mail.outbox) == 1
+
+    def test_sign_up_is_successfully_with_custom_language(
+        self, client: APIClient
+    ) -> None:
+        data: dict = {
+            "first_name": "Test",
+            "last_name": "Tested",
+            "email": "unusedemai@appname.me",
+            "password": "strong_password",
+            "password_confirmation": "strong_password",
+            "language": "ES",
+        }
+        assert User.objects.count() == 0
+        response: Response = client.post(self.url(), data, format="json")
+        assert User.objects.count() == 1
+        assert response.status_code == 201
+        assert User.objects.first().profile.preferred_language == "ES"
+        assert len(mail.outbox) == 1
+
+    def test_sign_up_is_successfully_with_default_language_if_not_passed(
+        self, client: APIClient
+    ) -> None:
+        data: dict = {
+            "first_name": "Test",
+            "last_name": "Tested",
+            "email": "unusedemai@appname.me",
+            "password": "strong_password",
+            "password_confirmation": "strong_password",
+        }
+        assert User.objects.count() == 0
+        response: Response = client.post(self.url(), data, format="json")
+        assert User.objects.count() == 1
+        assert response.status_code == 201
+        assert User.objects.first().profile.preferred_language == "EN"
+        assert len(mail.outbox) == 1
+
+    def test_sign_up_is_successfully_with_default_language_if_wrong_passed(
+        self, client: APIClient
+    ) -> None:
+        data: dict = {
+            "first_name": "Test",
+            "last_name": "Tested",
+            "email": "unusedemai@appname.me",
+            "password": "strong_password",
+            "password_confirmation": "strong_password",
+            "language": "WRONG",
+        }
+        assert User.objects.count() == 0
+        response: Response = client.post(self.url(), data, format="json")
+        assert User.objects.count() == 1
+        assert response.status_code == 201
+        assert User.objects.first().profile.preferred_language == "EN"
         assert len(mail.outbox) == 1
