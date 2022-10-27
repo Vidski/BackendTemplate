@@ -86,8 +86,11 @@ class UserAdmin(BaseUserAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display: tuple = ("nickname", "gender", "birth_date")
-    list_display_links: tuple = ("nickname",)
+    list_display: tuple = ("user", "nickname", "gender", "birth_date")
+    list_display_links: tuple = (
+        "user",
+        "nickname",
+    )
     list_filter: tuple = ("gender", "birth_date")
     fieldsets: tuple = (
         ("User", {"fields": ("user",)}),
@@ -95,7 +98,7 @@ class ProfileAdmin(admin.ModelAdmin):
             "Personal info",
             {"fields": ("image", "birth_date", "gender")},
         ),
-        ("Account info", {"fields": ("nickname", "bio")}),
+        ("Account info", {"fields": ("nickname", "bio", "preferred_language")}),
     )
     search_fields: tuple = ("nickname", "id")
     ordering: tuple = ("user", "nickname", "gender", "birth_date")
