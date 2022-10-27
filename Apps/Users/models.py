@@ -9,7 +9,6 @@ from django.db.models import Field
 from django.db.models import Model
 from django.db.models.fields.related import ForeignObject
 from django.dispatch import receiver
-from django.utils.translation import gettext_lazy as _
 from django_prometheus.models import ExportModelOperationsMixin
 from django_rest_passwordreset.signals import reset_password_token_created
 from phonenumber_field.modelfields import PhoneNumberField
@@ -127,8 +126,8 @@ class User(
         if not has_profile and self.is_verified:
             self.create_profile()
 
-    def create_profile(self) -> None:
-        Profile.objects.create(user=self)
+    def create_profile(self, preferred_language: str = "EN") -> None:
+        Profile.objects.create(user=self, preferred_language=preferred_language)
 
     def has_perm(self, permission: str, object: Model = None) -> bool:
         return self.is_admin
@@ -148,7 +147,7 @@ class User(
 
     @property
     def name(self) -> str:
-        return self.first_name + " " + self.last_name
+        return f"{self.first_name} {self.last_name}"
 
     @property
     def is_staff(self) -> bool:
