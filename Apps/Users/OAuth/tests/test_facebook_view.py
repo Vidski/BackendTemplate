@@ -51,3 +51,68 @@ class TestFacebookAuthView:
         }
         response: Response = client.post(self.url(), {"token": "token"})
         assert response.status_code == 200
+
+    @patch("facebook.GraphAPI.request")
+    def test_facebook_view_creates_new_user_with_custom_language(
+        self, request: MagicMock, client: APIClient
+    ) -> None:
+        email: str = "test@test.com"
+        request.return_value = {
+            "email": email,
+            "first_name": "Test",
+            "last_name": "Test",
+        }
+        assert not User.objects.filter(email=email).exists()
+        data: dict = {
+            "token": "token",
+            "preferred_language": "ES",
+        }
+        assert User.objects.count() == 0
+        response: Response = client.post(self.url(), data)
+        assert response.status_code == 200
+        assert User.objects.count() == 1
+        assert User.objects.filter(email=email).exists()
+        assert User.objects.first().profile.preferred_language == "ES"
+
+    @patch("facebook.GraphAPI.request")
+    def test_facebook_view_creates_new_user_with_default_language_if_not_passed(
+        self, request: MagicMock, client: APIClient
+    ) -> None:
+        email: str = "test@test.com"
+        request.return_value = {
+            "email": email,
+            "first_name": "Test",
+            "last_name": "Test",
+        }
+        assert not User.objects.filter(email=email).exists()
+        data: dict = {
+            "token": "token",
+        }
+        assert User.objects.count() == 0
+        response: Response = client.post(self.url(), data)
+        assert response.status_code == 200
+        assert User.objects.count() == 1
+        assert User.objects.filter(email=email).exists()
+        assert User.objects.first().profile.preferred_language == "EN"
+
+    @patch("facebook.GraphAPI.request")
+    def test_facebook_view_creates_new_user_with_default_language_if_wrong_passed(
+        self, request: MagicMock, client: APIClient
+    ) -> None:
+        email: str = "test@test.com"
+        request.return_value = {
+            "email": email,
+            "first_name": "Test",
+            "last_name": "Test",
+        }
+        assert not User.objects.filter(email=email).exists()
+        data: dict = {
+            "token": "token",
+            "preferred_language": "WRONG",
+        }
+        assert User.objects.count() == 0
+        response: Response = client.post(self.url(), data)
+        assert response.status_code == 200
+        assert User.objects.count() == 1
+        assert User.objects.filter(email=email).exists()
+        assert User.objects.first().profile.preferred_language == "EN"
