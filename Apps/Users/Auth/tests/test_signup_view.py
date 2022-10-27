@@ -113,7 +113,7 @@ class TestUserSignUpEndpoint:
             "email": "unusedemai@appname.me",
             "password": "strong_password",
             "password_confirmation": "strong_password",
-            "language": "ES",
+            "preferred_language": "ES",
         }
         assert User.objects.count() == 0
         response: Response = client.post(self.url(), data, format="json")
@@ -148,7 +148,7 @@ class TestUserSignUpEndpoint:
             "email": "unusedemai@appname.me",
             "password": "strong_password",
             "password_confirmation": "strong_password",
-            "language": "WRONG",
+            "preferred_language": "WRONG",
         }
         assert User.objects.count() == 0
         response: Response = client.post(self.url(), data, format="json")

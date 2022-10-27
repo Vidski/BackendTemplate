@@ -25,7 +25,7 @@ class UserAuthViewSet(ViewSet):
     @action(detail=False, methods=["post"], permission_classes=[AllowAny])
     def signup(self, request: HttpRequest) -> Response:
         data: dict = request.data
-        language: str = data.pop("language") if "language" in data else None
+        language: str = data.pop("preferred_language", None)
         serializer: UserSignUpSerializer = UserSignUpSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         user: User = serializer.save()
