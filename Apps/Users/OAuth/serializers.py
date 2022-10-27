@@ -14,21 +14,28 @@ from Users.OAuth.user_handler import RegisterOrLoginViaGoogle
 from Users.OAuth.user_handler import RegisterOrLoginViaTwitter
 
 
-class GoogleOAuthSerializer(Serializer):
+class BaseSerializer(Serializer):
+    def get_base_data(self) -> dict:
+        language: str = self.get_initial().get("preferred_language", None)
+        return {"preferred_language": language}
+
+
+class GoogleOAuthSerializer(BaseSerializer):
     token: CharField = CharField()
     preferred_language = CharField(required=False)
 
     def validate_token(self, token: str) -> bool:
         user_data: dict = self.get_user_data(token)
         self.validate_aud(user_data["aud"])
-        language: str = self.get_initial().get("preferred_language", None)
-        user_data["preferred_language"] = language
         self._data: dict = RegisterOrLoginViaGoogle(user_data).serialized_user
         return True
 
     def get_user_data(self, token: str) -> dict:
         try:
-            return verify_oauth2_token(token, Request())
+            return {
+                **self.get_base_data(),
+                **verify_oauth2_token(token, Request()),
+            }
         except:
             raise ValidationError("Token is invalid or expired. Try again.")
 
@@ -37,14 +44,12 @@ class GoogleOAuthSerializer(Serializer):
             raise AuthenticationFailed("Google client id is invalid")
 
 
-class FacebookOAuthSerializer(Serializer):
+class FacebookOAuthSerializer(BaseSerializer):
     token: CharField = CharField()
     preferred_language = CharField(required=False)
 
     def validate_token(self, token: str) -> bool:
         user_data = self.get_user_data(token)
-        language: str = self.get_initial().get("preferred_language", None)
-        user_data["preferred_language"] = language
         self._data: dict = RegisterOrLoginViaFacebook(user_data).serialized_user
         return True
 
@@ -52,13 +57,12 @@ class FacebookOAuthSerializer(Serializer):
         try:
             graph: GraphAPI = GraphAPI(access_token=token)
             graph_query: str = "/me?fields=first_name,last_name,email"
-            user_data: dict = graph.request(graph_query)
-            return user_data
+            return {**self.get_base_data(), **graph.request(graph_query)}
         except:
             raise ValidationError("Token is invalid or expired. Try again.")
 
 
-class TwitterOAuthSerializer(Serializer):
+class TwitterOAuthSerializer(BaseSerializer):
     access_token_key: CharField = CharField()
     access_token_secret: CharField = CharField()
     preferred_language = CharField(required=False)
@@ -66,8 +70,6 @@ class TwitterOAuthSerializer(Serializer):
     def validate(self, attributes: dict) -> bool:
         twitter_user: TwitterUser = self.get_user_data(attributes)
         user_data: dict = self.get_dictionary_of_user_data(twitter_user)
-        language: str = self.get_initial().get("preferred_language", None)
-        user_data["preferred_language"] = language
         self._data: dict = RegisterOrLoginViaTwitter(user_data).serialized_user
         return True
 
@@ -82,6 +84,7 @@ class TwitterOAuthSerializer(Serializer):
         if not getattr(user, "email", None):
             raise ValidationError("Email is not available and is required.")
         return {
+            **self.get_base_data(),
             "email": getattr(user, "email"),
             "name": getattr(user, "name", None),
         }
