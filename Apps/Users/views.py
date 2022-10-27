@@ -65,7 +65,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows to interact with Profile model;
     List, create and destroy are only available only for admin users because the
-    create and destroy will be triggered when verify/delete the user instance
+    create and destroy will be triggered when signup/delete the user instance
     """
 
     queryset: QuerySet = Profile.objects.all().order_by("-created_at")
