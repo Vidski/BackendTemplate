@@ -13,6 +13,7 @@ from Emails import factories
 from Emails.abstracts import AbstractEmailFunctionClass
 from Emails.choices import CommentType
 from Emails.choices import EmailAffair
+from Users.choices import PreferredLanguageChoices
 from Users.fakers.user import EmailTestUserFaker
 from Users.models import User
 
@@ -47,6 +48,13 @@ class Email(models.Model, AbstractEmailFunctionClass):
     programed_send_date: Field = models.DateTimeField(null=True)
     to: ForeignObject = models.ForeignKey(
         User, on_delete=models.CASCADE, null=False, related_name="to_user"
+    )
+    language: Field = models.CharField(
+        "Preferred language",
+        max_length=2,
+        choices=PreferredLanguageChoices.choices,
+        default=PreferredLanguageChoices.ENGLISH,
+        null=True,
     )
 
     def __str__(self) -> str:

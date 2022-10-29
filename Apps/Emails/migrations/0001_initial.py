@@ -195,6 +195,21 @@ class Migration(migrations.Migration):
                         to=settings.AUTH_USER_MODEL,
                     ),
                 ),
+                (
+                    "language",
+                    models.CharField(
+                        choices=[
+                            ("EN", "English"),
+                            ("ES", "Spanish"),
+                            ("FR", "French"),
+                            ("OT", "Other"),
+                        ],
+                        default="EN",
+                        max_length=2,
+                        null=True,
+                        verbose_name="Preferred language",
+                    ),
+                ),
             ],
             bases=(models.Model, Emails.abstracts.AbstractEmailFunctionClass),
         ),
