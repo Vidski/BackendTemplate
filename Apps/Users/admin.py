@@ -96,9 +96,9 @@ class ProfileAdmin(admin.ModelAdmin):
         ("User", {"fields": ("user",)}),
         (
             "Personal info",
-            {"fields": ("image", "birth_date", "gender")},
+            {"fields": ("image", "birth_date", "gender", "preferred_language")},
         ),
-        ("Account info", {"fields": ("nickname", "bio", "preferred_language")}),
+        ("Account info", {"fields": ("nickname", "bio")}),
     )
     search_fields: tuple = ("nickname", "id")
     ordering: tuple = ("user", "nickname", "gender", "birth_date")
