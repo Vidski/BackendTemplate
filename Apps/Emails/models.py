@@ -122,6 +122,13 @@ class Notification(models.Model, AbstractEmailFunctionClass):
     subject: Field = models.CharField(max_length=100)
     is_test: Field = models.BooleanField(default=False)
     programed_send_date: Field = models.DateTimeField(null=True)
+    language: Field = models.CharField(
+        "Preferred language",
+        max_length=2,
+        choices=PreferredLanguageChoices.choices,
+        default=PreferredLanguageChoices.ENGLISH,
+        null=True,
+    )
 
     def __str__(self) -> str:
         return f"{self.id} | {self.subject}"
@@ -135,7 +142,9 @@ class Notification(models.Model, AbstractEmailFunctionClass):
         self.save()
 
     def create_email_for_every_user(self) -> None:
-        for user in User.objects.all():
+        for user in User.objects.filter(
+            profile__preferred_language=self.language
+        ):
             self.create_email(user)
 
     def create_email(self, to: User) -> None:

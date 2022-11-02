@@ -145,6 +145,21 @@ class Migration(migrations.Migration):
                         related_name="%(class)s_blocks", to="Emails.block"
                     ),
                 ),
+                (
+                    "language",
+                    models.CharField(
+                        choices=[
+                            ("EN", "English"),
+                            ("ES", "Spanish"),
+                            ("FR", "French"),
+                            ("OT", "Other"),
+                        ],
+                        default="EN",
+                        max_length=2,
+                        null=True,
+                        verbose_name="Preferred language",
+                    ),
+                ),
             ],
             bases=(models.Model, Emails.abstracts.AbstractEmailFunctionClass),
         ),
