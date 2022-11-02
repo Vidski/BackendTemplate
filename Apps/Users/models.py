@@ -156,6 +156,13 @@ class User(
     def is_staff(self) -> bool:
         return self.is_admin
 
+    @property
+    def preferred_language(self) -> str:
+        profile: Profile or None = getattr(self, "profile", None)
+        if not profile or not profile.preferred_language:
+            return PreferredLanguageChoices.ENGLISH
+        return self.profile.preferred_language
+
 
 class Profile(models.Model):
     user: ForeignObject = models.OneToOneField(
