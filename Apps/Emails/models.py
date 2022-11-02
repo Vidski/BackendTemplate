@@ -142,10 +142,9 @@ class Notification(models.Model, AbstractEmailFunctionClass):
         self.save()
 
     def create_email_for_every_user(self) -> None:
-        for user in User.objects.filter(
-            profile__preferred_language=self.language
-        ):
-            self.create_email(user)
+        for user in User.objects.all():
+            if user.preferred_language == self.language:
+                self.create_email(user)
 
     def create_email(self, to: User) -> None:
         factories.email.EmailFactory(
