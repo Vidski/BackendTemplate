@@ -51,6 +51,50 @@ class TestUserModel:
         has_permission: bool = user.has_permission(user)
         assert has_permission == True
 
+    def test_create_profile(self) -> None:
+        user: User = UserFaker()
+        assert getattr(user, "profile", None) is None
+        assert Profile.objects.count() == 0
+        user.create_profile()
+        assert Profile.objects.count() == 1
+        assert getattr(user, "profile", None) is not None
+
+    def test_create_profile_does_not_fails_if_profile_already_exists(
+        self,
+    ) -> None:
+        user: User = UserFaker()
+        user.create_profile()
+        assert Profile.objects.count() == 1
+        user.create_profile()
+        assert Profile.objects.count() == 1
+
+    def test_create_profile_with_default_language(self) -> None:
+        user: User = UserFaker()
+        assert getattr(user, "profile", None) is None
+        assert Profile.objects.count() == 0
+        user.create_profile()
+        assert Profile.objects.count() == 1
+        assert getattr(user, "profile", None) is not None
+        assert user.profile.preferred_language == "EN"
+
+    def test_create_profile_with_default_language_if_wrong_passed(self) -> None:
+        user: User = UserFaker()
+        assert getattr(user, "profile", None) is None
+        assert Profile.objects.count() == 0
+        user.create_profile("WRONG")
+        assert Profile.objects.count() == 1
+        assert getattr(user, "profile", None) is not None
+        assert user.profile.preferred_language == "EN"
+
+    def test_create_profile_with_custom_language(self) -> None:
+        user: User = UserFaker()
+        assert getattr(user, "profile", None) is None
+        assert Profile.objects.count() == 0
+        user.create_profile("ES")
+        assert Profile.objects.count() == 1
+        assert getattr(user, "profile", None) is not None
+        assert user.profile.preferred_language == "ES"
+
     def test_has_module_perms_as_admin(self) -> None:
         user: User = AdminFaker()
         assert user.has_module_perms("Users") == True
