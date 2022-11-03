@@ -121,12 +121,6 @@ class User(
     def __str__(self) -> str:
         return self.email
 
-    def save(self, *args: tuple, **kwargs: dict) -> None:
-        super().save(*args, **kwargs)
-        has_profile: bool = Profile.objects.filter(user=self).exists()
-        if not has_profile and self.is_verified:
-            self.create_profile()
-
     def create_profile(self, preferred_language: str = None) -> None:
         profiles: Manager = Profile.objects
         possible_choices: list = PreferredLanguageChoices.values
