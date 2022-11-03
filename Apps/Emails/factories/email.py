@@ -43,6 +43,9 @@ class ResetEmailFactory(EmailFactory):
     header: str = settings.RESET_PASSWORD_EMAIL_HEADER
     to: User = factory.LazyAttribute(lambda object: object.instance.user)
     programed_send_date: datetime = None
+    language: str = factory.LazyAttribute(
+        lambda object: object.instance.user.preferred_language
+    )
 
     @factory.post_generation
     def blocks(self, create: bool, extracted: Model, **kwargs: dict) -> None:
@@ -61,6 +64,9 @@ class VerifyEmailFactory(EmailFactory):
     header: str = settings.VERIFY_EMAIL_HEADER
     to: User = factory.LazyAttribute(lambda object: object.instance)
     programed_send_date: datetime = None
+    language: str = factory.LazyAttribute(
+        lambda object: object.instance.preferred_language
+    )
 
     @factory.post_generation
     def blocks(self, create: bool, extracted: Model, **kwargs: dict) -> None:

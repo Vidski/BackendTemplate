@@ -85,7 +85,7 @@ class TestEmailFactories:
     def test_verify_email_factory_raises_exception(self) -> None:
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
-        with pytest.raises(IntegrityError):
+        with pytest.raises(AttributeError):
             with transaction.atomic():
                 VerifyEmailFactory()
         assert Email.objects.count() == 0
