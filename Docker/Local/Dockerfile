@@ -5,6 +5,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends build-essential
+RUN apt-get install -y gettext
 RUN rm -rf /var/lib/apt/lists/*
 COPY ./Requirements/* /tmp/Requirements/
 RUN /usr/local/bin/python -m pip install --upgrade pip

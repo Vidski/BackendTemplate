@@ -85,6 +85,7 @@ populate: ## Populates the database with dummy data. ***
 .PHONY: test
 test: ## Run the tests. ****
 	@${COMMAND} "${MANAGE} create_test_db"
+	@${COMMAND} "${MANAGE} compilemessages"
 ifeq (${TEST_PATH},)
 	@${COMMAND} "pytest . --reuse-db ${PYTEST_SETTINGS}"
 else
