@@ -86,14 +86,17 @@ class UserAdmin(BaseUserAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display: tuple = ("nickname", "gender", "birth_date")
-    list_display_links: tuple = ("nickname",)
+    list_display: tuple = ("user", "nickname", "gender", "birth_date")
+    list_display_links: tuple = (
+        "user",
+        "nickname",
+    )
     list_filter: tuple = ("gender", "birth_date")
     fieldsets: tuple = (
         ("User", {"fields": ("user",)}),
         (
             "Personal info",
-            {"fields": ("image", "birth_date", "gender")},
+            {"fields": ("image", "birth_date", "gender", "preferred_language")},
         ),
         ("Account info", {"fields": ("nickname", "bio")}),
     )

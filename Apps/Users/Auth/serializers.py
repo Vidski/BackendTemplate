@@ -10,6 +10,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from Emails.utils import send_email
+from Project.utils.log import log_information
 from Users.models import User
 from Users.serializers import ProfileSerializer
 
@@ -90,6 +91,9 @@ class UserSignUpSerializer(serializers.Serializer):
     password_confirmation = serializers.CharField(
         write_only=True, min_length=8, max_length=64, required=True
     )
+    preferred_language = serializers.CharField(
+        write_only=True, min_length=2, max_length=2, required=False
+    )
 
     def validate_password(self, password: str) -> str:
         password_confirmation = self.initial_data["password_confirmation"]
@@ -100,6 +104,9 @@ class UserSignUpSerializer(serializers.Serializer):
 
     def create(self, data):
         data.pop("password_confirmation")
-        user = User.objects.create_user(**data, is_verified=False)
+        language: str = data.pop("preferred_language", None)
+        user: User = User.objects.create_user(**data, is_verified=False)
+        user.create_profile(language)
         send_email("verify_email", user)
+        log_information("registered", user)
         return user

@@ -97,7 +97,9 @@ class TestProfileRetrieveEndpoint:
         self, client: APIClient
     ) -> None:
         user: User = VerifiedUserFaker()
-        other_user: User = UserFaker(email="other@user.com", is_verified=True)
+        other_user: User = VerifiedUserFaker(
+            email="other@user.com", is_verified=True
+        )
         client.force_authenticate(user=user)
         profile_id: int = other_user.profile.id
         response: Response = client.get(self.url(profile_id), format="json")

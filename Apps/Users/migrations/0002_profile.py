@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('bio', models.TextField(null=True, verbose_name='Bio')),
                 ('image', models.ImageField(null=True, upload_to=storage.image_file_upload, verbose_name='Profile image')),
                 ('gender', models.CharField(choices=[('F', 'Female'), ('M', 'Male'), ('N', 'Non-binary'), ('P', 'Prefer not to say')], default='P', max_length=1, null=True, verbose_name='Gender')),
-                ('preferred_language', models.CharField(choices=[('EN', 'English'), ('ES', 'Spanish'), ('FR', 'French'), ('OT', 'Other')], default='OT', max_length=2, null=True, verbose_name='Preferred language')),
+                ('preferred_language', models.CharField(choices=[('EN', 'English'), ('ES', 'Spanish'), ('FR', 'French'), ('OT', 'Other')], default='EN', max_length=2, null=True, verbose_name='Preferred language')),
                 ('birth_date', models.DateField(null=True, verbose_name='Birth date')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Creation date')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Update date')),

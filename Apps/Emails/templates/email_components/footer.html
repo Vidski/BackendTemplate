@@ -1,6 +1,6 @@
 <div class="footer">
   <div align="center" class="footer-heading">
-    <h2 class="footer-title">Follow Us</h2>
+    <h2 class="footer-title">{{follow_text}}</h2>
   </div>
   <div class="social-div">
     {% with social_networks="facebook twitter instagram" %}
@@ -14,12 +14,13 @@
               src="http://localhost:8000/static/email/images/{{social_network}}.png"
               alt="{{social_network}} icon"
               class="social-logo"
-          /></a>
+            />
+          </a>
         </div>
       {% endfor %}
     {% endwith %}
   </div>
   <a href="" target="_blank">
-    <p class="unsubscribe">Click here to unsubscribe.</p>
+    <p class="unsubscribe">{{unsubscribe_text}}</p>
   </a>
 </div>

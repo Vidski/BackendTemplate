@@ -8,8 +8,8 @@ from django.db import models
 from django.db.models import Field
 from django.db.models import Model
 from django.db.models.fields.related import ForeignObject
+from django.db.models.manager import Manager
 from django.dispatch import receiver
-from django.utils.translation import gettext_lazy as _
 from django_prometheus.models import ExportModelOperationsMixin
 from django_rest_passwordreset.signals import reset_password_token_created
 from phonenumber_field.modelfields import PhoneNumberField
@@ -121,14 +121,13 @@ class User(
     def __str__(self) -> str:
         return self.email
 
-    def save(self, *args: tuple, **kwargs: dict) -> None:
-        super().save(*args, **kwargs)
-        has_profile: bool = Profile.objects.filter(user=self).exists()
-        if not has_profile and self.is_verified:
-            self.create_profile()
-
-    def create_profile(self) -> None:
-        Profile.objects.create(user=self)
+    def create_profile(self, preferred_language: str = None) -> None:
+        profiles: Manager = Profile.objects
+        possible_choices: list = PreferredLanguageChoices.values
+        if not preferred_language or preferred_language not in possible_choices:
+            preferred_language = PreferredLanguageChoices.ENGLISH
+        if not profiles.filter(user=self).exists():
+            profiles.create(user=self, preferred_language=preferred_language)
 
     def has_perm(self, permission: str, object: Model = None) -> bool:
         return self.is_admin
@@ -148,11 +147,18 @@ class User(
 
     @property
     def name(self) -> str:
-        return self.first_name + " " + self.last_name
+        return f"{self.first_name} {self.last_name}"
 
     @property
     def is_staff(self) -> bool:
         return self.is_admin
+
+    @property
+    def preferred_language(self) -> str:
+        profile: Profile or None = getattr(self, "profile", None)
+        if not profile or not profile.preferred_language:
+            return PreferredLanguageChoices.ENGLISH
+        return self.profile.preferred_language
 
 
 class Profile(models.Model):
@@ -185,7 +191,7 @@ class Profile(models.Model):
         "Preferred language",
         max_length=2,
         choices=PreferredLanguageChoices.choices,
-        default=PreferredLanguageChoices.OTHER,
+        default=PreferredLanguageChoices.ENGLISH,
         null=True,
     )
     birth_date: Field = models.DateField(

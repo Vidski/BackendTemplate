@@ -25,6 +25,13 @@ class VerifiedUserFaker(UserFaker):
     phone_number: str = factory.Faker("msisdn")
     is_verified: bool = True
 
+    @factory.post_generation
+    def create_profile(
+        self, create: bool, extracted: Model, **kwargs: dict
+    ) -> None:
+        if create:
+            self.create_profile()
+
 
 class AdminFaker(UserFaker):
     phone_number: str = factory.Faker("msisdn")

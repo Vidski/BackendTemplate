@@ -248,6 +248,26 @@ class TestNotificationModel:
         assert notification.sent_date is not None
         assert notification.was_sent is True
 
+    def test_send_notification_to_users_with_notification_language(
+        self,
+    ) -> None:
+        assert Email.objects.all().count() == 0
+        first_user: User = UserFaker()
+        first_user.create_profile(preferred_language="EN")
+        second_user: User = UserFaker()
+        second_user.create_profile(preferred_language="ES")
+        notification: Notification = NotificationFactory(
+            is_test=False, language="ES"
+        )
+        assert notification.sent_date is None
+        assert notification.was_sent is False
+        notification.send()
+        assert Email.objects.all().count() == 2
+        assert Email.objects.first().to == second_user
+        assert Email.objects.last().to == EmailTestUserFaker()
+        assert notification.sent_date is not None
+        assert notification.was_sent is True
+
     def test_create_email(self) -> None:
         notification: Notification = NotificationFactory()
         user: User = UserFaker()
