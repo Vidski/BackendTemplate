@@ -94,7 +94,7 @@ endif
 
 .PHONY: fast-test
 fast-test: ## Run the tests in parallel. ****
-	@${COMMAND} "${MANAGE} compilemessages"
+	@${NON_INTERACTIVE_COMMAND} "${MANAGE} compilemessages"
 	@${NON_INTERACTIVE_COMMAND} "pytest . ${PYTEST_SETTINGS} -n auto"
 
 .PHONY: test-with-coverage
