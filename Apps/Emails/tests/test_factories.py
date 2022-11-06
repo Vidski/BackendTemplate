@@ -75,12 +75,12 @@ class TestEmailFactories:
         assert email.programed_send_date is not None
         assert email.blocks is not None
         block: Block = email.blocks.first()
-        assert settings.EMAIL_GREETING in block.title
+        assert str(settings.EMAIL_GREETING) in block.title
         assert user.first_name in block.title
         assert block.content == settings.RESET_PASSWORD_EMAIL_CONTENT
         assert block.show_link
         assert block.link_text == settings.RESET_PASSWORD_EMAIL_LINK_TEXT
-        assert settings.RESET_PASSWORD_URL in block.link
+        assert str(settings.RESET_PASSWORD_URL) in block.link
 
     def test_verify_email_factory_raises_exception(self) -> None:
         assert Email.objects.count() == 0
@@ -99,18 +99,18 @@ class TestEmailFactories:
         assert Email.objects.count() == 1
         assert Block.objects.count() == 1
         assert email.subject == settings.VERIFY_EMAIL_SUBJECT
-        assert email.header == settings.VERIFY_EMAIL_HEADER
+        assert email.header == settings.VERIFY_EMAIL_HEADER + settings.APP_NAME
         assert email.is_test is False
         assert email.to == user
         assert email.programed_send_date is not None
         assert email.blocks is not None
         block: Block = email.blocks.first()
-        assert settings.EMAIL_GREETING in block.title
+        assert str(settings.EMAIL_GREETING) in block.title
         assert user.first_name in block.title
         assert block.content == settings.VERIFY_EMAIL_CONTENT
         assert block.show_link
         assert block.link_text == settings.VERIFY_EMAIL_LINK_TEXT
-        assert settings.VERIFY_EMAIL_URL in block.link
+        assert str(settings.VERIFY_EMAIL_URL) in block.link
         assert generate_user_verification_token(user) in block.link
         assert f"{user.id}" in block.link
 
