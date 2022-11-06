@@ -148,7 +148,7 @@ class TestUserSignUpEndpoint:
             "email": "unusedemai@appname.me",
             "password": "strong_password",
             "password_confirmation": "strong_password",
-            "preferred_language": "WRONG",
+            "preferred_language": "WR",
         }
         assert User.objects.count() == 0
         response: Response = client.post(self.url(), data, format="json")
