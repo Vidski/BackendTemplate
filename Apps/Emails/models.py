@@ -13,6 +13,7 @@ from Emails import factories
 from Emails.abstracts import AbstractEmailFunctionClass
 from Emails.choices import CommentType
 from Emails.choices import EmailAffair
+from Project.utils.translation import get_translation_in
 from Users.choices import PreferredLanguageChoices
 from Users.fakers.user import EmailTestUserFaker
 from Users.models import User
@@ -67,6 +68,17 @@ class Email(models.Model, AbstractEmailFunctionClass):
         if not self.programed_send_date or self.programed_send_date <= now():
             five_minutes_ahead: datetime = now() + timedelta(minutes=5)
             self.programed_send_date = five_minutes_ahead
+
+    def get_email_data(self) -> dict:
+        return {
+            **super().get_email_data(),
+            "follow_text": get_translation_in(
+                self.language, settings.FOLLOW_TEXT
+            ),
+            "unsubscribe_text": get_translation_in(
+                self.language, settings.UNSUBSCRIBE_TEXT
+            ),
+        }
 
     def save(self, *args: tuple, **kwargs: dict) -> None:
         if self.is_test:
