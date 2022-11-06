@@ -3,14 +3,12 @@ from datetime import datetime
 from logging import Logger
 
 import pytest
-from django.conf import settings
 from freezegun import freeze_time
 from mock import MagicMock
 from mock import PropertyMock
 
 from Project.utils.log import log_email_action
 from Project.utils.log import log_information
-from Project.utils.translation import get_translation_in
 
 
 @pytest.mark.django_db
@@ -66,11 +64,3 @@ class TestAppUtils:
             + f"sent to test@test.com at {now}"
         )
         assert expected_message in caplog.text
-
-
-class TestTranslationUtil:
-    def test_get_translation(self) -> None:
-        text: str = settings.EMAIL_GREETING
-        assert text == "Hi,"
-        translated_text: str = get_translation_in("ES", text)
-        assert translated_text == "Hola,"
