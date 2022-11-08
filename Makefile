@@ -43,6 +43,8 @@ help:	## Show this help which show all the possible make targets and its descrip
 	@echo "*** You can modify the number of instances created with INSTANCES parameter."
 	@echo "**** You can modify the path that will be tested with TEST_PATH parameter."
 	@echo ""
+	@echo "You can interact with docker-compose using the following schema:"
+	@echo "docker-compose -f ./Docker/Local/docker-compose.yml --env-file ./Docker/Local/docker.env"
 
 ifeq (docker,$(firstword $(MAKECMDGOALS)))
   ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
