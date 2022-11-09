@@ -56,6 +56,37 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
+                    "gender",
+                    models.CharField(
+                        choices=[
+                            ("F", "Female"),
+                            ("M", "Male"),
+                            ("N", "Non-binary"),
+                            ("P", "Prefer not to say")
+                        ],
+                        default="P",
+                        max_length=1,
+                        null=True,
+                        verbose_name="Gender"
+                    )
+                ),
+                (
+                    "preferred_language",
+                    models.CharField(
+                        choices=[
+                            ("EN", "English"),
+                            ("ES", "Spanish"),
+                            ("FR", "French"),
+                            ("OT", "Other")
+                        ],
+                        default="EN",
+                        max_length=2,
+                        null=True,
+                        verbose_name="Preferred language"
+                    )
+                ),
+                ('birth_date', models.DateField(null=True, verbose_name='Birth date')),
+                (
                     "is_verified",
                     models.BooleanField(default=False, verbose_name="Verified"),
                 ),

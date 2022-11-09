@@ -100,6 +100,23 @@ class User(
         unique=True,
         error_messages={"unique": "This number already exists."},
     )
+    gender: Field = models.CharField(
+        "Gender",
+        max_length=1,
+        choices=GenderChoices.choices,
+        default=GenderChoices.NOT_SAID,
+        null=True,
+    )
+    birth_date: Field = models.DateField(
+        "Birth date", null=True, auto_now_add=False
+    )
+    preferred_language: Field = models.CharField(
+        "Preferred language",
+        max_length=2,
+        choices=PreferredLanguageChoices.choices,
+        default=PreferredLanguageChoices.ENGLISH,
+        null=True,
+    )
     is_verified: Field = models.BooleanField("Verified", default=False)
     is_premium: Field = models.BooleanField("Premium", default=False)
     is_admin: Field = models.BooleanField("Admin", default=False)
@@ -154,11 +171,12 @@ class User(
         return self.is_admin
 
     @property
-    def preferred_language(self) -> str:
-        profile: Profile or None = getattr(self, "profile", None)
-        if not profile or not profile.preferred_language:
-            return PreferredLanguageChoices.ENGLISH
-        return self.profile.preferred_language
+    def is_adult(self) -> bool:
+        if not self.birth_date:
+            return None
+        adultness: datetime = datetime.now() - relativedelta(years=18)
+        birthday: datetime = datetime.strptime(str(self.birth_date), "%Y-%m-%d")
+        return birthday < adultness
 
 
 class Profile(models.Model):
@@ -180,35 +198,11 @@ class Profile(models.Model):
         upload_to=image_file_upload,
         null=True,
     )
-    gender: Field = models.CharField(
-        "Gender",
-        max_length=1,
-        choices=GenderChoices.choices,
-        default=GenderChoices.NOT_SAID,
-        null=True,
-    )
-    preferred_language: Field = models.CharField(
-        "Preferred language",
-        max_length=2,
-        choices=PreferredLanguageChoices.choices,
-        default=PreferredLanguageChoices.ENGLISH,
-        null=True,
-    )
-    birth_date: Field = models.DateField(
-        "Birth date", null=True, auto_now_add=False
-    )
     created_at: Field = models.DateTimeField("Creation date", auto_now_add=True)
     updated_at: Field = models.DateTimeField("Update date", auto_now=True)
 
     def __str__(self) -> str:
         return f"User ({self.user_id}) profile ({self.pk})"
-
-    def is_adult(self) -> bool:
-        if not self.birth_date:
-            return None
-        adultness: datetime = datetime.now() - relativedelta(years=18)
-        birthday: datetime = datetime.strptime(str(self.birth_date), "%Y-%m-%d")
-        return birthday < adultness
 
 
 @receiver(reset_password_token_created)
