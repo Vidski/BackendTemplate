@@ -8,71 +8,14 @@ from django.db import models
 from django.db.models import Field
 from django.db.models import Model
 from django.db.models.fields.related import ForeignObject
-from django.dispatch import receiver
 from django_prometheus.models import ExportModelOperationsMixin
-from django_rest_passwordreset.signals import reset_password_token_created
 from phonenumber_field.modelfields import PhoneNumberField
-from rest_framework.views import View
 
 from Project.storage import image_file_upload
 from Users.choices import AuthProviders
 from Users.choices import GenderChoices
 from Users.choices import PreferredLanguageChoices
-
-
-class CustomUserManager(BaseUserManager):
-    """
-    Custom user model manager where email is the unique identifiers
-    for authentication instead of usernames.
-    """
-
-    def create_user(
-        self,
-        email: str,
-        password: str,
-        first_name: str,
-        last_name: str,
-        **extra_fields: dict,
-    ) -> Model:
-        """
-        Creates and saves a User with the given email and password.
-        """
-        if not email:
-            raise ValueError("The given email must be set")
-        email: str = self.normalize_email(email)
-        user: User = self.model(
-            email=email,
-            first_name=first_name,
-            last_name=last_name,
-            **extra_fields,
-        )
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(
-        self,
-        email: str,
-        first_name: str,
-        last_name: str,
-        password: str,
-        **extra_fields: dict,
-    ) -> Model:
-        """
-        Create and save a SuperUser with the given email and password.
-        """
-        user: User = self.model(
-            email=email,
-            first_name=first_name,
-            last_name=last_name,
-            **extra_fields,
-        )
-        user.set_password(password)
-        user.is_admin = True
-        user.is_verified = True
-        user.is_premium = True
-        user.save(using=self._db)
-        return user
+from Users.manager import CustomUserManager
 
 
 class User(
@@ -198,16 +141,3 @@ class Profile(models.Model):
 
     def __str__(self) -> str:
         return f"User ({self.user_id}) profile ({self.pk})"
-
-
-@receiver(reset_password_token_created)
-def password_reset_token_created(
-    sender: View,
-    instance: Model,
-    reset_password_token: Model,
-    *args: tuple,
-    **kwargs: dict,
-) -> None:
-    from Emails.utils import send_email
-
-    send_email("reset_password", reset_password_token)
