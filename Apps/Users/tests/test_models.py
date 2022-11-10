@@ -1,9 +1,11 @@
+from datetime import datetime
+
 import pytest
+from dateutil.relativedelta import relativedelta
 
 from Users.factories.profile import ProfileFactory
 from Users.factories.user import UserFactory
-from Users.fakers.profile import AdultProfileFaker
-from Users.fakers.profile import KidProfileFaker
+from Users.fakers.profile import BaseProfileFaker
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.models import Profile
@@ -99,6 +101,26 @@ class TestUserModel:
     def test_str_user(self) -> None:
         user: User = UserFaker()
         assert str(user) == f"{user.email}"
+
+    def test_null_adultness_user_faker(self) -> None:
+        assert User.objects.count() == 0
+        user: User = UserFaker()
+        assert User.objects.count() == 1
+        assert user.is_adult == None
+
+    def test_adult_user_faker(self) -> None:
+        assert User.objects.count() == 0
+        _20_years_ago: datetime = datetime.now() - relativedelta(years=20)
+        user: User = UserFaker(birth_date=_20_years_ago.strftime("%Y-%m-%d"))
+        assert User.objects.count() == 1
+        assert user.is_adult == True
+
+    def test_kid_user_faker(self) -> None:
+        assert User.objects.count() == 0
+        _17_years_ago: datetime = datetime.now() - relativedelta(years=17)
+        user: User = UserFaker(birth_date=_17_years_ago.strftime("%Y-%m-%d"))
+        assert User.objects.count() == 1
+        assert user.is_adult == False
 
 
 @pytest.mark.django_db

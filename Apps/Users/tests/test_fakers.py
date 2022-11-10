@@ -1,11 +1,6 @@
 import pytest
 
-from Users.fakers.profile import AdultProfileFaker
-from Users.fakers.profile import FemaleProfileFaker
-from Users.fakers.profile import KidProfileFaker
-from Users.fakers.profile import MaleProfileFaker
-from Users.fakers.profile import NonBinaryProfileFaker
-from Users.fakers.profile import NotSaidProfileFaker
+from Users.fakers.profile import BaseProfileFaker
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker
@@ -54,66 +49,3 @@ class TestUserFakers:
         assert user.check_password("password") is True
         assert user.is_admin is True
         assert user.is_verified is True
-
-
-@pytest.mark.django_db
-class TestProfileFakers:
-    def test_adult_profile_faker(self) -> None:
-        assert Profile.objects.count() == 0
-        profile: Profile = AdultProfileFaker()
-        assert Profile.objects.count() == 1
-        assert profile.user is not None
-        assert profile.nickname is not None
-        assert profile.bio == "Custom bio for adult profile"
-        assert profile.image is not None
-        assert profile.image.url is not None
-
-    def test_kid_profile_faker(self) -> None:
-        assert Profile.objects.count() == 0
-        profile: Profile = KidProfileFaker()
-        assert Profile.objects.count() == 1
-        assert profile.user is not None
-        assert profile.nickname is not None
-        assert profile.bio == "Custom bio for kid profile"
-        assert profile.image is not None
-        assert profile.image.url is not None
-
-    def test_female_profile_faker(self) -> None:
-        assert Profile.objects.count() == 0
-        profile: Profile = FemaleProfileFaker()
-        assert Profile.objects.count() == 1
-        assert profile.user is not None
-        assert profile.nickname is not None
-        assert profile.bio == "Custom bio for female profile"
-        assert profile.image is not None
-        assert profile.image.url is not None
-
-    def test_male_profile_faker(self) -> None:
-        assert Profile.objects.count() == 0
-        profile: Profile = MaleProfileFaker()
-        assert Profile.objects.count() == 1
-        assert profile.user is not None
-        assert profile.nickname is not None
-        assert profile.bio == "Custom bio for male profile"
-        assert profile.image is not None
-        assert profile.image.url is not None
-
-    def test_non_binary_profile_faker(self) -> None:
-        assert Profile.objects.count() == 0
-        profile: Profile = NonBinaryProfileFaker()
-        assert Profile.objects.count() == 1
-        assert profile.user is not None
-        assert profile.nickname is not None
-        assert profile.bio == "Custom bio for non-binary profile"
-        assert profile.image is not None
-        assert profile.image.url is not None
-
-    def test_not_said_profile_faker(self) -> None:
-        assert Profile.objects.count() == 0
-        profile: Profile = NotSaidProfileFaker()
-        assert Profile.objects.count() == 1
-        assert profile.user is not None
-        assert profile.nickname is not None
-        assert profile.bio == "Custom bio for x profile"
-        assert profile.image is not None
-        assert profile.image.url is not None
