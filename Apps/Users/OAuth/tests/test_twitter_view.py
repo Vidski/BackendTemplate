@@ -93,7 +93,7 @@ class TestTwitterAuthView:
         )
         assert response.status_code == 200
         assert User.objects.filter(email=email).exists()
-        assert User.objects.first().profile.preferred_language == "ES"
+        assert User.objects.first().preferred_language == "ES"
 
     @patch("twitter.Api.VerifyCredentials")
     def test_twitter_view_creates_new_user_with_default_language_if_not_passed(
@@ -118,7 +118,7 @@ class TestTwitterAuthView:
         )
         assert response.status_code == 200
         assert User.objects.filter(email=email).exists()
-        assert User.objects.first().profile.preferred_language == "EN"
+        assert User.objects.first().preferred_language == "EN"
 
     @patch("twitter.Api.VerifyCredentials")
     def test_twitter_view_creates_new_user_with_default_language_if_wrong_passed(
@@ -144,4 +144,4 @@ class TestTwitterAuthView:
         )
         assert response.status_code == 200
         assert User.objects.filter(email=email).exists()
-        assert User.objects.first().profile.preferred_language == "EN"
+        assert User.objects.first().preferred_language == "EN"

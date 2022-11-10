@@ -11,6 +11,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from Emails.utils import send_email
 from Project.utils.log import log_information
+from Users.choices import PreferredLanguageChoices
 from Users.models import User
 from Users.serializers import ProfileSerializer
 
@@ -102,11 +103,14 @@ class UserSignUpSerializer(serializers.Serializer):
         password_validation.validate_password(password)
         return password
 
+    def validate_preferred_language(self, preferred_language: str) -> str:
+        if preferred_language not in PreferredLanguageChoices.values:
+            return PreferredLanguageChoices.ENGLISH
+        return preferred_language
+
     def create(self, data):
         data.pop("password_confirmation")
-        language: str = data.pop("preferred_language", None)
         user: User = User.objects.create_user(**data, is_verified=False)
-        user.create_profile(language)
         send_email("verify_email", user)
         log_information("registered", user)
         return user

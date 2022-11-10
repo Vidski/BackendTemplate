@@ -30,7 +30,7 @@ class RegisterOrLogin:
     def register_user(self) -> dict:
         creation_data: dict = self.get_user_creation_data()
         user: User = User.objects.create_user(**creation_data)
-        user.create_profile(self.user_data.get("preferred_language", None))
+        user.create_profile()
         user.verify()
         return UserAuthSerializer(user).data
 
@@ -39,6 +39,7 @@ class RegisterOrLogin:
             "password": settings.OAUTH_PASSWORD,
             "auth_provider": self.provider,
             "email": self.email,
+            "preferred_language": self.user_data["preferred_language"],
         }
 
     @abstractmethod

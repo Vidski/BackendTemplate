@@ -118,11 +118,7 @@ class TestProfileRetrieveEndpoint:
         assert response.data["user_id"] == user.id
         assert response.data["nickname"] == profile.nickname
         assert response.data["bio"] == profile.bio
-        assert response.data["gender"] == profile.gender
-        assert response.data["preferred_language"] == profile.preferred_language
         assert response.data["image"] == profile.image
-        assert response.data["birth_date"] == profile.birth_date
-        assert response.data["is_adult"] == profile.is_adult()
 
     def test_retrieve_success_as_admin_to_other_user_data(
         self, client: APIClient
@@ -139,11 +135,7 @@ class TestProfileRetrieveEndpoint:
         assert response.data["user_id"] == user.id
         assert response.data["nickname"] == profile.nickname
         assert response.data["bio"] == profile.bio
-        assert response.data["gender"] == profile.gender
-        assert response.data["preferred_language"] == profile.preferred_language
         assert response.data["image"] == profile.image
-        assert response.data["birth_date"] == profile.birth_date
-        assert response.data["is_adult"] == profile.is_adult()
 
 
 @pytest.mark.django_db

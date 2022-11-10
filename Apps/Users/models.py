@@ -8,7 +8,6 @@ from django.db import models
 from django.db.models import Field
 from django.db.models import Model
 from django.db.models.fields.related import ForeignObject
-from django.db.models.manager import Manager
 from django.dispatch import receiver
 from django_prometheus.models import ExportModelOperationsMixin
 from django_rest_passwordreset.signals import reset_password_token_created
@@ -138,13 +137,9 @@ class User(
     def __str__(self) -> str:
         return self.email
 
-    def create_profile(self, preferred_language: str = None) -> None:
-        profiles: Manager = Profile.objects
-        possible_choices: list = PreferredLanguageChoices.values
-        if not preferred_language or preferred_language not in possible_choices:
-            preferred_language = PreferredLanguageChoices.ENGLISH
-        if not profiles.filter(user=self).exists():
-            profiles.create(user=self, preferred_language=preferred_language)
+    def create_profile(self) -> None:
+        if not Profile.objects.filter(user=self).exists():
+            Profile.objects.create(user=self)
 
     def has_perm(self, permission: str, object: Model = None) -> bool:
         return self.is_admin

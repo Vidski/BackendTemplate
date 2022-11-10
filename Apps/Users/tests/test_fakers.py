@@ -65,9 +65,6 @@ class TestProfileFakers:
         assert profile.user is not None
         assert profile.nickname is not None
         assert profile.bio == "Custom bio for adult profile"
-        assert profile.gender is not None
-        assert profile.birth_date is not None
-        assert profile.is_adult() is True
         assert profile.image is not None
         assert profile.image.url is not None
 
@@ -78,9 +75,6 @@ class TestProfileFakers:
         assert profile.user is not None
         assert profile.nickname is not None
         assert profile.bio == "Custom bio for kid profile"
-        assert profile.gender is not None
-        assert profile.birth_date is not None
-        assert profile.is_adult() is False
         assert profile.image is not None
         assert profile.image.url is not None
 
@@ -91,9 +85,6 @@ class TestProfileFakers:
         assert profile.user is not None
         assert profile.nickname is not None
         assert profile.bio == "Custom bio for female profile"
-        assert profile.gender is not None
-        assert profile.gender == "F"
-        assert profile.birth_date is not None
         assert profile.image is not None
         assert profile.image.url is not None
 
@@ -104,9 +95,6 @@ class TestProfileFakers:
         assert profile.user is not None
         assert profile.nickname is not None
         assert profile.bio == "Custom bio for male profile"
-        assert profile.gender is not None
-        assert profile.gender == "M"
-        assert profile.birth_date is not None
         assert profile.image is not None
         assert profile.image.url is not None
 
@@ -117,9 +105,6 @@ class TestProfileFakers:
         assert profile.user is not None
         assert profile.nickname is not None
         assert profile.bio == "Custom bio for non-binary profile"
-        assert profile.gender is not None
-        assert profile.gender == "N"
-        assert profile.birth_date is not None
         assert profile.image is not None
         assert profile.image.url is not None
 
@@ -130,8 +115,5 @@ class TestProfileFakers:
         assert profile.user is not None
         assert profile.nickname is not None
         assert profile.bio == "Custom bio for x profile"
-        assert profile.gender is not None
-        assert profile.gender == "P"
-        assert profile.birth_date is not None
         assert profile.image is not None
         assert profile.image.url is not None
