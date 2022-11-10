@@ -1,15 +1,19 @@
+from django.db.models import Model
 from django.db.models import QuerySet
+from django.dispatch import receiver
 from django.http import HttpRequest
 from django.http.response import JsonResponse
-from rest_framework import status
-from rest_framework import viewsets
+from django_rest_passwordreset.signals import reset_password_token_created
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 from rest_framework.serializers import Serializer
+from rest_framework.status import HTTP_200_OK as SUCCESS
+from rest_framework.views import View
+from rest_framework.viewsets import ModelViewSet
 
+from Emails.utils import send_email
 from Project.pagination import ListTenResultsSetPagination
 from Project.utils.log import log_information
 from Users.models import Profile
@@ -25,13 +29,7 @@ from Users.serializers import UserUpdateSerializer
 from Users.utils import verify_user_query_token
 
 
-SUCCESS: int = status.HTTP_200_OK
-CREATED: int = status.HTTP_201_CREATED
-DELETED: int = status.HTTP_204_NO_CONTENT
-NOT_FOUND: int = status.HTTP_404_NOT_FOUND
-
-
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(ModelViewSet):
     """
     API endpoint that allows to interact with User model
     """
@@ -61,7 +59,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return JsonResponse(data, status=SUCCESS)
 
 
-class ProfileViewSet(viewsets.ModelViewSet):
+class ProfileViewSet(ModelViewSet):
     """
     API endpoint that allows to interact with Profile model;
     List, create and destroy are only available only for admin users because the
@@ -76,3 +74,14 @@ class ProfileViewSet(viewsets.ModelViewSet):
     permissions: bool = user_permissions | admin_user_permissions
     permission_classes: list = [IsAuthenticated & permissions]
     pagination_class: PageNumberPagination = ListTenResultsSetPagination
+
+
+@receiver(reset_password_token_created)
+def password_reset_token_created(
+    sender: View,
+    instance: Model,
+    reset_password_token: Model,
+    *args: tuple,
+    **kwargs: dict,
+) -> None:
+    send_email("reset_password", reset_password_token)
