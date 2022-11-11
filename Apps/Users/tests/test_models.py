@@ -1,8 +1,11 @@
+from datetime import datetime
+
 import pytest
+from dateutil.relativedelta import relativedelta
 
 from Users.factories.profile import ProfileFactory
-from Users.fakers.profile import AdultProfileFaker
-from Users.fakers.profile import KidProfileFaker
+from Users.factories.user import UserFactory
+from Users.fakers.profile import ProfileFaker
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.models import Profile
@@ -68,32 +71,20 @@ class TestUserModel:
         user.create_profile()
         assert Profile.objects.count() == 1
 
-    def test_create_profile_with_default_language(self) -> None:
+    def test_create_user_with_default_language(self) -> None:
         user: User = UserFaker()
-        assert getattr(user, "profile", None) is None
-        assert Profile.objects.count() == 0
-        user.create_profile()
-        assert Profile.objects.count() == 1
-        assert getattr(user, "profile", None) is not None
-        assert user.profile.preferred_language == "EN"
+        assert getattr(user, "preferred_language", None) is not None
+        assert user.preferred_language == "EN"
 
-    def test_create_profile_with_default_language_if_wrong_passed(self) -> None:
-        user: User = UserFaker()
-        assert getattr(user, "profile", None) is None
-        assert Profile.objects.count() == 0
-        user.create_profile("WRONG")
-        assert Profile.objects.count() == 1
-        assert getattr(user, "profile", None) is not None
-        assert user.profile.preferred_language == "EN"
+    def test_create_user_with_default_language_if_wrong_passed(self) -> None:
+        user: User = UserFaker(preferred_language="WR")
+        assert getattr(user, "preferred_language", None) is not None
+        assert user.preferred_language == "EN"
 
-    def test_create_profile_with_custom_language(self) -> None:
-        user: User = UserFaker()
-        assert getattr(user, "profile", None) is None
-        assert Profile.objects.count() == 0
-        user.create_profile("ES")
-        assert Profile.objects.count() == 1
-        assert getattr(user, "profile", None) is not None
-        assert user.profile.preferred_language == "ES"
+    def test_create_user_with_custom_language(self) -> None:
+        user: User = UserFaker(preferred_language="ES")
+        assert getattr(user, "preferred_language", None) is not None
+        assert user.preferred_language == "ES"
 
     def test_has_module_perms_as_admin(self) -> None:
         user: User = AdminFaker()
@@ -111,6 +102,26 @@ class TestUserModel:
         user: User = UserFaker()
         assert str(user) == f"{user.email}"
 
+    def test_null_adultness_user_faker(self) -> None:
+        assert User.objects.count() == 0
+        user: User = UserFaker()
+        assert User.objects.count() == 1
+        assert user.is_adult == None
+
+    def test_adult_user_faker(self) -> None:
+        assert User.objects.count() == 0
+        _20_years_ago: datetime = datetime.now() - relativedelta(years=20)
+        user: User = UserFaker(birth_date=_20_years_ago.strftime("%Y-%m-%d"))
+        assert User.objects.count() == 1
+        assert user.is_adult == True
+
+    def test_kid_user_faker(self) -> None:
+        assert User.objects.count() == 0
+        _17_years_ago: datetime = datetime.now() - relativedelta(years=17)
+        user: User = UserFaker(birth_date=_17_years_ago.strftime("%Y-%m-%d"))
+        assert User.objects.count() == 1
+        assert user.is_adult == False
+
 
 @pytest.mark.django_db
 class TestProfileModel:
@@ -122,9 +133,6 @@ class TestProfileModel:
         assert "nickname" in attributes
         assert "bio" in attributes
         assert "image" in attributes
-        assert "gender" in attributes
-        assert "preferred_language" in attributes
-        assert "birth_date" in attributes
         assert "created_at" in attributes
         assert "updated_at" in attributes
 
@@ -132,18 +140,3 @@ class TestProfileModel:
         profile: Profile = ProfileFactory(user=UserFaker())
         expected_str: str = f"User ({profile.user_id}) profile ({profile.pk})"
         assert str(profile) == expected_str
-
-    def test_is_adult(self) -> None:
-        adult_profile: Profile = AdultProfileFaker()
-        expected_result: bool = True
-        assert adult_profile.is_adult() == expected_result
-
-    def test_is_not_adult(self) -> None:
-        kid_profile: Profile = KidProfileFaker()
-        expected_result: bool = False
-        assert kid_profile.is_adult() == expected_result
-
-    def test_is_adult_without_birth_date(self) -> None:
-        profile: Profile = ProfileFactory(user=UserFaker(), birth_date=None)
-        expected_result: None = None
-        assert profile.is_adult() == expected_result

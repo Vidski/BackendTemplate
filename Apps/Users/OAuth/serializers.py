@@ -9,6 +9,7 @@ from rest_framework.serializers import ValidationError
 from twitter import Api
 from twitter import User as TwitterUser
 
+from Users.choices import PreferredLanguageChoices
 from Users.OAuth.user_handler import RegisterOrLoginViaFacebook
 from Users.OAuth.user_handler import RegisterOrLoginViaGoogle
 from Users.OAuth.user_handler import RegisterOrLoginViaTwitter
@@ -17,6 +18,8 @@ from Users.OAuth.user_handler import RegisterOrLoginViaTwitter
 class BaseSerializer(Serializer):
     def get_base_data(self) -> dict:
         language: str = self.get_initial().get("preferred_language", None)
+        if not language or language not in PreferredLanguageChoices.values:
+            language = PreferredLanguageChoices.ENGLISH
         return {"preferred_language": language}
 
 

@@ -252,10 +252,10 @@ class TestNotificationModel:
         self,
     ) -> None:
         assert Email.objects.all().count() == 0
-        first_user: User = UserFaker()
-        first_user.create_profile(preferred_language="EN")
-        second_user: User = UserFaker()
-        second_user.create_profile(preferred_language="ES")
+        first_user: User = UserFaker(preferred_language="EN")
+        first_user.create_profile()
+        second_user: User = UserFaker(preferred_language="ES")
+        second_user.create_profile()
         notification: Notification = NotificationFactory(
             is_test=False, language="ES"
         )

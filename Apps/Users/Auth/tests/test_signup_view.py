@@ -119,7 +119,7 @@ class TestUserSignUpEndpoint:
         response: Response = client.post(self.url(), data, format="json")
         assert User.objects.count() == 1
         assert response.status_code == 201
-        assert User.objects.first().profile.preferred_language == "ES"
+        assert User.objects.first().preferred_language == "ES"
         assert len(mail.outbox) == 1
 
     def test_sign_up_is_successfully_with_default_language_if_not_passed(
@@ -136,7 +136,7 @@ class TestUserSignUpEndpoint:
         response: Response = client.post(self.url(), data, format="json")
         assert User.objects.count() == 1
         assert response.status_code == 201
-        assert User.objects.first().profile.preferred_language == "EN"
+        assert User.objects.first().preferred_language == "EN"
         assert len(mail.outbox) == 1
 
     def test_sign_up_is_successfully_with_default_language_if_wrong_passed(
@@ -154,5 +154,5 @@ class TestUserSignUpEndpoint:
         response: Response = client.post(self.url(), data, format="json")
         assert User.objects.count() == 1
         assert response.status_code == 201
-        assert User.objects.first().profile.preferred_language == "EN"
+        assert User.objects.first().preferred_language == "EN"
         assert len(mail.outbox) == 1

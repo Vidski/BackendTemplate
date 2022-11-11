@@ -8,72 +8,14 @@ from django.db import models
 from django.db.models import Field
 from django.db.models import Model
 from django.db.models.fields.related import ForeignObject
-from django.db.models.manager import Manager
-from django.dispatch import receiver
 from django_prometheus.models import ExportModelOperationsMixin
-from django_rest_passwordreset.signals import reset_password_token_created
 from phonenumber_field.modelfields import PhoneNumberField
-from rest_framework.views import View
 
 from Project.storage import image_file_upload
 from Users.choices import AuthProviders
 from Users.choices import GenderChoices
 from Users.choices import PreferredLanguageChoices
-
-
-class CustomUserManager(BaseUserManager):
-    """
-    Custom user model manager where email is the unique identifiers
-    for authentication instead of usernames.
-    """
-
-    def create_user(
-        self,
-        email: str,
-        password: str,
-        first_name: str,
-        last_name: str,
-        **extra_fields: dict,
-    ) -> Model:
-        """
-        Creates and saves a User with the given email and password.
-        """
-        if not email:
-            raise ValueError("The given email must be set")
-        email: str = self.normalize_email(email)
-        user: User = self.model(
-            email=email,
-            first_name=first_name,
-            last_name=last_name,
-            **extra_fields,
-        )
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(
-        self,
-        email: str,
-        first_name: str,
-        last_name: str,
-        password: str,
-        **extra_fields: dict,
-    ) -> Model:
-        """
-        Create and save a SuperUser with the given email and password.
-        """
-        user: User = self.model(
-            email=email,
-            first_name=first_name,
-            last_name=last_name,
-            **extra_fields,
-        )
-        user.set_password(password)
-        user.is_admin = True
-        user.is_verified = True
-        user.is_premium = True
-        user.save(using=self._db)
-        return user
+from Users.manager import CustomUserManager
 
 
 class User(
@@ -100,6 +42,23 @@ class User(
         unique=True,
         error_messages={"unique": "This number already exists."},
     )
+    gender: Field = models.CharField(
+        "Gender",
+        max_length=1,
+        choices=GenderChoices.choices,
+        default=GenderChoices.NOT_SAID,
+        null=True,
+    )
+    birth_date: Field = models.DateField(
+        "Birth date", null=True, auto_now_add=False
+    )
+    preferred_language: Field = models.CharField(
+        "Preferred language",
+        max_length=2,
+        choices=PreferredLanguageChoices.choices,
+        default=PreferredLanguageChoices.ENGLISH,
+        null=True,
+    )
     is_verified: Field = models.BooleanField("Verified", default=False)
     is_premium: Field = models.BooleanField("Premium", default=False)
     is_admin: Field = models.BooleanField("Admin", default=False)
@@ -121,13 +80,9 @@ class User(
     def __str__(self) -> str:
         return self.email
 
-    def create_profile(self, preferred_language: str = None) -> None:
-        profiles: Manager = Profile.objects
-        possible_choices: list = PreferredLanguageChoices.values
-        if not preferred_language or preferred_language not in possible_choices:
-            preferred_language = PreferredLanguageChoices.ENGLISH
-        if not profiles.filter(user=self).exists():
-            profiles.create(user=self, preferred_language=preferred_language)
+    def create_profile(self) -> None:
+        if not Profile.objects.filter(user=self).exists():
+            Profile.objects.create(user=self)
 
     def has_perm(self, permission: str, object: Model = None) -> bool:
         return self.is_admin
@@ -154,11 +109,12 @@ class User(
         return self.is_admin
 
     @property
-    def preferred_language(self) -> str:
-        profile: Profile or None = getattr(self, "profile", None)
-        if not profile or not profile.preferred_language:
-            return PreferredLanguageChoices.ENGLISH
-        return self.profile.preferred_language
+    def is_adult(self) -> bool:
+        if not self.birth_date:
+            return None
+        adultness: datetime = datetime.now() - relativedelta(years=18)
+        birthday: datetime = datetime.strptime(str(self.birth_date), "%Y-%m-%d")
+        return birthday < adultness
 
 
 class Profile(models.Model):
@@ -180,45 +136,8 @@ class Profile(models.Model):
         upload_to=image_file_upload,
         null=True,
     )
-    gender: Field = models.CharField(
-        "Gender",
-        max_length=1,
-        choices=GenderChoices.choices,
-        default=GenderChoices.NOT_SAID,
-        null=True,
-    )
-    preferred_language: Field = models.CharField(
-        "Preferred language",
-        max_length=2,
-        choices=PreferredLanguageChoices.choices,
-        default=PreferredLanguageChoices.ENGLISH,
-        null=True,
-    )
-    birth_date: Field = models.DateField(
-        "Birth date", null=True, auto_now_add=False
-    )
     created_at: Field = models.DateTimeField("Creation date", auto_now_add=True)
     updated_at: Field = models.DateTimeField("Update date", auto_now=True)
 
     def __str__(self) -> str:
         return f"User ({self.user_id}) profile ({self.pk})"
-
-    def is_adult(self) -> bool:
-        if not self.birth_date:
-            return None
-        adultness: datetime = datetime.now() - relativedelta(years=18)
-        birthday: datetime = datetime.strptime(str(self.birth_date), "%Y-%m-%d")
-        return birthday < adultness
-
-
-@receiver(reset_password_token_created)
-def password_reset_token_created(
-    sender: View,
-    instance: Model,
-    reset_password_token: Model,
-    *args: tuple,
-    **kwargs: dict,
-) -> None:
-    from Emails.utils import send_email
-
-    send_email("reset_password", reset_password_token)

@@ -73,7 +73,7 @@ class TestGoogleAuthView:
         response: Response = client.post(self.url(), data)
         assert response.status_code == 200
         assert User.objects.count() == 1
-        assert User.objects.first().profile.preferred_language == "ES"
+        assert User.objects.first().preferred_language == "ES"
 
     @patch("Users.OAuth.serializers.verify_oauth2_token")
     def test_google_view_creates_new_user_with_default_language_if_not_passed(
@@ -93,7 +93,7 @@ class TestGoogleAuthView:
         response: Response = client.post(self.url(), data)
         assert response.status_code == 200
         assert User.objects.count() == 1
-        assert User.objects.first().profile.preferred_language == "EN"
+        assert User.objects.first().preferred_language == "EN"
 
     @patch("Users.OAuth.serializers.verify_oauth2_token")
     def test_google_view_creates_new_user_with_default_language_if_wrong_passed(
@@ -114,4 +114,4 @@ class TestGoogleAuthView:
         response: Response = client.post(self.url(), data)
         assert response.status_code == 200
         assert User.objects.count() == 1
-        assert User.objects.first().profile.preferred_language == "EN"
+        assert User.objects.first().preferred_language == "EN"

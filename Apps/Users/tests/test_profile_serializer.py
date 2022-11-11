@@ -23,10 +23,6 @@ class TestProfileSerializer:
             "nickname": profile.nickname,
             "bio": profile.bio,
             "image": profile.image,
-            "gender": profile.gender,
-            "preferred_language": profile.preferred_language,
-            "birth_date": profile.birth_date,
-            "is_adult": profile.is_adult(),
         }
         actual_data: dict = ProfileSerializer(profile).data
         assert actual_data == expected_data
@@ -38,15 +34,11 @@ class TestProfileSerializer:
         data: dict = {
             "nickname": "New nickname",
             "bio": "New bio",
-            "gender": "N",
-            "preferred_language": "ES",
         }
         serializer.update(profile, data)
         profile.refresh_from_db()
         assert profile.nickname == data["nickname"]
         assert profile.bio == data["bio"]
-        assert profile.gender == data["gender"]
-        assert profile.preferred_language == data["preferred_language"]
 
     def test_create(self) -> None:
         user: User = UserFaker()
