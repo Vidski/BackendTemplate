@@ -1,6 +1,6 @@
 import pytest
 
-from Users.fakers.profile import BaseProfileFaker
+from Users.fakers.profile import ProfileFaker
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker

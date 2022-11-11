@@ -5,7 +5,7 @@ from dateutil.relativedelta import relativedelta
 
 from Users.factories.profile import ProfileFactory
 from Users.factories.user import UserFactory
-from Users.fakers.profile import BaseProfileFaker
+from Users.fakers.profile import ProfileFaker
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.models import Profile
