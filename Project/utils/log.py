@@ -1,11 +1,11 @@
-import logging
 from datetime import datetime
 from logging import Logger
+from logging import getLogger
 
 from django.db.models import Model
 
 
-logger: Logger = logging.getLogger(__name__)
+logger: Logger = getLogger(__name__)
 
 
 def log_information(event: str, instance: Model) -> None:

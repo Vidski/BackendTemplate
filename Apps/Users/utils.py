@@ -1,6 +1,6 @@
-import base64
-import hashlib
-import re as regex
+from base64 import b64encode
+from hashlib import sha256
+from re import match
 
 from django.conf import settings
 from rest_framework.exceptions import PermissionDenied
@@ -14,8 +14,8 @@ def generate_user_verification_token(user: User) -> str:
     Creates an user token to verify its account
     """
     string_user: str = user.email + settings.EMAIL_VERIFICATION_TOKEN_SECRET
-    hashed: str = hashlib.sha256(string_user.encode())
-    decoded: str = base64.b64encode(hashed.digest()).decode("utf-8")
+    hashed: str = sha256(string_user.encode())
+    decoded: str = b64encode(hashed.digest()).decode("utf-8")
     token: str = (
         decoded.replace("\\", "-")
         .replace("/", "_")
@@ -40,5 +40,5 @@ def check_e164_format(phone_number: str) -> None:
     example: +11234567890
     """
     regex_format: str = r"^\+[0-9]\d{1,20}$"
-    if phone_number and not regex.match(regex_format, phone_number):
+    if phone_number and not match(regex_format, phone_number):
         raise ValidationError("Phone number is not valid")

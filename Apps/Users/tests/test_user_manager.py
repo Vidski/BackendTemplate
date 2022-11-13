@@ -1,11 +1,12 @@
-import pytest
 from django.contrib.auth import get_user_model
 from django.db.models import Model
+from pytest import mark
+from pytest import raises
 
 from Users.models import User
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestUsersManagers:
     def test_create_user_successfully(self) -> None:
         UserModel: Model = get_user_model()
@@ -21,17 +22,17 @@ class TestUsersManagers:
 
     def test_create_user_fails_without_data(self) -> None:
         UserModel: Model = get_user_model()
-        with pytest.raises(TypeError):
+        with raises(TypeError):
             UserModel.objects.create_user()
 
     def test_create_user_fails_with_email_and_without_password(self) -> None:
         UserModel: Model = get_user_model()
-        with pytest.raises(TypeError):
+        with raises(TypeError):
             UserModel.objects.create_user(email="email@test.com", password="")
 
     def test_create_user_fails_without_email_with_all_data(self) -> None:
         UserModel: Model = get_user_model()
-        with pytest.raises(ValueError):
+        with raises(ValueError):
             UserModel.objects.create_user(
                 email=None,
                 first_name="test_name",
@@ -53,19 +54,19 @@ class TestUsersManagers:
 
     def test_create_superuser_fails_without_data(self) -> None:
         UserModel: Model = get_user_model()
-        with pytest.raises(TypeError):
+        with raises(TypeError):
             UserModel.objects.create_superuser()
 
     def test_create_superuser_fails_with_email_and_without_password(
         self,
     ) -> None:
         UserModel: Model = get_user_model()
-        with pytest.raises(TypeError):
+        with raises(TypeError):
             UserModel.objects.create_superuser(
                 email="adminemail@test.com", password=""
             )
 
     def test_create_superuser_fails_with_email_without_password(self) -> None:
         UserModel: Model = get_user_model()
-        with pytest.raises(TypeError):
+        with raises(TypeError):
             UserModel.objects.create_superuser(email="", password="foo")

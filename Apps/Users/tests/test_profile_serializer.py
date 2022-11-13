@@ -1,7 +1,8 @@
-import pytest
 from django.db.utils import IntegrityError
 from mock import MagicMock
 from mock import PropertyMock
+from pytest import mark
+from pytest import raises
 from rest_framework.serializers import ValidationError
 
 from Users.fakers.user import AdminFaker
@@ -12,7 +13,7 @@ from Users.models import User
 from Users.serializers import ProfileSerializer
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestProfileSerializer:
     def test_data_serialized_from_profile(self) -> None:
         user: User = VerifiedUserFaker()
@@ -62,7 +63,7 @@ class TestProfileSerializer:
         serializer: ProfileSerializer = ProfileSerializer(
             context=context, data=data
         )
-        with pytest.raises(IntegrityError):
+        with raises(IntegrityError):
             serializer.create(data)
 
     def test_s_valid_fails_with_nickname_taken(self) -> None:
@@ -78,5 +79,5 @@ class TestProfileSerializer:
         serializer: ProfileSerializer = ProfileSerializer(
             context=context, data=data
         )
-        with pytest.raises(ValidationError):
+        with raises(ValidationError):
             serializer.is_valid(data)

@@ -1,5 +1,6 @@
-import pytest
 from django.urls import reverse
+from pytest import fixture
+from pytest import mark
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 
@@ -11,12 +12,12 @@ from Users.models import User
 from Users.utils import generate_user_verification_token
 
 
-@pytest.fixture(scope="function")
+@fixture(scope="function")
 def client() -> APIClient:
     return APIClient()
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestUserListEndpoint:
     def url(self) -> str:
         return reverse("users:users-list")
@@ -75,7 +76,7 @@ class TestUserListEndpoint:
         assert response.data["results"][0]["first_name"] == admin_name
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestUserRetrieveEndpoint:
     def url(self, pk: int = None) -> str:
         return reverse("users:users-detail", args=[pk])
@@ -127,7 +128,7 @@ class TestUserRetrieveEndpoint:
         assert response.status_code == 200
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestUserUpdateEndpoint:
     def url(self, pk: int = None) -> str:
         return reverse("users:users-detail", args=[pk])
@@ -387,7 +388,7 @@ class TestUserUpdateEndpoint:
         assert response.status_code == 400
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestUserDeleteEndpoint:
     def url(self, pk: int = None) -> str:
         return reverse("users:users-detail", args=[pk])
@@ -453,7 +454,7 @@ class TestUserDeleteEndpoint:
         assert User.objects.count() == 1
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestUserVerifyEndpoint:
     def url(self, pk: int = None, token: str = None) -> str:
         return f"{reverse('users:users-verify', args=[pk])}?token={token}"

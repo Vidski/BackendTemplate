@@ -2,6 +2,8 @@ from datetime import datetime
 
 import factory
 from django.db.models import Model
+from factory import SubFactory
+from factory import post_generation
 
 from Emails.choices import CommentType
 from Emails.factories.suggestion import SuggestionEmailFactory
@@ -15,8 +17,8 @@ class SuggestionErrorFaker(SuggestionEmailFactory):
     sent_date: datetime = None
     was_sent: bool = False
     was_read: bool = False
-    user = factory.SubFactory(UserFaker)
+    user = SubFactory(UserFaker)
 
-    @factory.post_generation
+    @post_generation
     def blocks(self, create: bool, extracted: Model, **kwargs: dict) -> None:
         self.blocks.add(BlockFaker())

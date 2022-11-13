@@ -1,4 +1,4 @@
-import pytest
+from pytest import mark
 
 from Emails.choices import CommentType
 from Emails.fakers.blacklist import BlackListFaker
@@ -14,7 +14,7 @@ from Emails.models import Suggestion
 from Users.models import User
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestEmailFakers:
     def test_email_faker_creates_email_with_block(self) -> None:
         assert Email.objects.count() == 0
@@ -35,7 +35,7 @@ class TestEmailFakers:
         assert block.link == "test.com"
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestBlockFakers:
     def test_block_faker_creates_block(self) -> None:
         assert Block.objects.count() == 0
@@ -48,7 +48,7 @@ class TestBlockFakers:
         assert block.link == "test.com"
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestSuggestionFakers:
     def test_suggestion_faker_creates_suggestion(self) -> None:
         assert Block.objects.count() == 0
@@ -67,7 +67,7 @@ class TestSuggestionFakers:
         assert block.link == "test.com"
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestNotificationFakers:
     def test_notification_faker_creates_notification_and_blocks(self) -> None:
         assert Block.objects.count() == 0
@@ -100,7 +100,7 @@ class TestNotificationFakers:
         assert Email.objects.count() == 1
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestBlackListFakers:
     def test_blacklist_faker_creates_blacklist(self) -> None:
         assert BlackList.objects.count() == 0

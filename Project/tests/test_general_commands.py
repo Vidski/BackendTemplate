@@ -3,9 +3,10 @@ from io import StringIO
 from io import TextIOWrapper
 from logging import Logger
 
-import pytest
 from django.core.management import call_command
 from django.test import override_settings
+from pytest import fixture
+from pytest import mark
 
 from Emails.models import Email
 from Emails.models import Suggestion
@@ -18,7 +19,7 @@ from Users.models import User
 COMMAND: str = "populate_db"
 
 
-@pytest.fixture(scope="function")
+@fixture(scope="function")
 def silent_stdout():
     capturedOutput: StringIO = StringIO()
     sys.stdout: TextIOWrapper = capturedOutput
@@ -26,7 +27,7 @@ def silent_stdout():
     sys.stdout = sys.__stdout__
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestPopulateCommand:
     @override_settings(ENVIRONMENT_NAME="production")
     def test_populate_db_command_fails_on_non_dev_mode(

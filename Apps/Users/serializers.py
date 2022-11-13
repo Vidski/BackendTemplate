@@ -4,8 +4,15 @@ from django.db.models import Model
 from django.db.models import QuerySet
 from drf_extra_fields.fields import Base64ImageField
 from phonenumber_field.serializerfields import PhoneNumberField
-from rest_framework import serializers
 from rest_framework.relations import RelatedField
+from rest_framework.serializers import BooleanField
+from rest_framework.serializers import CharField
+from rest_framework.serializers import DateTimeField
+from rest_framework.serializers import EmailField
+from rest_framework.serializers import IntegerField
+from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import PrimaryKeyRelatedField
+from rest_framework.serializers import Serializer
 from rest_framework.serializers import ValidationError
 
 from Users.models import Profile
@@ -13,42 +20,42 @@ from Users.models import User
 from Users.utils import check_e164_format
 
 
-class UserRetrieveSerializer(serializers.Serializer):
+class UserRetrieveSerializer(Serializer):
     """
     User authentication serializer
     """
 
-    id: Field = serializers.IntegerField(read_only=True)
-    first_name: Field = serializers.CharField(required=False, max_length=255)
-    last_name: Field = serializers.CharField(required=False, max_length=255)
-    email: Field = serializers.EmailField(required=True)
+    id: Field = IntegerField(read_only=True)
+    first_name: Field = CharField(required=False, max_length=255)
+    last_name: Field = CharField(required=False, max_length=255)
+    email: Field = EmailField(required=True)
     phone_number: PhoneNumberField = PhoneNumberField(
         required=False, max_length=22
     )
-    is_verified: Field = serializers.BooleanField(read_only=True)
-    is_premium: Field = serializers.BooleanField(read_only=True)
-    is_admin: Field = serializers.BooleanField(read_only=True)
-    created_at: Field = serializers.DateTimeField(read_only=True)
-    updated_at: Field = serializers.DateTimeField(read_only=True)
+    is_verified: Field = BooleanField(read_only=True)
+    is_premium: Field = BooleanField(read_only=True)
+    is_admin: Field = BooleanField(read_only=True)
+    created_at: Field = DateTimeField(read_only=True)
+    updated_at: Field = DateTimeField(read_only=True)
 
     class Meta:
         model: Model = User
 
 
-class UserUpdateSerializer(serializers.ModelSerializer):
+class UserUpdateSerializer(ModelSerializer):
     """
     User custom serializer
     """
 
-    first_name: Field = serializers.CharField(required=False, max_length=255)
-    last_name: Field = serializers.CharField(required=False, max_length=255)
-    email: Field = serializers.EmailField(required=False)
-    phone_number: serializers.CharField = serializers.CharField(
+    first_name: Field = CharField(required=False, max_length=255)
+    last_name: Field = CharField(required=False, max_length=255)
+    email: Field = EmailField(required=False)
+    phone_number: CharField = CharField(
         required=False,
         max_length=22,
     )
-    old_password: Field = serializers.CharField(write_only=True, required=False)
-    password: Field = serializers.CharField(write_only=True, required=False)
+    old_password: Field = CharField(write_only=True, required=False)
+    password: Field = CharField(write_only=True, required=False)
 
     def update(self, instance: User, validated_data: dict) -> User:
         password: str = validated_data.pop("password", None)
@@ -96,13 +103,13 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         ]
 
 
-class ProfileSerializer(serializers.ModelSerializer):
+class ProfileSerializer(ModelSerializer):
     """
     Profile serializer
     """
 
     image: Base64ImageField = Base64ImageField(required=False)
-    user_id: RelatedField = serializers.PrimaryKeyRelatedField(
+    user_id: RelatedField = PrimaryKeyRelatedField(
         queryset=User.objects.all(), source="user", required=False
     )
 

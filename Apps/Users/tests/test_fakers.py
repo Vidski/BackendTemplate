@@ -1,10 +1,8 @@
 import pytest
 
-from Users.fakers.profile import ProfileFaker
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
 from Users.fakers.user import VerifiedUserFaker
-from Users.models import Profile
 from Users.models import User
 
 
