@@ -1,0 +1,71 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-11-04 00:10+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: Project/settings/django/default_settings.py:201
+msgid "Hi,"
+msgstr "Hola,"
+
+#: Project/settings/django/default_settings.py:202
+msgid "Follow Us"
+msgstr "Síguenos"
+
+#: Project/settings/django/default_settings.py:203
+msgid "Click here to unsubscribe."
+msgstr "Haz click aquí para no recibir emails."
+
+#: Project/settings/django/default_settings.py:211
+#: Project/settings/django/default_settings.py:212
+msgid "Reset your password"
+msgstr "Restablece tu contraseña"
+
+#: Project/settings/django/default_settings.py:213
+#: Project/settings/django/default_settings.py:223
+msgid "Click here to reset your password"
+msgstr "Haz click aquí para restablecer tu contraseña"
+
+#: Project/settings/django/default_settings.py:215
+msgid "Click in the link below to change your password."
+msgstr "Haz click en el link de abajo para cambiar tu contraseña."
+
+#: Project/settings/django/default_settings.py:217
+msgid "Reset password"
+msgstr "Restablece tu contraseña"
+
+#: Project/settings/django/default_settings.py:221
+msgid "Verify your email"
+msgstr "Verifica tu email"
+
+#: Project/settings/django/default_settings.py:222
+msgid "Welcome to "
+msgstr "Te damos la bienvenida a "
+
+#: Project/settings/django/default_settings.py:225
+msgid ""
+"First of all we want to thank you to give us a chance! To fully start using "
+"the app and begin to be part of the community, you must verify your email "
+"clicking on the button below."
+msgstr ""
+"Antes que nada, queremos agradecerte que nos hayas dado ¡una oportunidad! "
+"Para empezar a usar la app y empezar a ser parte de la comunidad, debes "
+"verificar tu email haciendo click en el boton de abajo."
+
+#: Project/settings/django/default_settings.py:230
+msgid "Verify email"
+msgstr "Verificar email"

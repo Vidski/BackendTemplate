@@ -35,8 +35,6 @@ class TestProfileFactory:
         assert profile.user is not None
         assert profile.nickname is None
         assert profile.bio is None
-        assert profile.gender is not None
-        assert profile.birth_date is None
         assert profile.image is not None
         with pytest.raises(ValueError):
             profile.image.url

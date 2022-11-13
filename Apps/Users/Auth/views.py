@@ -24,14 +24,11 @@ class UserAuthViewSet(ViewSet):
 
     @action(detail=False, methods=["post"], permission_classes=[AllowAny])
     def signup(self, request: HttpRequest) -> Response:
-        serializer: UserSignUpSerializer = UserSignUpSerializer(
-            data=request.data
-        )
+        data: dict = request.data
+        serializer: UserSignUpSerializer = UserSignUpSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         user: User = serializer.save()
-        log_information("registered", user)
-        user_data: dict = UserRetrieveSerializer(user).data
-        return Response(user_data, status=CREATED)
+        return Response(UserRetrieveSerializer(user).data, status=CREATED)
 
     @action(detail=False, methods=["post"], permission_classes=[AllowAny])
     def login(self, request: HttpRequest) -> JsonResponse:

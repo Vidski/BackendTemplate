@@ -62,7 +62,6 @@ coverage.xml
 *.htmlconv
 
 # Translations
-*.mo
 *.pot
 
 # Django stuff:

@@ -145,6 +145,21 @@ class Migration(migrations.Migration):
                         related_name="%(class)s_blocks", to="Emails.block"
                     ),
                 ),
+                (
+                    "language",
+                    models.CharField(
+                        choices=[
+                            ("EN", "English"),
+                            ("ES", "Spanish"),
+                            ("FR", "French"),
+                            ("OT", "Other"),
+                        ],
+                        default="EN",
+                        max_length=2,
+                        null=True,
+                        verbose_name="Preferred language",
+                    ),
+                ),
             ],
             bases=(models.Model, Emails.abstracts.AbstractEmailFunctionClass),
         ),
@@ -193,6 +208,21 @@ class Migration(migrations.Migration):
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="to_user",
                         to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "language",
+                    models.CharField(
+                        choices=[
+                            ("EN", "English"),
+                            ("ES", "Spanish"),
+                            ("FR", "French"),
+                            ("OT", "Other"),
+                        ],
+                        default="EN",
+                        max_length=2,
+                        null=True,
+                        verbose_name="Preferred language",
                     ),
                 ),
             ],

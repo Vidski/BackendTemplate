@@ -41,7 +41,7 @@ class EmailAdmin(admin.ModelAdmin):
         ("Blocks", {"fields": ("blocks",)}),
         (
             "Configuration",
-            {"fields": ("is_test", "programed_send_date")},
+            {"fields": ("is_test", "programed_send_date", "language")},
         ),
         ("Sent information", {"fields": ("was_sent", "sent_date")}),
     )
