@@ -101,7 +101,6 @@ class ProfileSerializer(serializers.ModelSerializer):
     Profile serializer
     """
 
-    is_adult: Field = serializers.SerializerMethodField(read_only=True)
     image: Base64ImageField = Base64ImageField(required=False)
     user_id: RelatedField = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(), source="user", required=False
@@ -115,14 +114,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "nickname",
             "bio",
             "image",
-            "gender",
-            "preferred_language",
-            "birth_date",
-            "is_adult",
         ]
-
-    def get_is_adult(self, object: Profile) -> bool:
-        return object.is_adult()
 
     def is_valid(self, raise_exception: bool = False) -> dict:
         is_valid: dict = super().is_valid(raise_exception)

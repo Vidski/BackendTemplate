@@ -63,6 +63,7 @@ class TestRegisterOrLoginViaGoogle:
             "email": "test@test.com",
             "given_name": "test",
             "family_name": "test",
+            "preferred_language": "ES",
         }
         object: RegisterOrLoginViaGoogle = RegisterOrLoginViaGoogle(user_data)
         user: User = User.objects.get(email=user_data["email"])
@@ -83,6 +84,7 @@ class TestRegisterOrLoginViaFacebook:
             "email": "test@test.com",
             "first_name": "test",
             "last_name": "test",
+            "preferred_language": "ES",
         }
         object: RegisterOrLoginViaFacebook = RegisterOrLoginViaFacebook(
             user_data
@@ -104,6 +106,7 @@ class TestRegisterOrLoginViaTwitter:
         user_data: dict = {
             "email": "test@test.com",
             "name": "test",
+            "preferred_language": "ES",
         }
         object: RegisterOrLoginViaTwitter = RegisterOrLoginViaTwitter(user_data)
         user: User = User.objects.get(email=user_data["email"])

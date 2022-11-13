@@ -12,6 +12,7 @@ from Emails.factories.block import ResetPasswordBlockFactory
 from Emails.factories.block import VerifyEmailBlockFactory
 from Emails.models import Block
 from Emails.models import Email
+from Project.utils.translation import get_translation_in
 from Users.models import User
 
 
@@ -39,10 +40,23 @@ class ResetEmailFactory(EmailFactory):
     class Params:
         instance: ResetPasswordToken = None
 
-    subject: str = settings.RESET_PASSWORD_EMAIL_SUBJECT
-    header: str = settings.RESET_PASSWORD_EMAIL_HEADER
+    subject: str = factory.LazyAttribute(
+        lambda object: get_translation_in(
+            object.instance.user.preferred_language,
+            settings.RESET_PASSWORD_EMAIL_SUBJECT,
+        )
+    )
+    header: str = factory.LazyAttribute(
+        lambda object: get_translation_in(
+            object.instance.user.preferred_language,
+            settings.RESET_PASSWORD_EMAIL_HEADER,
+        )
+    )
     to: User = factory.LazyAttribute(lambda object: object.instance.user)
     programed_send_date: datetime = None
+    language: str = factory.LazyAttribute(
+        lambda object: object.instance.user.preferred_language
+    )
 
     @factory.post_generation
     def blocks(self, create: bool, extracted: Model, **kwargs: dict) -> None:
@@ -57,10 +71,22 @@ class VerifyEmailFactory(EmailFactory):
     class Params:
         instance: User = None
 
-    subject: str = settings.VERIFY_EMAIL_SUBJECT
-    header: str = settings.VERIFY_EMAIL_HEADER
+    subject: str = factory.LazyAttribute(
+        lambda object: get_translation_in(
+            object.instance.preferred_language, settings.VERIFY_EMAIL_SUBJECT
+        )
+    )
+    header: str = factory.LazyAttribute(
+        lambda object: get_translation_in(
+            object.instance.preferred_language, settings.VERIFY_EMAIL_HEADER
+        )
+        + settings.APP_NAME
+    )
     to: User = factory.LazyAttribute(lambda object: object.instance)
     programed_send_date: datetime = None
+    language: str = factory.LazyAttribute(
+        lambda object: object.instance.preferred_language
+    )
 
     @factory.post_generation
     def blocks(self, create: bool, extracted: Model, **kwargs: dict) -> None:

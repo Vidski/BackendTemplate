@@ -2,6 +2,8 @@ import os
 import sys
 from pathlib import Path
 
+from django.utils.translation import gettext_lazy as _
+
 from Project.settings.jet_settings import *
 
 
@@ -183,6 +185,7 @@ TEMPLATES: list = [
         },
     },
 ]
+LOCALE_PATHS = (os.path.join(BASE_DIR, "locale"),)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -194,33 +197,37 @@ CELERY_TIMEZONE: str = TIME_ZONE
 CELERY_TASK_TRACK_STARTED: bool = True
 CELERY_TASK_TIME_LIMIT: int = 30 * 60
 
+# Global email settings
+EMAIL_GREETING: str = _("Hi,")
+FOLLOW_TEXT: str = _("Follow Us")
+UNSUBSCRIBE_TEXT: str = _("Click here to unsubscribe.")
+
 # Suggestion email settings
 SUGGESTIONS_EMAIL: str = ""
 SUGGESTIONS_EMAIL_HEADER: str = "from user with id:"
-EMAIL_GREETING: str = "Hi,"
 SUGGESTIONS_EMAIL_LINK_TEXT: str = "Mark as read"
 
 # Reset email settings
-RESET_PASSWORD_EMAIL_SUBJECT: str = "Reset your password"
-RESET_PASSWORD_EMAIL_HEADER: str = "Reset your password"
-RESET_PASSWORD_EMAIL_LINK_TEXT: str = "Click here to reset your password"
-RESET_PASSWORD_EMAIL_CONTENT: str = (
+RESET_PASSWORD_EMAIL_SUBJECT: str = _("Reset your password")
+RESET_PASSWORD_EMAIL_HEADER: str = _("Reset your password")
+RESET_PASSWORD_EMAIL_LINK_TEXT: str = _("Click here to reset your password")
+RESET_PASSWORD_EMAIL_CONTENT: str = _(
     "Click in the link below to change your password."
 )
-RESET_PASSWORD_EMAIL_LINK_TEXT: str = "Reset password"
+RESET_PASSWORD_EMAIL_LINK_TEXT: str = _("Reset password")
 RESET_PASSWORD_URL: str = f""  # Must redirect a front url with the token in url
 
 # Verify email settings
-VERIFY_EMAIL_SUBJECT: str = "Verify your email"
-VERIFY_EMAIL_HEADER: str = "Welcome to " + APP_NAME
-VERIFY_EMAIL_LINK_TEXT: str = "Click here to reset your password"
-VERIFY_EMAIL_CONTENT: str = (
+VERIFY_EMAIL_SUBJECT: str = _("Verify your email")
+VERIFY_EMAIL_HEADER: str = _("Welcome to ")
+VERIFY_EMAIL_LINK_TEXT: str = _("Click here to reset your password")
+VERIFY_EMAIL_CONTENT: str = _(
     "First of all we want to thank you to give us a chance! "
-    + "To fully start using the system and begin to be part "
-    + "of the community, you must verify your email clicking"
+    + "To fully start using the app and begin to be part "
+    + "of the community, you must verify your email clicking "
     + "on the button below."
 )
-VERIFY_EMAIL_LINK_TEXT: str = "Verify email"
+VERIFY_EMAIL_LINK_TEXT: str = _("Verify email")
 VERIFY_EMAIL_URL: str = f"{URL}/api/users"
 
 # Storage

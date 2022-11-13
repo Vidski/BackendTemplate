@@ -53,3 +53,65 @@ class TestGoogleAuthView:
         }
         response: Response = client.post(self.url(), {"token": "token"})
         assert response.status_code == 200
+
+    @patch("Users.OAuth.serializers.verify_oauth2_token")
+    def test_google_view_creates_new_user_with_custom_language(
+        self, mock_verify_oauth2_token: MagicMock, client: APIClient
+    ) -> None:
+        email: str = "test@test.com"
+        mock_verify_oauth2_token.return_value = {
+            "email": email,
+            "given_name": "Test",
+            "family_name": "Test",
+            "aud": settings.GOOGLE_CLIENT_ID,
+        }
+        assert User.objects.count() == 0
+        data: dict = {
+            "token": "token",
+            "preferred_language": "ES",
+        }
+        response: Response = client.post(self.url(), data)
+        assert response.status_code == 200
+        assert User.objects.count() == 1
+        assert User.objects.first().preferred_language == "ES"
+
+    @patch("Users.OAuth.serializers.verify_oauth2_token")
+    def test_google_view_creates_new_user_with_default_language_if_not_passed(
+        self, mock_verify_oauth2_token: MagicMock, client: APIClient
+    ) -> None:
+        email: str = "test@test.com"
+        mock_verify_oauth2_token.return_value = {
+            "email": email,
+            "given_name": "Test",
+            "family_name": "Test",
+            "aud": settings.GOOGLE_CLIENT_ID,
+        }
+        assert User.objects.count() == 0
+        data: dict = {
+            "token": "token",
+        }
+        response: Response = client.post(self.url(), data)
+        assert response.status_code == 200
+        assert User.objects.count() == 1
+        assert User.objects.first().preferred_language == "EN"
+
+    @patch("Users.OAuth.serializers.verify_oauth2_token")
+    def test_google_view_creates_new_user_with_default_language_if_wrong_passed(
+        self, mock_verify_oauth2_token: MagicMock, client: APIClient
+    ) -> None:
+        email: str = "test@test.com"
+        mock_verify_oauth2_token.return_value = {
+            "email": email,
+            "given_name": "Test",
+            "family_name": "Test",
+            "aud": settings.GOOGLE_CLIENT_ID,
+        }
+        assert User.objects.count() == 0
+        data: dict = {
+            "token": "token",
+            "preferred_language": "WRONG",
+        }
+        response: Response = client.post(self.url(), data)
+        assert response.status_code == 200
+        assert User.objects.count() == 1
+        assert User.objects.first().preferred_language == "EN"

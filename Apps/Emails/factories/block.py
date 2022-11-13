@@ -3,6 +3,7 @@ from django.conf import settings
 from django.db.models import Model
 
 from Emails.models import Block
+from Project.utils.translation import get_translation_in
 from Users.models import User
 from Users.utils import generate_user_verification_token
 
@@ -22,12 +23,25 @@ class ResetPasswordBlockFactory(BlockFactory):
 
     title: str = factory.LazyAttribute(
         lambda object: (
-            f"{settings.EMAIL_GREETING}" f" {object.instance.user.first_name}!"
+            get_translation_in(
+                object.instance.user.preferred_language, settings.EMAIL_GREETING
+            )
+            + f"{object.instance.user.first_name}!"
         )
     )
-    content: str = settings.RESET_PASSWORD_EMAIL_CONTENT
+    content: str = factory.LazyAttribute(
+        lambda object: get_translation_in(
+            object.instance.user.preferred_language,
+            settings.RESET_PASSWORD_EMAIL_CONTENT,
+        )
+    )
     show_link: bool = True
-    link_text: str = settings.RESET_PASSWORD_EMAIL_LINK_TEXT
+    link_text: str = factory.LazyAttribute(
+        lambda object: get_translation_in(
+            object.instance.user.preferred_language,
+            settings.RESET_PASSWORD_EMAIL_LINK_TEXT,
+        )
+    )
     link: str = factory.LazyAttribute(
         lambda object: f"{settings.RESET_PASSWORD_URL}/{object.instance.key}"
     )
@@ -39,12 +53,23 @@ class VerifyEmailBlockFactory(BlockFactory):
 
     title: str = factory.LazyAttribute(
         lambda object: (
-            f"{settings.EMAIL_GREETING}" f"{object.user.first_name}!"
+            get_translation_in(
+                object.user.preferred_language, settings.EMAIL_GREETING
+            )
+            + f" {object.user.first_name}!"
         )
     )
-    content: str = settings.VERIFY_EMAIL_CONTENT
+    content: str = factory.LazyAttribute(
+        lambda object: get_translation_in(
+            object.user.preferred_language, settings.VERIFY_EMAIL_CONTENT
+        )
+    )
     show_link: bool = True
-    link_text: str = settings.VERIFY_EMAIL_LINK_TEXT
+    link_text: str = factory.LazyAttribute(
+        lambda object: get_translation_in(
+            object.user.preferred_language, settings.VERIFY_EMAIL_LINK_TEXT
+        )
+    )
     link: str = factory.LazyAttribute(
         lambda object: (
             f"{settings.VERIFY_EMAIL_URL}/{object.user.id}/verify/?token="

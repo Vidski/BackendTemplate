@@ -464,7 +464,6 @@ class TestUserVerifyEndpoint:
     def test_verify_user(self, client: APIClient) -> None:
         # Test that any user can verify its user with a get
         # request with it id and token
-        assert Profile.objects.count() == 0
         normal_user: User = UserFaker()
         token = generate_user_verification_token(normal_user)
         assert normal_user.is_verified is False
@@ -472,5 +471,3 @@ class TestUserVerifyEndpoint:
         assert response.status_code == 200
         normal_user.refresh_from_db()
         assert normal_user.is_verified is True
-        assert Profile.objects.count() == 1
-        assert normal_user.profile is not None

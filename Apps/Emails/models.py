@@ -13,6 +13,8 @@ from Emails import factories
 from Emails.abstracts import AbstractEmailFunctionClass
 from Emails.choices import CommentType
 from Emails.choices import EmailAffair
+from Project.utils.translation import get_translation_in
+from Users.choices import PreferredLanguageChoices
 from Users.fakers.user import EmailTestUserFaker
 from Users.models import User
 
@@ -48,6 +50,13 @@ class Email(models.Model, AbstractEmailFunctionClass):
     to: ForeignObject = models.ForeignKey(
         User, on_delete=models.CASCADE, null=False, related_name="to_user"
     )
+    language: Field = models.CharField(
+        "Preferred language",
+        max_length=2,
+        choices=PreferredLanguageChoices.choices,
+        default=PreferredLanguageChoices.ENGLISH,
+        null=True,
+    )
 
     def __str__(self) -> str:
         return f"{self.id} | {self.subject}"
@@ -59,6 +68,17 @@ class Email(models.Model, AbstractEmailFunctionClass):
         if not self.programed_send_date or self.programed_send_date <= now():
             five_minutes_ahead: datetime = now() + timedelta(minutes=5)
             self.programed_send_date = five_minutes_ahead
+
+    def get_email_data(self) -> dict:
+        return {
+            **super().get_email_data(),
+            "follow_text": get_translation_in(
+                self.language, settings.FOLLOW_TEXT
+            ),
+            "unsubscribe_text": get_translation_in(
+                self.language, settings.UNSUBSCRIBE_TEXT
+            ),
+        }
 
     def save(self, *args: tuple, **kwargs: dict) -> None:
         if self.is_test:
@@ -114,6 +134,13 @@ class Notification(models.Model, AbstractEmailFunctionClass):
     subject: Field = models.CharField(max_length=100)
     is_test: Field = models.BooleanField(default=False)
     programed_send_date: Field = models.DateTimeField(null=True)
+    language: Field = models.CharField(
+        "Preferred language",
+        max_length=2,
+        choices=PreferredLanguageChoices.choices,
+        default=PreferredLanguageChoices.ENGLISH,
+        null=True,
+    )
 
     def __str__(self) -> str:
         return f"{self.id} | {self.subject}"
@@ -128,7 +155,8 @@ class Notification(models.Model, AbstractEmailFunctionClass):
 
     def create_email_for_every_user(self) -> None:
         for user in User.objects.all():
-            self.create_email(user)
+            if user.preferred_language == self.language:
+                self.create_email(user)
 
     def create_email(self, to: User) -> None:
         factories.email.EmailFactory(
