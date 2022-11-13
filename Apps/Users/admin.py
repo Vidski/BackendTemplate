@@ -1,9 +1,7 @@
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
-from django.contrib.admin.decorators import register
 from django.contrib.admin.models import LogEntry
-from django.contrib.admin.sites import AdminSite
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 from django.utils.html import format_html
@@ -119,6 +117,6 @@ class LogEntryAdmin(ModelAdmin):
     list_per_page: int = 20
 
 
-register(User, UserAdmin)
-register(LogEntry, LogEntryAdmin)
-register(Profile, ProfileAdmin)
+admin.site.register(User, UserAdmin)
+admin.site.register(LogEntry, LogEntryAdmin)
+admin.site.register(Profile, ProfileAdmin)

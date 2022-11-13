@@ -1,5 +1,5 @@
+from django.contrib import admin
 from django.contrib.admin import ModelAdmin
-from django.contrib.admin.decorators import register
 from django.db.models import Model
 
 from Emails.models import BlackList
@@ -111,8 +111,8 @@ class NotificationAdmin(ModelAdmin):
     ordering: tuple = ("is_test", "was_sent", "sent_date")
 
 
-register(Email, EmailAdmin)
-register(Block, BlockAdmin)
-register(Suggestion, SuggestionAdmin)
-register(BlackList, BlackListAdmin)
-register(Notification, NotificationAdmin)
+admin.site.register(Email, EmailAdmin)
+admin.site.register(Block, BlockAdmin)
+admin.site.register(Suggestion, SuggestionAdmin)
+admin.site.register(BlackList, BlackListAdmin)
+admin.site.register(Notification, NotificationAdmin)
