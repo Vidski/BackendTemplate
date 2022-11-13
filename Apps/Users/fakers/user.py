@@ -1,17 +1,18 @@
-import factory
 from django.conf import settings
 from django.db.models import Model
+from factory import Faker
+from factory import post_generation
 
 from Users.factories.user import UserFactory
 
 
 class UserFaker(UserFactory):
-    first_name: str = factory.Faker("first_name")
-    last_name: str = factory.Faker("last_name")
-    email: str = factory.Faker("email")
-    phone_number: str = factory.Faker("msisdn")
+    first_name: str = Faker("first_name")
+    last_name: str = Faker("last_name")
+    email: str = Faker("email")
+    phone_number: str = Faker("msisdn")
 
-    @factory.post_generation
+    @post_generation
     def set_phone_number(
         self, create: bool, extracted: Model, **kwargs: dict
     ) -> None:
@@ -22,10 +23,10 @@ class UserFaker(UserFactory):
 
 
 class VerifiedUserFaker(UserFaker):
-    phone_number: str = factory.Faker("msisdn")
+    phone_number: str = Faker("msisdn")
     is_verified: bool = True
 
-    @factory.post_generation
+    @post_generation
     def create_profile(
         self, create: bool, extracted: Model, **kwargs: dict
     ) -> None:
@@ -34,7 +35,7 @@ class VerifiedUserFaker(UserFaker):
 
 
 class AdminFaker(UserFaker):
-    phone_number: str = factory.Faker("msisdn")
+    phone_number: str = Faker("msisdn")
     is_admin: bool = True
     is_verified: bool = True
 

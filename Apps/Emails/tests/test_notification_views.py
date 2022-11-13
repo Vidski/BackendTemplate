@@ -1,5 +1,6 @@
-import pytest
 from django.urls import reverse
+from pytest import fixture
+from pytest import mark
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 
@@ -13,12 +14,12 @@ from Users.fakers.user import VerifiedUserFaker
 from Users.models import User
 
 
-@pytest.fixture(scope="function")
+@fixture(scope="function")
 def client() -> APIClient:
     return APIClient()
 
 
-@pytest.fixture(scope="function")
+@fixture(scope="function")
 def data() -> dict:
     return {
         "header": "Email header",
@@ -38,7 +39,7 @@ def data() -> dict:
     }
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestListNotificationsView:
     def url(self) -> str:
         return reverse("emails:notifications-list")
@@ -88,7 +89,7 @@ class TestListNotificationsView:
         assert notification.id == response.data["results"][0]["id"]
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestRetrieveNotificationsView:
     def url(self, pk: int) -> str:
         return reverse("emails:notifications-detail", args=[pk])
@@ -141,7 +142,7 @@ class TestRetrieveNotificationsView:
         assert notification.id == response.data["id"]
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestCreateNotificationsView:
     def url(self) -> str:
         return reverse("emails:notifications-list")
@@ -194,7 +195,7 @@ class TestCreateNotificationsView:
         assert response.status_code == 201
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestUpdateNotificationsView:
     def url(self, pk: int) -> str:
         return reverse("emails:notifications-detail", args=[pk])
@@ -247,7 +248,7 @@ class TestUpdateNotificationsView:
         assert notification.id == response.data["id"]
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestDeleteNotificationsView:
     def url(self, pk: int) -> str:
         return reverse("emails:notifications-detail", args=[pk])

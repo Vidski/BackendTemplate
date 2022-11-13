@@ -1,6 +1,6 @@
-import pytest
 from django.core import mail
 from django_rest_passwordreset.models import ResetPasswordToken
+from pytest import mark
 
 from Emails.models import Email
 from Emails.utils import send_email
@@ -8,7 +8,7 @@ from Users.fakers.user import UserFaker
 from Users.models import User
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestEmailUtils:
     def test_send_email_verify_email(self):
         email_type: str = "verify_email"

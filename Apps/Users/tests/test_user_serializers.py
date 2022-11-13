@@ -1,6 +1,7 @@
-import pytest
 from mock import MagicMock
 from mock import PropertyMock
+from pytest import mark
+from pytest import raises
 from rest_framework import serializers
 
 from Users.fakers.user import UserFaker
@@ -8,7 +9,7 @@ from Users.models import User
 from Users.serializers import UserUpdateSerializer
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestUserUpdateSerializer:
     def test_data_serialized_from_user(self) -> None:
         user: User = UserFaker()
@@ -31,7 +32,7 @@ class TestUserUpdateSerializer:
         mocked_requester: PropertyMock = PropertyMock(return_value=user)
         type(request).user = mocked_requester
         serializer.context["request"] = request
-        with pytest.raises(serializers.ValidationError):
+        with raises(serializers.ValidationError):
             serializer.is_valid(raise_exception=True)
 
     def test_check_password_fails_with_wrong_old_password(self) -> None:
@@ -45,7 +46,7 @@ class TestUserUpdateSerializer:
         mocked_requester: PropertyMock = PropertyMock(return_value=user)
         type(request).user = mocked_requester
         serializer.context["request"] = request
-        with pytest.raises(serializers.ValidationError):
+        with raises(serializers.ValidationError):
             serializer.is_valid(raise_exception=True)
 
     def test_check_password_fails_with_common_password(self) -> None:
@@ -59,7 +60,7 @@ class TestUserUpdateSerializer:
         mocked_requester: PropertyMock = PropertyMock(return_value=user)
         type(request).user = mocked_requester
         serializer.context["request"] = request
-        with pytest.raises(serializers.ValidationError):
+        with raises(serializers.ValidationError):
             serializer.is_valid(raise_exception=True)
 
     def test_check_password_passes_with_right_old_password_and_no_common_new_password(
@@ -87,7 +88,7 @@ class TestUserUpdateSerializer:
         mocked_requester: PropertyMock = PropertyMock(return_value=user)
         type(request).user = mocked_requester
         serializer.context["request"] = request
-        with pytest.raises(serializers.ValidationError):
+        with raises(serializers.ValidationError):
             serializer.is_valid(raise_exception=True)
 
     def test_check_phone_number_passes(self) -> None:
@@ -110,7 +111,7 @@ class TestUserUpdateSerializer:
         mocked_requester: PropertyMock = PropertyMock(return_value=user)
         type(request).user = mocked_requester
         serializer.context["request"] = request
-        with pytest.raises(serializers.ValidationError):
+        with raises(serializers.ValidationError):
             serializer.is_valid(raise_exception=True)
 
     def test_check_email_passes(self) -> None:
@@ -152,5 +153,5 @@ class TestUserUpdateSerializer:
         UserFaker(phone_number="+1123123123")
         data: dict = {"phone_number": "123123123"}
         serializer: UserUpdateSerializer = UserUpdateSerializer(data=data)
-        with pytest.raises(serializers.ValidationError):
+        with raises(serializers.ValidationError):
             serializer.is_valid(raise_exception=True)

@@ -1,5 +1,6 @@
-import pytest
 from django.urls import reverse
+from pytest import fixture
+from pytest import mark
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 
@@ -11,12 +12,12 @@ from Users.fakers.user import VerifiedUserFaker
 from Users.models import User
 
 
-@pytest.fixture(scope="function")
+@fixture(scope="function")
 def client() -> APIClient:
     return APIClient()
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestListBlacklistViews:
     def url(self) -> str:
         return reverse("emails:blacklist-list")
@@ -62,7 +63,7 @@ class TestListBlacklistViews:
         assert len(response.data["results"]) == 10
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestRetrieveBlacklistViews:
     def url(self, pk: int = None) -> str:
         return reverse("emails:blacklist-detail", args=[pk])
@@ -117,7 +118,7 @@ class TestRetrieveBlacklistViews:
         assert response.status_code == 403
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestCreateBlacklistViews:
     def url(self) -> str:
         return reverse("emails:blacklist-list")
@@ -171,7 +172,7 @@ class TestCreateBlacklistViews:
         assert response.status_code == 201
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestUpdateBlacklistViews:
     def url(self, pk: int = None) -> str:
         return reverse("emails:blacklist-detail", args=[pk])
@@ -232,7 +233,7 @@ class TestUpdateBlacklistViews:
         assert response.status_code == 200
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestDeleteBlacklistViews:
     def url(self, pk: int = None) -> str:
         return reverse("emails:blacklist-detail", args=[pk])

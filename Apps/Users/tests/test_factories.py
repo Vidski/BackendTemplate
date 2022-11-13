@@ -1,4 +1,5 @@
-import pytest
+from pytest import mark
+from pytest import raises
 
 from Users.factories.profile import ProfileFactory
 from Users.factories.user import UserFactory
@@ -7,7 +8,7 @@ from Users.models import Profile
 from Users.models import User
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestUserFactory:
     def test_user_factory(self) -> None:
         assert User.objects.count() == 0
@@ -22,11 +23,11 @@ class TestUserFactory:
         assert user.is_verified is False
 
     def test_factory_raises_error_without_email(self) -> None:
-        with pytest.raises(ValueError):
+        with raises(ValueError):
             UserFactory()
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestProfileFactory:
     def test_profile_factory(self) -> None:
         assert Profile.objects.count() == 0
@@ -36,5 +37,5 @@ class TestProfileFactory:
         assert profile.nickname is None
         assert profile.bio is None
         assert profile.image is not None
-        with pytest.raises(ValueError):
+        with raises(ValueError):
             profile.image.url

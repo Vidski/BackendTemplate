@@ -1,6 +1,9 @@
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.admin import ModelAdmin
+from django.contrib.admin.decorators import register
 from django.contrib.admin.models import LogEntry
+from django.contrib.admin.sites import AdminSite
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 from django.utils.html import format_html
@@ -90,7 +93,7 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal: tuple = ()
 
 
-class ProfileAdmin(admin.ModelAdmin):
+class ProfileAdmin(ModelAdmin):
     list_display: tuple = ("user", "nickname")
     list_display_links: tuple = (
         "user",
@@ -104,7 +107,7 @@ class ProfileAdmin(admin.ModelAdmin):
     ordering: tuple = ("user", "nickname")
 
 
-class LogEntryAdmin(admin.ModelAdmin):
+class LogEntryAdmin(ModelAdmin):
     list_display: tuple = (
         "user",
         "action_flag",
@@ -116,6 +119,6 @@ class LogEntryAdmin(admin.ModelAdmin):
     list_per_page: int = 20
 
 
-admin.site.register(User, UserAdmin)
-admin.site.register(LogEntry, LogEntryAdmin)
-admin.site.register(Profile, ProfileAdmin)
+register(User, UserAdmin)
+register(LogEntry, LogEntryAdmin)
+register(Profile, ProfileAdmin)

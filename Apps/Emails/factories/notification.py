@@ -1,25 +1,25 @@
 from datetime import datetime
 
-import factory
 from django.db.models import Model
-from django.utils import timezone
+from django.utils.timezone import now
+from django.utils.timezone import timedelta
+from factory import post_generation
+from factory.django import DjangoModelFactory
 
 from Emails.factories.block import BlockFactory
 from Emails.models import Notification
 
 
-class NotificationFactory(factory.django.DjangoModelFactory):
+class NotificationFactory(DjangoModelFactory):
     class Meta:
         model: Model = Notification
 
     is_test: bool = False
-    programed_send_date: datetime = timezone.now() + timezone.timedelta(
-        minutes=10
-    )
+    programed_send_date: datetime = now() + timedelta(minutes=10)
     sent_date: datetime = None
     was_sent: bool = False
 
-    @factory.post_generation
+    @post_generation
     def blocks(self, create: bool, extracted: Model, **kwargs: dict) -> None:
         if extracted:
             for block in extracted:
