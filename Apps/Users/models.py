@@ -102,6 +102,8 @@ class User(
 
     def verify(self) -> None:
         self.is_verified = True
+        if not Profile.objects.filter(user=self).exists():
+            Profile.objects.create(user=self)
         self.save()
 
     @property
