@@ -27,7 +27,7 @@ from Users.manager import CustomUserManager
 
 
 class User(
-    ExportModelOperationsMixin("dataset"), AbstractBaseUser, PermissionsMixin
+    ExportModelOperationsMixin("user"), AbstractBaseUser, PermissionsMixin
 ):
     username: None = None
     is_superuser: None = None
@@ -121,7 +121,7 @@ class User(
         return birthday < adultness
 
 
-class Profile(Model):
+class Profile(ExportModelOperationsMixin("profile"), Model):
     user: ForeignObject = OneToOneField(
         User,
         on_delete=CASCADE,

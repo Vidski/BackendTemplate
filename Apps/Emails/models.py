@@ -16,6 +16,7 @@ from django.utils import timezone
 from django.utils.timezone import now
 from django.utils.timezone import timedelta
 from django_mysql.models import ListCharField
+from django_prometheus.models import ExportModelOperationsMixin
 
 from Emails import factories
 from Emails.abstracts import AbstractEmailFunctionClass
@@ -39,7 +40,9 @@ class Block(Model):
         return f"{self.id} | {self.title}"
 
 
-class Email(Model, AbstractEmailFunctionClass):
+class Email(
+    ExportModelOperationsMixin("email"), Model, AbstractEmailFunctionClass
+):
 
     header: Field = CharField(max_length=100, null=True)
     affair: Field = CharField(
@@ -96,7 +99,9 @@ class Email(Model, AbstractEmailFunctionClass):
         super(Email, self).save(*args, **kwargs)
 
 
-class Suggestion(Model, AbstractEmailFunctionClass):
+class Suggestion(
+    ExportModelOperationsMixin("suggestion"), Model, AbstractEmailFunctionClass
+):
 
     header: Field = CharField(max_length=100, null=True)
     affair: Field = CharField(
@@ -178,7 +183,7 @@ class Notification(Model, AbstractEmailFunctionClass):
         )
 
 
-class BlackList(Model):
+class BlackList(ExportModelOperationsMixin("blacklist"), Model):
     """
     BlackList model, if one user is in this list with given affair, the email
     will not be sent
