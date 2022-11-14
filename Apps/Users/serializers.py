@@ -53,6 +53,7 @@ class UserUpdateSerializer(ModelSerializer):
     phone_number: CharField = CharField(
         required=False,
         max_length=22,
+        allow_blank=True,
     )
     old_password: Field = CharField(write_only=True, required=False)
     password: Field = CharField(write_only=True, required=False)
@@ -108,7 +109,9 @@ class ProfileSerializer(ModelSerializer):
     Profile serializer
     """
 
-    image: Base64ImageField = Base64ImageField(required=False)
+    bio: CharField = CharField(required=False, allow_blank=True)
+    nickname: CharField = CharField(required=False, allow_blank=True)
+    image: Base64ImageField = Base64ImageField(required=False, allow_null=True)
     user_id: RelatedField = PrimaryKeyRelatedField(
         queryset=User.objects.all(), source="user", required=False
     )
@@ -127,6 +130,13 @@ class ProfileSerializer(ModelSerializer):
         is_valid: dict = super().is_valid(raise_exception)
         self.check_user_field_according_requester(self.validated_data)
         return is_valid
+
+    def validate_nickname(self, nickname: str) -> None:
+        if nickname:
+            profile: QuerySet = Profile.objects.filter(nickname=nickname)
+            if profile.exists() and self.instance != profile.first():
+                raise ValidationError("This nickname already exists.")
+        return nickname
 
     def check_user_field_according_requester(
         self, validated_data: dict
