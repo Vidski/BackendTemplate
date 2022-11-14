@@ -26,7 +26,7 @@ This project has features such as:
 - Amazon web services S3 buckets compatibility.
 - CRON jobs using Celery and RabbitMQ.
 - Database caching system to have a better performance using Redis.
-- Prometehus statistics that can be easily configured with Grafana.
+- Prometheus statistics that can be easily configured with Grafana.
 - CI pipelines, ready to implement the CD part.
 - Github templates for issues and pull requests.
 - Github releases for merges on master based on tags.
