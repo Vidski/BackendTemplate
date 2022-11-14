@@ -109,8 +109,12 @@ class ProfileSerializer(ModelSerializer):
     Profile serializer
     """
 
-    bio: CharField = CharField(required=False, allow_blank=True)
-    nickname: CharField = CharField(required=False, allow_blank=True)
+    bio: CharField = CharField(
+        required=False, allow_blank=True, allow_null=True
+    )
+    nickname: CharField = CharField(
+        required=False, allow_blank=True, allow_null=True
+    )
     image: Base64ImageField = Base64ImageField(required=False, allow_null=True)
     user_id: RelatedField = PrimaryKeyRelatedField(
         queryset=User.objects.all(), source="user", required=False
