@@ -56,7 +56,7 @@ class IsProfileOwner(DjangoObjectPermissions):
 
 class IsActionAllowed(DjangoObjectPermissions):
     message: str = "You don't have permission"
-    allowed_actions_for_user: list = ["retrieve", "update"]
+    allowed_actions_for_user: list = ["retrieve", "update", "partial_update"]
 
     def has_permission(self, request: HttpRequest, view: View) -> bool:
         return view.action in self.allowed_actions_for_user
