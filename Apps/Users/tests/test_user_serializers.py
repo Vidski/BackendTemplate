@@ -22,6 +22,18 @@ class TestUserUpdateSerializer:
         actual_data: dict = UserUpdateSerializer(user).data
         assert actual_data == expected_data
 
+    def test_check_password_return_None_if_not_password(self) -> None:
+        user: User = UserFaker()
+        data: dict = {
+            "password": None,
+        }
+        serializer: UserUpdateSerializer = UserUpdateSerializer(data=data)
+        request: MagicMock = MagicMock()
+        mocked_requester: PropertyMock = PropertyMock(return_value=user)
+        type(request).user = mocked_requester
+        serializer.context["request"] = request
+        serializer.is_valid(raise_exception=True)
+
     def test_check_password_fails_without_old_password(self) -> None:
         user: User = UserFaker()
         data: dict = {
@@ -90,6 +102,18 @@ class TestUserUpdateSerializer:
         serializer.context["request"] = request
         with raises(serializers.ValidationError):
             serializer.is_valid(raise_exception=True)
+
+    def test_check_phone_number_return_None_if_not_phone_number(self) -> None:
+        user: User = UserFaker()
+        data: dict = {
+            "phone_number": None,
+        }
+        serializer: UserUpdateSerializer = UserUpdateSerializer(data=data)
+        request: MagicMock = MagicMock()
+        mocked_requester: PropertyMock = PropertyMock(return_value=user)
+        type(request).user = mocked_requester
+        serializer.context["request"] = request
+        serializer.is_valid(raise_exception=True)
 
     def test_check_phone_number_passes(self) -> None:
         user: User = UserFaker()

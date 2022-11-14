@@ -29,6 +29,11 @@ from Users.models import User
 
 
 class Block(Model):
+    """
+    Block models will be used as small parts that an email can have,
+    allowing this way to create a more dynamic emails according to the
+    topic of the email.
+    """
 
     title: Field = CharField(max_length=100, null=True)
     content: Field = TextField(null=True)

@@ -7,41 +7,62 @@
 </h3>
 
 * * *
-The goal of this project is to enable an easy-to-use and implement template in order to start developing a web app as quickly and conveniently as possible.
+The goal of this project is to enable an easy-to-use template in order to start developing a web application as quickly and conveniently as possible.
 
-The environment we are looking to build is one that uses Django as a python framework for web development with MySQL as a database. Also will be setted up the DjangoRESTFramework to build an API if needed; Celery with RabbitMQ for managing asynchronous tasks, and Flower for monitoring those tasks.
+The environment we are looking to build is one that uses Django as a python framework for web development with MySQL as a database, DjangoRESTFramework to build it as an API; Celery with RabbitMQ for managing asynchronous tasks, and Flower for monitoring those tasks.
 
-All we be in one Docker container that will be already setted up to just start coding the project.
+The project will be in Docker containers that will be already set up just to start coding the project, following as much as possible the [twelve factor app principles](https://12factor.net/es/) in order to be ready to add any kind of environment maintaining coherence and traceability.
+
+This project has features such as:
+- Authentication (login and sign up) for users using [JWT](https://jwt.io/).
+- Social OAuth for Google, Facebook and Twitter.
+- Permissions for admin users.
+- Password recovery through email.
+- Email system.
+- Notification (global emails) system.
+- Customization of emails according the preferred language of users.
+- Blacklist to allow users receive only those type of emails they are interested in.
+- Mailbox where suggestions/bugs/others can be sent.
+- Amazon web services S3 buckets compatibility.
+- CRON jobs using Celery and RabbitMQ.
+- Database caching system to have a better performance using Redis.
+- Prometehus statistics that can be easily configured with Grafana.
+- CI pipelines, ready to implement the CD part.
+- Github templates for issues and pull requests.
+- Github releases for merges on master based on tags.
+- 100% of test coverage.
 
 ## Table of Contents
-1. [Requirements](#requirements)
-2. [Nice to have](#nicetohave)
-3. [Before starting](#beforestarting)
-4. [Instructions](#instructions)
-5. [Observations](#observations)
-6. [Interaction](#interaction)
-7. [Versions used](#versions)
-8. [Useful guides](#usefullguides)
 
-      8.1. [Custum user model](#customusermodel)
+| Name | Description |
+| --- | --- |
+|  [Requirements](#requirements)   |  Must have in order to run the project.   |
+|  [Nice to have](#nicetohave)     | This would help you a lot to work with this template. |
+|  [Nice to look at](#nicetolook)     | Documentation of the resources used in the template. |
+|  [Before starting](#beforestarting)     | Naming disclaimer that would be better to do before starting. |
+|  [Instructions](#instructions)    | Instructions to raise the project and start developing. |
+|  [Main urls](#mainurls)     | Main urls you can access after running the project. |
+|  [Observations](#observations)     | Observations in order to interact with the codebase. |
+|  [Versions used](#versions)    | Versions used in this project. |
+|  [Useful tools](#usefulltools)    | Useful tools to understand/improve this project based on your needs. |
 
 <a name="requirements"/>
 
 ## Requirements
-  - Docker
-  - Docker-Compose
+  - [Docker.](https://docs.docker.com/get-docker/)
+  - [Docker-Compose.](https://docs.docker.com/engine/reference/commandline/compose/)
 
 <a name="nicetohave"/>
 
 ## Nice to have
-  - Python3
-  - Django
+  - [Python3.](https://www.python.org/downloads/)
+  - [Make.](https://www.gnu.org/software/make/)
 
-<a name="nicetohave"/>
+<a name="nicetolook"/>
 
 ## Nice to take a look to
 - [Docker documentation.](https://docs.celeryproject.org/en/stable/index.html#)
-- [Django documentation.](https://www.djangoproject.com/)
+- [Django documentation.](https://docs.djangoproject.com/en/4.1/)
 - [DjangoREST documentation.](https://www.django-rest-framework.org/)
 - [Django Jazzmin documentation.](https://django-jazzmin.readthedocs.io/)
 - [Celery documentation.](https://docs.celeryproject.org/)
@@ -55,144 +76,90 @@ All we be in one Docker container that will be already setted up to just start c
 <a name="beforestarting"/>
 
 ## Before starting
-Feel free to set your environment variables as you want on ```env.env``` file.
 
-You can change the container name by changing the main folder name.
+- Look at the `User` model and think if it fits your needs, because changing it after some work done can be hard.
 
-You can change project name to your actual app name, just take in mind that you will need to change folders name, docker-compose.yml content, Dockerfile content and some django settings in order to the container work correctly.
+- Feel free to set your environment variables as you want on `.env` files.
+
+- You can change the container name by changing the main folder name.
+
+- You can change the project name to your actual app name, just take in mind that you will need to change folder names, docker-compose.yml content, Dockerfile content and some Django settings in order for the container work correctly.
+
 
 <a name="instructions"/>
 
 ## Instructions
 
 1. Go to root content folder.
-2. Bring up the docker container running:
-    ```make up```
+2. Raise the docker containers running:
+    ```make docker up```
 
 4. That's all!
 
-    Django admin will be available on: [http://localhost:8000/admin](http://localhost:8000/admin)
+:warning: Disclaimer: if you don't have make installed, you can run:
 
-    Django app will be available on: [http://localhost:8000/](http://localhost:8000/)
+`docker-compose -f ./Docker/Local/docker-compose.yml --env-file ./Docker/Local/docker.env up`
 
-    Flower task monitor will be available on: [http://localhost:5555](http://localhost:5555)
+<a name="mainurls"/>
 
-    Grafana monitor will be available on: [http://localhost:3000](http://localhost:3000)
+## Main urls
 
-    Prometheus dashboard will be available on: [http://localhost:9090](http://localhost:9090)
+After running the project:
 
-    Documentation served by Openapi (Swagger) will be available on: [http://localhost:8000/doc/swagger](http://localhost:8000/doc/swagger/)
-
-    You can also check the documentation server by Redoc on: [http://localhost:8000/doc/redoc](http://localhost:8000/doc/redoc/)
+- Django admin will be available on: [http://localhost:8000/admin](http://localhost:8000/admin)
+- Django app will be available on: [http://localhost:8000/](http://localhost:8000/)
+- Flower task monitor will be available on: [http://localhost:5555](http://localhost:5555)
+- Grafana monitor will be available on: [http://localhost:3000](http://localhost:3000)
+- Prometheus dashboard will be available on: [http://localhost:9090](http://localhost:9090)
+- Documentation served by Openapi (Swagger) will be available on: [http://localhost:8000/docs/swagger](http://localhost:8000/docs/swagger/)
+- You can also check the documentation server by Redoc on: [http://localhost:8000/docs/redoc](http://localhost:8000/docs/redoc/)
 
 <a name="observations"/>
 
 ## Observations
 
-To actual interact with django admin for the first time, you will need to run:
+You can run `make` or `make help` in order to see all the possibles commands you have to interact with the project.
 
-    make migrate
-    make createsuperuser
+As first steps in order to correctly interact with it, you have to run:
 
-Or acces into the bash (you can do it running ```make bash```) and run:
-
-    python manage.py migrate
-    python manage.py createsuperuser
-
-
-Then you can create and app ([app vs project](https://docs.djangoproject.com/en/3.2/intro/tutorial01/#creating-the-polls-app)) running:
-
-    APP=<app-name> make create-app
-
-Or in the container bash:
-
-    python manage.py create-app <app-name>
+1. `make migrations`
+2.  `make populate` This will create fake data, including admin user with credentials:
+    - email: admin@admin.com
+    - password: adminpassword
 
 
-To test your django applications you must run:
+Grafana Credentials will be
+    - user: admin
+    - password: admin
 
-    make test
-
-Or in the conteiner bash:
-
-    python manage.py test
-
-The first time you run a test, you probably will get an error message saying that your user does not have permissions to interact with the database.
-To fix that, you must enter you database mysql container as a root running something like this:
-
-    USER=root PASSWORD=password make database
-
-Or:
-
-    docker-compose exec database mysql -uroot -ppassword
-
-Then you must grant your user the privileges making the following query:
-
-    GRANT ALL PRIVILEGES ON *.* TO 'user'@'%' WITH GRANT OPTION;
-    FLUSH PRIVILEGES;
-
-Now you will be able to run your tests.
-
-
-Grafana Credentials will be user: ```admin``` and password: ```admin```. You will be able to change them once you get logged in.
-
-Notice that Django admin is customizable due the use of [Django-Jazzmin](https://django-jazzmin.readthedocs.io/) that implements [Adminlte](https://adminlte.io/) + [Bootstrap](https://getbootstrap.com/).
-
-
-<a name="interaction"/>
-
-## Interaction
-All the interaction goes through ```makefile```, but you can interact with the containers runing the commands as usual, for example, running manually the comands in the ```makefile```.
-
-You can see docker logs just running ```docker-compose up```, but this will attach the console directly to the container process so if you close it, you will set down the docker container too. To avoid this you can run the container detached to console running:
-
-    make up -d
-
-To see container logs run:
-
-    make logs
-
-To access container bash to interact directly with the container run:
-
-    make bash
-
-To access container shell to interact directly with django run:
-
-    make shell
-
-To run the tests run:
-
-    make test
-
-To access MySQL database run:
-
-    make database USER=user PASSWORD=password
+You will be able to change them once you are logged in.
 
 <a name="versions"/>
 
 ## Versions used
 * * *
-Versions that will use the project. Take in mind that python sub versions may change because it will depend on the one used on [python dockerhub image.](https://hub.docker.com/_/python), it will be the same with [RabbitMQ](https://hub.docker.com/_/rabbitmq), and [MySQL](https://hub.docker.com/_/mysql). Even so, the python version in docker container (reviewed on 2022/01/04) is ```3.9.7```.
+Reviewed on 2022/11/14.
 
-* Docker compose schema version:  3.8
-* Python image:  3
-* RabbitMQ image: 3
-* MySQL image:  5.6
-* Django version:  4.0.0
+* Docker compose schema version:  3.9
+* Python image:  3.10.5
+* RabbitMQ image: 3.9.21
+* MySQL image:  8.0.30
+* Redis image:  7.0.3
+* Django version:  4.1.2
 * DjangoRESTFramework version:  3.12.4
-* Celery version:  5.1.2
+* Celery version:  5.2.3
 
 
-<a name="usefullguides"/>
+<a name="usefulltools"/>
 
 <h1 align="center">
-  <b>Useful guides</b>
+  <b>Useful tools</b>
 </h1>
 
-These are useful guides to customize our django apps, modifying the default User model.
+These are useful tools to customize/develop your django project.
 
-<a name="customusermodel"/>
-
-### Use custom django user model
-
-You can check the guide in the [medium](https://medium.com/@alex521e2/create-a-custom-user-model-in-django-4-0-a5fd7386b3e0) or [linkedin](https://www.linkedin.com/pulse/create-custom-user-model-django-40-alejandro-acho-mart%25C3%25ADnez/?trackingId=lFj6aKZmHN5pIKDnlOTykQ%3D%3D) post.
+| Links | Description |
+| --- | --- |
+| [Medium](https://medium.com/@alex521e2/create-a-custom-user-model-in-django-4-0-a5fd7386b3e0) or [Linkedin](https://www.linkedin.com/pulse/create-custom-user-model-django-40-alejandro-acho-mart%25C3%25ADnez/?trackingId=lFj6aKZmHN5pIKDnlOTykQ%3D%3D) posts | Tutorial to modify custom django user model.|
+| [Postman API endpoints.zip](https://github.com/Alejandroacho/BackendTemplate/files/10007414/Postman.API.endpoints.zip) | Collections of the endpoints ready to use in postman. |
+| [Simple social OAuth frontend](https://github.com/Alejandroacho/SocialOAuth) | This is a small frontend project you can use to test the OAuth endpoints. |
