@@ -14,7 +14,7 @@ The environment we are looking to build is one that uses Django as a python fram
 The project will be in Docker containers that will be already set up just to start coding the project, following as much as possible the [twelve factor app principles](https://12factor.net/es/) in order to be ready to add any kind of environment maintaining coherence and traceability.
 
 This project has features such as:
-- Authentication (login and signup) for users using [JWT](https://jwt.io/).
+- Authentication (login and sign up) for users using [JWT](https://jwt.io/).
 - Social OAuth for Google, Facebook and Twitter.
 - Permissions for admin users.
 - Password recovery through email.
@@ -22,18 +22,21 @@ This project has features such as:
 - Notification (global emails) system.
 - Customization of emails according the preferred language of users.
 - Blacklist to allow users receive only those type of emails they are interested in.
-- Milbox where suggestions/bugs/others can be sent.
-- Amazon web services S3 buckets compatibilty.
+- Mailbox where suggestions/bugs/others can be sent.
+- Amazon web services S3 buckets compatibility.
 - CRON jobs using Celery and RabbitMQ.
-- Database caching system to have a better perfomance using Redis.
+- Database caching system to have a better performance using Redis.
 - Prometehus statistics that can be easily configured with Grafana.
+- CI pipelines, ready to implement the CD part.
+- Github templates for issues and pull requests.
+- Github releases for merges on master based on tags.
 - 100% of test coverage.
 
 ## Table of Contents
 
 | Name | Description |
 | --- | --- |
-|  [Requirements](#requirements)   |  Must have in order to run the project.   | 
+|  [Requirements](#requirements)   |  Must have in order to run the project.   |
 |  [Nice to have](#nicetohave)     | This would help you a lot to work with this template. |
 |  [Nice to look at](#nicetolook)     | Documentation of the resources used in the template. |
 |  [Before starting](#beforestarting)     | Naming disclaimer that would be better to do before starting. |
@@ -93,7 +96,7 @@ This project has features such as:
 
 4. That's all!
 
-:warning: Disclaimer: if you don't have make installed, you can run: 
+:warning: Disclaimer: if you don't have make installed, you can run:
 
 `docker-compose -f ./Docker/Local/docker-compose.yml --env-file ./Docker/Local/docker.env up`
 
@@ -126,7 +129,7 @@ As first steps in order to correctly interact with it, you have to run:
 
 
 Grafana Credentials will be
-    - user: admin 
+    - user: admin
     - password: admin
 
 You will be able to change them once you are logged in.
@@ -135,7 +138,7 @@ You will be able to change them once you are logged in.
 
 ## Versions used
 * * *
-Rreviewed on 2022/11/14.
+Reviewed on 2022/11/14.
 
 * Docker compose schema version:  3.9
 * Python image:  3.10.5
@@ -160,4 +163,3 @@ These are useful tools to customize/develop your django project.
 | [Medium](https://medium.com/@alex521e2/create-a-custom-user-model-in-django-4-0-a5fd7386b3e0) or [Linkedin](https://www.linkedin.com/pulse/create-custom-user-model-django-40-alejandro-acho-mart%25C3%25ADnez/?trackingId=lFj6aKZmHN5pIKDnlOTykQ%3D%3D) posts | Tutorial to modify custom django user model.|
 | [Postman API endpoints.zip](https://github.com/Alejandroacho/BackendTemplate/files/10007414/Postman.API.endpoints.zip) | Collections of the endpoints ready to use in postman. |
 | [Simple social OAuth frontend](https://github.com/Alejandroacho/SocialOAuth) | This is a small frontend project you can use to test the OAuth endpoints. |
-
