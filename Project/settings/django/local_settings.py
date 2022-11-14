@@ -73,10 +73,10 @@ SIMPLE_JWT: dict = {
 }
 
 # SMTP CONFIG
-EMAIL_HOST: str = ""
-EMAIL_HOST_USER: str = ""
-EMAIL_HOST_PASSWORD: str = ""
-EMAIL_PORT: str = ""
+EMAIL_HOST: str = None
+EMAIL_HOST_USER: str = None
+EMAIL_HOST_PASSWORD: str = None
+EMAIL_PORT: str = None
 
 ## CORS
 # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
@@ -85,11 +85,18 @@ CORS_ALLOW_CREDENTIALS = True
 
 ## SOCIAL OAUTH
 # Google
-GOOGLE_CLIENT_ID: str = ""
-GOOGLE_CLIENT_SECRET: str = ""
+GOOGLE_CLIENT_ID: str = None
+GOOGLE_CLIENT_SECRET: str = None
 # Twitter
-TWITTER_API_KEY: str = ""
-TWITTER_API_SECRET_KEY: str = ""
-TWITTER_API_BEARER_TOKEN: str = ""
+TWITTER_API_KEY: str = None
+TWITTER_API_SECRET_KEY: str = None
+TWITTER_API_BEARER_TOKEN: str = None
 ## OAUTH PASSWORD
-OAUTH_PASSWORD: str = ""
+OAUTH_PASSWORD: str = None
+
+##AWS S3
+AWS_STORAGE_IMAGE_BUCKET_NAME: str = None
+AWS_ACCESS_KEY_ID: str = None
+AWS_SECRET_ACCESS_KEY: str = None
+AWS_S3_REGION_NAME: str = None
+AWS_S3_SIGNATURE_VERSION: str = None
