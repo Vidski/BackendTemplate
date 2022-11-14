@@ -132,13 +132,15 @@ class Profile(Model):
         unique=True,
         error_messages={"unique": "This nickname already exists."},
         null=True,
+        blank=True,
         max_length=50,
     )
-    bio: Field = TextField("Bio", null=True)
+    bio: Field = TextField("Bio", null=True, blank=True)
     image: Field = ImageField(
         "Profile image",
         upload_to=image_file_upload,
         null=True,
+        blank=True,
     )
     created_at: Field = DateTimeField("Creation date", auto_now_add=True)
     updated_at: Field = DateTimeField("Update date", auto_now=True)
