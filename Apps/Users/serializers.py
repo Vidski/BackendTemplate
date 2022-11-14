@@ -54,9 +54,14 @@ class UserUpdateSerializer(ModelSerializer):
         required=False,
         max_length=22,
         allow_blank=True,
+        allow_null=True,
     )
-    old_password: Field = CharField(write_only=True, required=False)
-    password: Field = CharField(write_only=True, required=False)
+    old_password: Field = CharField(
+        write_only=True, required=False, allow_null=True, allow_blank=True
+    )
+    password: Field = CharField(
+        write_only=True, required=False, allow_null=True, allow_blank=True
+    )
 
     def update(self, instance: User, validated_data: dict) -> User:
         password: str = validated_data.pop("password", None)
@@ -74,6 +79,8 @@ class UserUpdateSerializer(ModelSerializer):
         return email
 
     def validate_phone_number(self, phone_number: str) -> None:
+        if not phone_number:
+            return None
         check_e164_format(phone_number)
         queryset: QuerySet = User.objects.filter(phone_number=phone_number)
         user_with_phone: User = queryset.first()
@@ -83,6 +90,8 @@ class UserUpdateSerializer(ModelSerializer):
         return phone_number
 
     def validate_password(self, password: str) -> None:
+        if not password:
+            return None
         old_password: str = self.initial_data.get("old_password", None)
         if not old_password:
             raise ValidationError("Old password is required")
