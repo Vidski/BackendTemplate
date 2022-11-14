@@ -1,6 +1,6 @@
-import pytest
 from mock import MagicMock
 from mock import PropertyMock
+from pytest import mark
 
 from Users.fakers.user import AdminFaker
 from Users.fakers.user import UserFaker
@@ -15,7 +15,7 @@ from Users.permissions import IsUserOwner
 from Users.permissions import IsVerified
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestIsAdminPermission:
     def test_returns_false_if_user_is_not_admin(self) -> None:
         requester: User = UserFaker()
@@ -34,7 +34,7 @@ class TestIsAdminPermission:
         assert IsAdmin().has_permission(request, None) is True
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestIsVerifiedPermission:
     def test_returns_false_if_user_is_not_verified(self) -> None:
         requester: User = UserFaker()
@@ -53,7 +53,7 @@ class TestIsVerifiedPermission:
         assert IsVerified().has_permission(request, None) is True
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestIsUserOwnerPermission:
     def test_returns_false_if_user_is_not_owner(self) -> None:
         user: User = UserFaker()
@@ -77,7 +77,7 @@ class TestIsUserOwnerPermission:
         assert IsUserOwner().has_permission(request, None) is True
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestIsSameUserId:
     def test_returns_false_if_user_id_in_url_is_not_the_requester_id(
         self,
@@ -112,7 +112,7 @@ class TestIsSameUserId:
         assert IsSameUserId().has_permission(request, None) is True
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestIsProfileOwnerPermission:
     def test_returns_true_if_profile_is_from_user(self) -> None:
         requester: User = VerifiedUserFaker()
@@ -147,7 +147,7 @@ class TestIsProfileOwnerPermission:
         assert IsProfileOwner().has_permission(request, None) is False
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestIsActionAllowedPermission:
     def test_returns_true_for_retrieve_action_allowed(self) -> None:
         view: MagicMock = MagicMock()

@@ -1,4 +1,5 @@
-import pytest
+from pytest import mark
+from pytest import raises
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.serializers import ValidationError
 
@@ -9,12 +10,12 @@ from Users.utils import generate_user_verification_token
 from Users.utils import verify_user_query_token
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestUserUtils:
     def test_verify_user_query_token_raises_PermissionDenied(self) -> None:
         user: User = UserFaker()
         token: str = "Wrong token"
-        with pytest.raises(PermissionDenied):
+        with raises(PermissionDenied):
             verify_user_query_token(user, token)
 
     def test_generate_user_verification_token_function(self) -> None:
@@ -30,7 +31,7 @@ class TestUserUtils:
 
     def test_check_e164_format_raises_PermissionDenied(self) -> None:
         phone_number: str = "000000000"
-        with pytest.raises(ValidationError):
+        with raises(ValidationError):
             check_e164_format(phone_number)
 
     def test_check_e164_format_do_not_raises_PermissionDenied(self) -> None:

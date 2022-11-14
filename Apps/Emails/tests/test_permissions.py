@@ -1,7 +1,8 @@
-import pytest
 from django.http import Http404
 from mock import MagicMock
 from mock import PropertyMock
+from pytest import mark
+from pytest import raises
 
 from Emails.fakers.blacklist import BlackListFaker
 from Emails.models import BlackList
@@ -11,7 +12,7 @@ from Users.fakers.user import UserFaker
 from Users.models import User
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestIsBlacklistOwnerPermission:
     def test_returns_false_if_user_not_owns_the_blacklist_item(self) -> None:
         blacklist: BlackList = BlackListFaker()
@@ -43,5 +44,5 @@ class TestIsBlacklistOwnerPermission:
         mocked_requester: PropertyMock = PropertyMock(return_value=requester)
         type(request).user = mocked_requester
         type(request).parser_context = mocked_kwargs
-        with pytest.raises(Http404):
+        with raises(Http404):
             IsBlacklistOwner().has_permission(request, None)

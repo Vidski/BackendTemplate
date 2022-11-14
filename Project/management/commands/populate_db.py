@@ -1,5 +1,5 @@
-import logging
 from logging import Logger
+from logging import getLogger
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -16,7 +16,7 @@ from Users.fakers.user import UserFaker
 from Users.models import User
 
 
-logger: Logger = logging.getLogger(__name__)
+logger: Logger = getLogger(__name__)
 
 
 class Command(BaseCommand):

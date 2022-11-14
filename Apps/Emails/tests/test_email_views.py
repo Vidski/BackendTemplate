@@ -1,5 +1,6 @@
-import pytest
 from django.urls import reverse
+from pytest import fixture
+from pytest import mark
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 
@@ -11,12 +12,12 @@ from Users.fakers.user import VerifiedUserFaker
 from Users.models import User
 
 
-@pytest.fixture(scope="function")
+@fixture(scope="function")
 def client() -> APIClient:
     return APIClient()
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestListEmailsView:
     def url(self) -> str:
         return reverse("emails:emails-list")
@@ -55,7 +56,7 @@ class TestListEmailsView:
         assert response.status_code == 200
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestRetrieveEmailsView:
     def url(self, pk: int) -> str:
         return reverse("emails:emails-detail", args=[pk])
@@ -98,7 +99,7 @@ class TestRetrieveEmailsView:
         assert response.status_code == 200
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestCreateEmailsView:
     def url(self) -> str:
         return reverse("emails:emails-list")
@@ -234,7 +235,7 @@ class TestCreateEmailsView:
         assert Email.objects.count() == 0
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestUpdateEmailsView:
     def url(self, pk: int) -> str:
         return reverse("emails:emails-detail", args=[pk])
@@ -345,7 +346,7 @@ class TestUpdateEmailsView:
         assert Email.objects.count() == 1
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestDeleteEmailsView:
     def url(self, pk: int) -> str:
         return reverse("emails:emails-detail", args=[pk])
