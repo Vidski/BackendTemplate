@@ -1,6 +1,7 @@
-import pytest
 from django.core import mail
 from django.urls import reverse
+from pytest import fixture
+from pytest import mark
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 
@@ -13,12 +14,12 @@ from Users.fakers.user import VerifiedUserFaker
 from Users.models import User
 
 
-@pytest.fixture(scope="function")
+@fixture(scope="function")
 def client() -> APIClient:
     return APIClient()
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestSubmitSuggestionViews:
     def url(self) -> str:
         return f"{reverse('emails:suggestions-submit')}"
@@ -76,7 +77,7 @@ class TestSubmitSuggestionViews:
         assert email_count == 0
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestReadSuggestionViews:
     def url(self, suggestion_id: int) -> str:
         return f"{reverse('emails:suggestions-read', args=[suggestion_id])}"
@@ -127,7 +128,7 @@ class TestReadSuggestionViews:
         assert suggestion.was_read == True
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestUserSuggestionViews:
 
     ACTION: str = "user"

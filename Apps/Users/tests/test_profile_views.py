@@ -1,9 +1,10 @@
 import base64
 from io import BufferedReader
 
-import pytest
 from django.conf import settings
 from django.urls import reverse
+from pytest import fixture
+from pytest import mark
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 
@@ -14,12 +15,12 @@ from Users.models import Profile
 from Users.models import User
 
 
-@pytest.fixture(scope="function")
+@fixture(scope="function")
 def client() -> APIClient:
     return APIClient()
 
 
-@pytest.fixture(scope="class")
+@fixture(scope="class")
 def base64_image() -> bytes:
     image_file: BufferedReader = open(f"{settings.STATIC_PATH}/logo.png", "rb")
     image_base64: bytes = base64.b64encode(image_file.read())
@@ -27,7 +28,7 @@ def base64_image() -> bytes:
     return image_base64
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestProfileListEndpoint:
     def url(self) -> str:
         return reverse("users:profiles-list")
@@ -66,7 +67,7 @@ class TestProfileListEndpoint:
         assert response.data["count"] == Profile.objects.count()
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestProfileRetrieveEndpoint:
     def url(self, pk: int = None) -> str:
         return reverse("users:profiles-detail", args=[pk])
@@ -138,7 +139,7 @@ class TestProfileRetrieveEndpoint:
         assert response.data["image"] == profile.image
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestProfileCreateEndpoint:
     def url(self) -> str:
         return reverse("users:profiles-list")
@@ -219,7 +220,7 @@ class TestProfileCreateEndpoint:
         assert response.data["bio"] == data["bio"]
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestProfileUpdateEndpoint:
     def url(self, pk: int = None) -> str:
         return reverse("users:profiles-detail", args=[pk])
@@ -394,7 +395,7 @@ class TestProfileUpdateEndpoint:
         assert response.status_code == 200
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestProfileDeleteEndpoint:
     def url(self, pk: int = None) -> str:
         return reverse("users:profiles-detail", args=[pk])

@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.admin import ModelAdmin
 from django.db.models import Model
 
 from Emails.models import BlackList
@@ -8,7 +9,7 @@ from Emails.models import Notification
 from Emails.models import Suggestion
 
 
-class BlockAdmin(admin.ModelAdmin):
+class BlockAdmin(ModelAdmin):
     model: Model = Block
     list_display: tuple = ("id", "title", "show_link")
     list_display_links: tuple = ("id", "title")
@@ -26,7 +27,7 @@ class BlockAdmin(admin.ModelAdmin):
     search_fields: tuple = ("title", "id", "link", "link_text", "content")
 
 
-class EmailAdmin(admin.ModelAdmin):
+class EmailAdmin(ModelAdmin):
     model: Model = Email
     list_display: tuple = (
         "id",
@@ -51,7 +52,7 @@ class EmailAdmin(admin.ModelAdmin):
     ordering: tuple = ("is_test", "was_sent", "sent_date", "to")
 
 
-class SuggestionAdmin(admin.ModelAdmin):
+class SuggestionAdmin(ModelAdmin):
     model: Model = Suggestion
     list_display: tuple = (
         "id",
@@ -77,7 +78,7 @@ class SuggestionAdmin(admin.ModelAdmin):
     ordering: tuple = ("was_sent", "was_read")
 
 
-class BlackListAdmin(admin.ModelAdmin):
+class BlackListAdmin(ModelAdmin):
     model: Model = BlackList
     list_display: tuple = ("id", "user", "affairs")
     list_display_links: tuple = ("id", "user", "affairs")
@@ -86,7 +87,7 @@ class BlackListAdmin(admin.ModelAdmin):
     ordering: tuple = ("affairs",)
 
 
-class NotificationAdmin(admin.ModelAdmin):
+class NotificationAdmin(ModelAdmin):
     model: Model = Email
     list_display: tuple = (
         "id",

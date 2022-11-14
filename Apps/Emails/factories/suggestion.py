@@ -1,6 +1,8 @@
-import factory
 from django.conf import settings
 from django.db.models import Model
+from factory import LazyAttribute
+from factory import post_generation
+from factory.django import DjangoModelFactory
 from rest_framework.exceptions import ParseError
 
 from Emails.choices import CommentType
@@ -9,7 +11,7 @@ from Emails.models import Block
 from Emails.models import Suggestion
 
 
-class SuggestionEmailFactory(factory.django.DjangoModelFactory):
+class SuggestionEmailFactory(DjangoModelFactory):
     class Meta:
         model: Model = Suggestion
 
@@ -17,11 +19,11 @@ class SuggestionEmailFactory(factory.django.DjangoModelFactory):
         type: str = ""
         content: str = ""
 
-    subject: str = factory.LazyAttribute(
+    subject: str = LazyAttribute(
         lambda object: get_subject_for_suggestion(object.type, object.content)
     )
 
-    @factory.post_generation
+    @post_generation
     def header(self, create: bool, extracted: Model, **kwargs: dict) -> None:
         self.header = (
             f'{self.subject.split("||")[0][:-1]}'
@@ -29,7 +31,7 @@ class SuggestionEmailFactory(factory.django.DjangoModelFactory):
             + f" {self.user.id}"
         )
 
-    @factory.post_generation
+    @post_generation
     def blocks(self, create: bool, extracted: Model, **kwargs: dict) -> None:
         subject_splitted: list = self.subject.split("||")
         type: str = subject_splitted[0][:-1]

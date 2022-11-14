@@ -1,9 +1,14 @@
 from django.db.models import Field
 from django.db.models import Model
-from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 from rest_framework.relations import RelatedField
-from rest_framework.serializers import ValidationError
+from rest_framework.serializers import BooleanField
+from rest_framework.serializers import CharField
+from rest_framework.serializers import DateTimeField
+from rest_framework.serializers import IntegerField
+from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import Serializer
+from rest_framework.serializers import SlugRelatedField
 
 from Emails.models import BlackList
 from Emails.models import Block
@@ -13,58 +18,58 @@ from Emails.models import Suggestion
 from Users.models import User
 
 
-class SuggestionEmailSerializer(serializers.Serializer):
+class SuggestionEmailSerializer(Serializer):
 
-    id: Field = serializers.IntegerField(read_only=True)
-    user_id: Field = serializers.IntegerField()
-    was_sent: Field = serializers.BooleanField(read_only=True)
-    was_read: Field = serializers.BooleanField()
-    subject: Field = serializers.CharField()
-    header: Field = serializers.CharField()
-    blocks: RelatedField = serializers.SlugRelatedField(
+    id: Field = IntegerField(read_only=True)
+    user_id: Field = IntegerField()
+    was_sent: Field = BooleanField(read_only=True)
+    was_read: Field = BooleanField()
+    subject: Field = CharField()
+    header: Field = CharField()
+    blocks: RelatedField = SlugRelatedField(
         many=True, read_only=True, slug_field="id"
     )
-    content: Field = serializers.CharField(source="blocks.first.content")
+    content: Field = CharField(source="blocks.first.content")
 
     class Meta:
         model: Model = Suggestion
 
 
-class BlacklistSerializer(serializers.ModelSerializer):
+class BlacklistSerializer(ModelSerializer):
 
-    id: Field = serializers.IntegerField(read_only=True)
-    affairs: Field = serializers.CharField(required=False)
+    id: Field = IntegerField(read_only=True)
+    affairs: Field = CharField(required=False)
 
     class Meta:
         model: Model = BlackList
         fields: str = "__all__"
 
 
-class BlockSerializer(serializers.ModelSerializer):
+class BlockSerializer(ModelSerializer):
 
-    id: Field = serializers.IntegerField(read_only=True)
-    title: Field = serializers.CharField()
-    content: Field = serializers.CharField()
-    show_link: Field = serializers.BooleanField(required=False)
-    link_text: Field = serializers.CharField(required=False)
-    link: Field = serializers.CharField(required=False)
+    id: Field = IntegerField(read_only=True)
+    title: Field = CharField()
+    content: Field = CharField()
+    show_link: Field = BooleanField(required=False)
+    link_text: Field = CharField(required=False)
+    link: Field = CharField(required=False)
 
     class Meta:
         model: Model = Block
         fields = "__all__"
 
 
-class AbstractEmailSerializer(serializers.ModelSerializer):
+class AbstractEmailSerializer(ModelSerializer):
 
-    id: Field = serializers.IntegerField(read_only=True)
-    subject: Field = serializers.CharField()
-    affair: Field = serializers.CharField()
-    header: Field = serializers.CharField()
-    sent_date: Field = serializers.CharField(read_only=True)
-    was_sent: Field = serializers.BooleanField(read_only=True)
+    id: Field = IntegerField(read_only=True)
+    subject: Field = CharField()
+    affair: Field = CharField()
+    header: Field = CharField()
+    sent_date: Field = CharField(read_only=True)
+    was_sent: Field = BooleanField(read_only=True)
     blocks: BlockSerializer = BlockSerializer(required=True, many=True)
-    is_test: Field = serializers.BooleanField()
-    programed_send_date: Field = serializers.DateTimeField()
+    is_test: Field = BooleanField()
+    programed_send_date: Field = DateTimeField()
 
     def update(self, instance: Model, validated_data: dict) -> Model:
         blocks_data: list = validated_data.pop("blocks")
@@ -101,7 +106,7 @@ class NotificationSerializer(AbstractEmailSerializer):
 
 class EmailSerializer(AbstractEmailSerializer):
 
-    to: Field = serializers.CharField()
+    to: Field = CharField()
 
     class Meta:
         model: Model = Email

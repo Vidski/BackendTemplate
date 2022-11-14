@@ -1,8 +1,8 @@
-import pytest
 from django.conf import settings
 from django.db import transaction
-from django.db.utils import IntegrityError
 from django_rest_passwordreset.models import ResetPasswordToken
+from pytest import mark
+from pytest import raises
 from rest_framework.exceptions import ParseError
 
 from Emails.factories.block import BlockFactory
@@ -25,7 +25,7 @@ from Users.models import User
 from Users.utils import generate_user_verification_token
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestEmailFactories:
     def test_email_factory_creates_email_with_block(self) -> None:
         assert Email.objects.count() == 0
@@ -51,7 +51,7 @@ class TestEmailFactories:
     def test_reset_password_email_factory_raises_exception(self) -> None:
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
-        with pytest.raises(AttributeError):
+        with raises(AttributeError):
             ResetEmailFactory()
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
@@ -85,7 +85,7 @@ class TestEmailFactories:
     def test_verify_email_factory_raises_exception(self) -> None:
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
-        with pytest.raises(AttributeError):
+        with raises(AttributeError):
             with transaction.atomic():
                 VerifyEmailFactory()
         assert Email.objects.count() == 0
@@ -115,7 +115,7 @@ class TestEmailFactories:
         assert f"{user.id}" in block.link
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestBlockFactories:
     def test_block_factory(self) -> None:
         assert Block.objects.count() == 0
@@ -132,7 +132,7 @@ class TestBlockFactories:
     ) -> None:
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
-        with pytest.raises(AttributeError):
+        with raises(AttributeError):
             ResetPasswordBlockFactory()
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
@@ -156,7 +156,7 @@ class TestBlockFactories:
     ) -> None:
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
-        with pytest.raises(AttributeError):
+        with raises(AttributeError):
             VerifyEmailBlockFactory()
         assert Email.objects.count() == 0
         assert Block.objects.count() == 0
@@ -181,7 +181,7 @@ class TestBlockFactories:
         assert block.show_link is False
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestSuggestionFactory:
     def test_suggestion_email_factory_raises_exception_without_user(
         self,
@@ -189,7 +189,7 @@ class TestSuggestionFactory:
         type: str = "Wrong Type"
         assert Suggestion.objects.count() == 0
         assert Block.objects.count() == 0
-        with pytest.raises(ParseError):
+        with raises(ParseError):
             SuggestionEmailFactory(type=type)
 
     def test_suggestion_email_factory_raises_exception_due_wrong_type(
@@ -200,7 +200,7 @@ class TestSuggestionFactory:
         type: str = "wrong_suggestion_type"
         assert Suggestion.objects.count() == 0
         assert Block.objects.count() == 0
-        with pytest.raises(ParseError):
+        with raises(ParseError):
             SuggestionEmailFactory(type=type, content=content, user=user)
         assert Suggestion.objects.count() == 0
         assert Block.objects.count() == 0
@@ -234,7 +234,7 @@ class TestSuggestionFactory:
     def test_get_subject_for_suggestion_raises_an_exception(self) -> None:
         content: str = "I found a bug"
         type: str = "wrong_suggestion_type"
-        with pytest.raises(ParseError):
+        with raises(ParseError):
             get_subject_for_suggestion(type, content)
 
     def test_get_subject_for_suggestion_returns_subject(self) -> None:
@@ -252,7 +252,7 @@ class TestSuggestionFactory:
         assert subject == f"{type} || I found a bug "
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestNotificationFactory:
     def test_notification_factory_creates_notification_with_block(
         self,

@@ -2,16 +2,16 @@ import logging
 from datetime import datetime
 from logging import Logger
 
-import pytest
 from freezegun import freeze_time
 from mock import MagicMock
 from mock import PropertyMock
+from pytest import mark
 
 from Project.utils.log import log_email_action
 from Project.utils.log import log_information
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestAppUtils:
     @freeze_time("2012-01-14")
     def test_log_information(self, caplog: Logger) -> None:

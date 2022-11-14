@@ -1,8 +1,9 @@
-import pytest
 from django.conf import settings
 from django.core import mail
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+from pytest import mark
+from pytest import raises
 
 from Emails.abstracts import AbstractEmailFunctionClass
 from Emails.factories.email import EmailFactory
@@ -21,7 +22,7 @@ from Users.fakers.user import UserFaker
 from Users.models import User
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestBlockModel:
     def test_block_attributes(self) -> None:
         block: Block = BlockFaker()
@@ -39,15 +40,15 @@ class TestBlockModel:
         assert str(block) == expected_str
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestAbstractEmailModel:
     def test_get_email_must_be_implemented(self) -> None:
         email: AbstractEmailFunctionClass = AbstractEmailFunctionClass()
-        with pytest.raises(NotImplementedError):
+        with raises(NotImplementedError):
             email.get_email()
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestEmailModel:
     def test_email_attributes(self) -> None:
         email: Email = EmailFactory(to=UserFaker())
@@ -158,7 +159,7 @@ class TestEmailModel:
         assert len(mail.outbox) == 0
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestSuggestionModel:
     """
     As all the functions are an abstract class inherit in the Email model, we
@@ -204,7 +205,7 @@ class TestSuggestionModel:
         assert len(mail.outbox) == 1
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestNotificationModel:
     def test_email_str(self) -> None:
         notification: Notification = NotificationFactory()
@@ -288,7 +289,7 @@ class TestNotificationModel:
         )
 
 
-@pytest.mark.django_db
+@mark.django_db
 class TestBlackListModel:
     def test_black_list_item_attributes(self) -> None:
         black_list_item: BlackList = BlackListFaker()

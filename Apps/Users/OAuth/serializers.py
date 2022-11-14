@@ -25,7 +25,7 @@ class BaseSerializer(Serializer):
 
 class GoogleOAuthSerializer(BaseSerializer):
     token: CharField = CharField()
-    preferred_language = CharField(required=False)
+    preferred_language: CharField = CharField(required=False)
 
     def validate_token(self, token: str) -> bool:
         user_data: dict = self.get_user_data(token)
@@ -68,7 +68,7 @@ class FacebookOAuthSerializer(BaseSerializer):
 class TwitterOAuthSerializer(BaseSerializer):
     access_token_key: CharField = CharField()
     access_token_secret: CharField = CharField()
-    preferred_language = CharField(required=False)
+    preferred_language: CharField = CharField(required=False)
 
     def validate(self, attributes: dict) -> bool:
         twitter_user: TwitterUser = self.get_user_data(attributes)
