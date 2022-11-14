@@ -19,6 +19,8 @@ from django.db.models.fields.related import ForeignObject
 from django_prometheus.models import ExportModelOperationsMixin
 from phonenumber_field.modelfields import PhoneNumberField
 
+from Project.storage import ImageStorage
+from Project.storage import get_image_storage
 from Project.storage import image_file_upload
 from Users.choices import AuthProviders
 from Users.choices import GenderChoices
@@ -140,6 +142,7 @@ class Profile(ExportModelOperationsMixin("profile"), Model):
     bio: Field = TextField("Bio", null=True, blank=True)
     image: Field = ImageField(
         "Profile image",
+        storage=get_image_storage(),
         upload_to=image_file_upload,
         null=True,
         blank=True,
