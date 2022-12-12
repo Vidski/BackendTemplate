@@ -109,7 +109,7 @@ test-with-html: ## Run the tests with coverage and html report.
 
 .PHONY: check-lint
 check-lint: ## Check for linting errors.
-ifeq (${ENV}, Ci)
+ifeq (${ENV}, CI)
 	@${INSTALL_FORMAT_MODULES} && black . ${BLACK_SETTINGS} --check
 else
 	@${COMMAND} "isort . ${ISORT_SETTINGS} --check"
@@ -117,7 +117,7 @@ endif
 
 .PHONY: check-imports
 check-imports: ## Check for errors on imports ordering.
-ifeq (${ENV}, Ci)
+ifeq (${ENV}, CI)
 	@${INSTALL_FORMAT_MODULES} && isort . ${ISORT_SETTINGS} --check
 else
 	@${COMMAND} "isort . ${ISORT_SETTINGS} --check"

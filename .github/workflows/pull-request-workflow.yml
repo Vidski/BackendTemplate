@@ -22,7 +22,7 @@ jobs:
     - name: 🔀 Checkout
       uses: actions/checkout@v3
     - name: 🆎 Check imports order
-      run:  make check-imports ENV=Ci
+      run:  make check-imports ENV=CI
 
   Testing:
     needs: [Check-Lint, Check-Imports]
