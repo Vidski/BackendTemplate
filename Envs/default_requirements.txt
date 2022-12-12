@@ -1,4 +1,4 @@
--r ./format.txt
+-r ./format_requirements.txt
 
 arrow==1.2.2
 boto3==1.21.28
