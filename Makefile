@@ -7,8 +7,8 @@ SETTINGS ?= $(shell echo $(ENV) | tr '[:upper:]' '[:lower:]')
 COMMAND = docker exec -it django-app bash -c
 NON_INTERACTIVE_COMMAND = docker exec -i django-app bash -c
 MANAGE = python manage.py
-DOCKER_ENV_FILE = --env-file ./Docker/${ENV}/docker.env
-DOCKER_COMPOSE_FILE = -f ./Docker/${ENV}/docker-compose.yml
+DOCKER_ENV_FILE = --env-file ./Envs/${ENV}/docker.variables.env
+DOCKER_COMPOSE_FILE = -f ./Envs/${ENV}/docker-compose.yml
 DOCKER_FILE = docker-compose ${DOCKER_COMPOSE_FILE} ${DOCKER_ENV_FILE}
 SETTINGS_FLAG = --settings=Project.settings.django.${SETTINGS}_settings
 
@@ -16,7 +16,7 @@ SETTINGS_FLAG = --settings=Project.settings.django.${SETTINGS}_settings
 TOML_PATH = ./Project/settings/pyproject.toml
 BLACK_SETTINGS = --config="${TOML_PATH}"
 ISORT_SETTINGS = --settings-path="${TOML_PATH}"
-INSTALL_FORMAT_MODULES = pip3 install -r ./Requirements/format.txt
+INSTALL_FORMAT_MODULES = pip3 install -r ./Envs/format_requirements.txt
 
 ## Testing settings
 DJANGO_TEST_SETTINGS = --ds=Project.settings.django.test_settings
@@ -33,7 +33,7 @@ STYLE = {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}
 .PHONY: help
 help:	## Show this help which show all the possible make targets and its description.
 	@echo ""
-	@echo "The following are the make targets you can use in this way 'make <target>': "
+	@echo "The following are the make targets you can use in this way 'make <target>':"
 	@echo ""
 	@awk ' BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / ${STYLE}' $(MAKEFILE_LIST)
 	@echo ""
@@ -109,7 +109,7 @@ test-with-html: ## Run the tests with coverage and html report.
 
 .PHONY: check-lint
 check-lint: ## Check for linting errors.
-ifeq (${ENV}, Ci)
+ifeq (${ENV}, CI)
 	@${INSTALL_FORMAT_MODULES} && black . ${BLACK_SETTINGS} --check
 else
 	@${COMMAND} "isort . ${ISORT_SETTINGS} --check"
@@ -117,7 +117,7 @@ endif
 
 .PHONY: check-imports
 check-imports: ## Check for errors on imports ordering.
-ifeq (${ENV}, Ci)
+ifeq (${ENV}, CI)
 	@${INSTALL_FORMAT_MODULES} && isort . ${ISORT_SETTINGS} --check
 else
 	@${COMMAND} "isort . ${ISORT_SETTINGS} --check"

@@ -10,7 +10,7 @@ services:
     restart: always
     command: ${START_DJANGO}
     env_file: &envfile
-      - ../../Envs/local.env
+      - ../../Envs/CI/variables.env
     ports:
       - 8000:8000
     depends_on:
