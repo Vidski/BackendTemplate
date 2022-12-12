@@ -33,7 +33,7 @@ STYLE = {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}
 .PHONY: help
 help:	## Show this help which show all the possible make targets and its description.
 	@echo ""
-	@echo "The following are the make targets you can use in this way 'make <target>': "
+	@echo "The following are the make targets you can use in this way 'make <target>':"
 	@echo ""
 	@awk ' BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / ${STYLE}' $(MAKEFILE_LIST)
 	@echo ""
