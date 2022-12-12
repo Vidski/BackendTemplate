@@ -7,8 +7,8 @@ SETTINGS ?= $(shell echo $(ENV) | tr '[:upper:]' '[:lower:]')
 COMMAND = docker exec -it django-app bash -c
 NON_INTERACTIVE_COMMAND = docker exec -i django-app bash -c
 MANAGE = python manage.py
-DOCKER_ENV_FILE = --env-file ./Docker/${ENV}/docker.env
-DOCKER_COMPOSE_FILE = -f ./Docker/${ENV}/docker-compose.yml
+DOCKER_ENV_FILE = --env-file ./Envs/${ENV}/docker.variables.env
+DOCKER_COMPOSE_FILE = -f ./Envs/${ENV}/docker-compose.yml
 DOCKER_FILE = docker-compose ${DOCKER_COMPOSE_FILE} ${DOCKER_ENV_FILE}
 SETTINGS_FLAG = --settings=Project.settings.django.${SETTINGS}_settings
 
@@ -16,7 +16,7 @@ SETTINGS_FLAG = --settings=Project.settings.django.${SETTINGS}_settings
 TOML_PATH = ./Project/settings/pyproject.toml
 BLACK_SETTINGS = --config="${TOML_PATH}"
 ISORT_SETTINGS = --settings-path="${TOML_PATH}"
-INSTALL_FORMAT_MODULES = pip3 install -r ./Requirements/format.txt
+INSTALL_FORMAT_MODULES = pip3 install -r ./Envs/format_requirements.txt
 
 ## Testing settings
 DJANGO_TEST_SETTINGS = --ds=Project.settings.django.test_settings
