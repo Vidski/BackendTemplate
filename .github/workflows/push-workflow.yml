@@ -22,25 +22,35 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: 🏗️ Build and push
+    - name: 🏗️ Build and push master
       if: ${{ github.ref == 'refs/heads/master' }}
       uses: docker/build-push-action@v3
       with:
         context: .
-        file: ./Docker/Local/Dockerfile
+        file: ./Envs/Production/Dockerfile
         push: true
         tags: |
           ${{secrets.DOCKERHUB_USERNAME}}/${{secrets.DOCKERHUB_REPONAME}}:latest
           ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ github.sha }}
-    - name: 🏗️ Build and push
-      if: ${{ github.ref != 'refs/heads/master' }}
+    - name: 🏗️ Build and push staging
+      if: ${{ github.ref == 'refs/heads/staging' }}
       uses: docker/build-push-action@v3
       with:
         context: .
-        file: ./Docker/Local/Dockerfile
+        file: ./Envs/Staging/Dockerfile
         push: true
         tags: |
-          ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ github.ref_name }}-latest
+          ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:staging-latest
+          ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ github.sha }}
+    - name: 🏗️ Build and push dev
+      if: ${{ github.ref == 'refs/heads/dev' }}
+      uses: docker/build-push-action@v3
+      with:
+        context: .
+        file: ./Envs/Dev/Dockerfile
+        push: true
+        tags: |
+          ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:dev-latest
           ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ github.sha }}
 
   Github-Versioning:
