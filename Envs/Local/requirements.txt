@@ -1,4 +1,4 @@
--r ./default.txt
+-r ../default_requirements.txt
 
 freezegun==1.1.0
 ipdb==0.13.9

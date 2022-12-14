@@ -46,19 +46,19 @@ This project has features such as:
 |  [Versions used](#versions)    | Versions used in this project. |
 |  [Useful tools](#usefulltools)    | Useful tools to understand/improve this project based on your needs. |
 
-<a name="requirements"/>
+<a name="requirements"></a>
 
 ## Requirements
   - [Docker.](https://docs.docker.com/get-docker/)
   - [Docker-Compose.](https://docs.docker.com/engine/reference/commandline/compose/)
 
-<a name="nicetohave"/>
+<a name="nicetohave"></a>
 
 ## Nice to have
   - [Python3.](https://www.python.org/downloads/)
   - [Make.](https://www.gnu.org/software/make/)
 
-<a name="nicetolook"/>
+<a name="nicetolook"></a>
 
 ## Nice to take a look to
 - [Docker documentation.](https://docs.celeryproject.org/en/stable/index.html#)
@@ -73,7 +73,7 @@ This project has features such as:
 - [OpenApi (swagger) documentation.](https://swagger.io/specification/)
 - [ReDoc documentation.](https://redoc.ly/docs)
 
-<a name="beforestarting"/>
+<a name="beforestarting"></a>
 
 ## Before starting
 
@@ -86,7 +86,7 @@ This project has features such as:
 - You can change the project name to your actual app name, just take in mind that you will need to change folder names, docker-compose.yml content, Dockerfile content and some Django settings in order for the container work correctly.
 
 
-<a name="instructions"/>
+<a name="instructions"></a>
 
 ## Instructions
 
@@ -100,7 +100,7 @@ This project has features such as:
 
 `docker-compose -f ./Docker/Local/docker-compose.yml --env-file ./Docker/Local/docker.env up`
 
-<a name="mainurls"/>
+<a name="mainurls"></a>
 
 ## Main urls
 
@@ -114,7 +114,7 @@ After running the project:
 - Documentation served by Openapi (Swagger) will be available on: [http://localhost:8000/docs/swagger](http://localhost:8000/docs/swagger/)
 - You can also check the documentation server by Redoc on: [http://localhost:8000/docs/redoc](http://localhost:8000/docs/redoc/)
 
-<a name="observations"/>
+<a name="observations"></a>
 
 ## Observations
 
@@ -134,7 +134,7 @@ Grafana Credentials will be
 
 You will be able to change them once you are logged in.
 
-<a name="versions"/>
+<a name="versions"></a>
 
 ## Versions used
 * * *
@@ -150,7 +150,7 @@ Reviewed on 2022/11/14.
 * Celery version:  5.2.3
 
 
-<a name="usefulltools"/>
+<a name="usefulltools"></a>
 
 <h1 align="center">
   <b>Useful tools</b>
