@@ -14,7 +14,7 @@ jobs:
     - name: 🔀 Checkout
       uses: actions/checkout@v3
     - name: 📝 Check lint
-      run:  make check-lint ENV=Ci
+      run:  make check-lint ENV=CI
 
   Check-Imports:
     runs-on: ubuntu-latest
@@ -22,7 +22,7 @@ jobs:
     - name: 🔀 Checkout
       uses: actions/checkout@v3
     - name: 🆎 Check imports order
-      run:  make check-imports ENV=Ci
+      run:  make check-imports ENV=CI
 
   Testing:
     needs: [Check-Lint, Check-Imports]
@@ -31,9 +31,9 @@ jobs:
     - name: 🔀 Checkout
       uses: actions/checkout@v3
     - name: 🐳 Set up container
-      run: make docker up FLAGS=--detach ENV=Ci
+      run: make docker up FLAGS=--detach ENV=CI
     - name: ✅ Test
-      run: make fast-test ENV=Ci
+      run: make fast-test ENV=CI
 
   Done:
     needs: [Testing]
