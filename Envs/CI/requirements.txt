@@ -1,1 +1,1 @@
--r ./local.txt
+-r ../Local/requirements.txt

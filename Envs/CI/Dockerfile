@@ -6,6 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends build-essential
 RUN rm -rf /var/lib/apt/lists/*
+COPY ./Envs/Local/requirements.txt /tmp/Requirements/Local/requirements.txt
 COPY ./Envs/CI/requirements.txt /tmp/Requirements/CI/
 COPY ./Envs/default_requirements.txt /tmp/Requirements/
 COPY ./Envs/format_requirements.txt /tmp/Requirements/
