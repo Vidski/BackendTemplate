@@ -17,7 +17,7 @@ COPY ./Apps /App/Apps
 COPY ./Envs/__init__.py /App/Envs/__init__.py
 COPY ./Envs/Local/__init__.py /App/Envs/Local/__init__.py
 COPY ./Envs/Local/django_settings.py /App/Envs/Local/django_settings.py
-COPY ./Envs/defaul_django_settings.py /App/Envs/default_django_settings.py
+COPY ./Envs/default_django_settings.py /App/Envs/default_django_settings.py
 COPY ./Envs/test_django_settings.py /App/Envs/test_django_settings.py
 COPY ./Project /App/Project
 COPY ./manage.py /App/
