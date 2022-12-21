@@ -16,6 +16,9 @@ services:
     volumes:
       - ../../Apps:/App/Apps
       - ../../Project:/App/Project
+      - ../../Envs/Local/test_django_settings.py:/App/Envs/Local/test_django_settings.py
+      - ../../Envs/Local/django_settings.py:/App/Envs/Local/django_settings.py
+      - ../../Envs/default_django_settings.py:/App/Envs/default_django_settings.py
     depends_on:
       database:
         condition: service_healthy

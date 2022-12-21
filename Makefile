@@ -1,7 +1,6 @@
 ## Variables used in target commands
 SHELL := /bin/bash
 ENV ?= Local
-SETTINGS ?= $(shell echo $(ENV) | tr '[:upper:]' '[:lower:]')
 
 ## Variables to make targets more readable
 COMMAND = docker exec -it django-app bash -c
@@ -10,7 +9,7 @@ MANAGE = python manage.py
 DOCKER_ENV_FILE = --env-file ./Envs/${ENV}/docker.variables.env
 DOCKER_COMPOSE_FILE = -f ./Envs/${ENV}/docker-compose.yml
 DOCKER_FILE = docker-compose ${DOCKER_COMPOSE_FILE} ${DOCKER_ENV_FILE}
-SETTINGS_FLAG = --settings=Project.settings.django.${SETTINGS}_settings
+SETTINGS_FLAG = --settings=Envs.${ENV}.django_settings
 
 ## Modules settings
 TOML_PATH = ./Project/settings/pyproject.toml
@@ -19,8 +18,8 @@ ISORT_SETTINGS = --settings-path="${TOML_PATH}"
 INSTALL_FORMAT_MODULES = pip3 install -r ./Envs/format_requirements.txt
 
 ## Testing settings
-DJANGO_TEST_SETTINGS = --ds=Project.settings.django.test_settings
-PYTEST_FLAGS =  -p no:cacheprovider -p no:warnings
+DJANGO_TEST_SETTINGS = --ds=Envs.${ENV}.test_django_settings
+PYTEST_FLAGS = -p no:cacheprovider -p no:warnings
 PYTEST_SETTINGS = ${PYTEST_FLAGS} ${DJANGO_TEST_SETTINGS}
 COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
 HTML_PATH = --cov-report=html:./Project/.htmlconv
@@ -38,7 +37,6 @@ help:	## Show this help which show all the possible make targets and its descrip
 	@awk ' BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / ${STYLE}' $(MAKEFILE_LIST)
 	@echo ""
 	@echo "You can change the environment with the ENV parameter in every target."
-	@echo "* You can modify the settings with SETTINGS parameter."
 	@echo "** You can grep a string with GREP parameter."
 	@echo "*** You can modify the number of instances created with INSTANCES parameter."
 	@echo "**** You can modify the path that will be tested with TEST_PATH parameter."
