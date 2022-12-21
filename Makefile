@@ -1,7 +1,6 @@
 ## Variables used in target commands
 SHELL := /bin/bash
 ENV ?= Local
-SETTINGS ?= $(shell echo $(ENV) | tr '[:upper:]' '[:lower:]')
 
 ## Variables to make targets more readable
 COMMAND = docker exec -it django-app bash -c
@@ -38,7 +37,6 @@ help:	## Show this help which show all the possible make targets and its descrip
 	@awk ' BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / ${STYLE}' $(MAKEFILE_LIST)
 	@echo ""
 	@echo "You can change the environment with the ENV parameter in every target."
-	@echo "* You can modify the settings with SETTINGS parameter."
 	@echo "** You can grep a string with GREP parameter."
 	@echo "*** You can modify the number of instances created with INSTANCES parameter."
 	@echo "**** You can modify the path that will be tested with TEST_PATH parameter."
