@@ -19,7 +19,7 @@ ISORT_SETTINGS = --settings-path="${TOML_PATH}"
 INSTALL_FORMAT_MODULES = pip3 install -r ./Envs/format_requirements.txt
 
 ## Testing settings
-DJANGO_TEST_SETTINGS = --ds=Envs.test_settings
+DJANGO_TEST_SETTINGS = --ds=Envs.test_django_settings
 PYTEST_FLAGS =  -p no:cacheprovider -p no:warnings
 PYTEST_SETTINGS = ${PYTEST_FLAGS} ${DJANGO_TEST_SETTINGS}
 COVERAGE_SETTINGS = --cov --cov-config=.coveragerc
