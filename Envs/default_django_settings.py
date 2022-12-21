@@ -8,7 +8,7 @@ from Project.settings.jet_settings import *
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR: str = Path(__file__).resolve().parent.parent.parent.parent
+BASE_DIR: str = Path(__file__).resolve().parent.parent
 sys.path.insert(0, os.path.join(BASE_DIR, "Apps"))
 
 
@@ -48,7 +48,7 @@ THIRD_PARTY_APPS: list = [
     "corsheaders",
 ]
 
-LOCAL_APPS: list = ["Project", "Users", "Emails"]
+LOCAL_APPS: list = ["Envs", "Project", "Users", "Emails"]
 
 INSTALLED_APPS: list = (
     SPECIAL_APPS + DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
