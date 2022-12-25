@@ -42,7 +42,7 @@ help:	## Show this help which show all the possible make targets and its descrip
 	@echo "**** You can modify the path that will be tested with TEST_PATH parameter."
 	@echo ""
 	@echo "You can interact with docker-compose using the following schema:"
-	@echo "docker-compose ${DOCKER_COMPOSE_FILE} ${DOCKER_ENV_FILE}"
+	@echo "${DOCKER_FILE}"
 
 ifeq (docker,$(firstword $(MAKECMDGOALS)))
   ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
