@@ -1,10 +1,10 @@
 # Sensitive environment variables
-./Envs/Production/variables.env
-./Envs/Production/docker.variables.env
-./Envs/Staging/variables.env
-./Envs/Staging/docker.variables.env
-./Envs/Dev/variables.env
-./Envs/Dev/docker.variables.env
+Envs/Production/variables.env
+Envs/Production/docker.variables.env
+Envs/Staging/variables.env
+Envs/Staging/docker.variables.env
+Envs/Dev/variables.env
+Envs/Dev/docker.variables.env
 
 app/data/
 !test.env
