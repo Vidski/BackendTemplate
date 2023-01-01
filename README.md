@@ -64,7 +64,7 @@ This project has features such as:
 - [Docker documentation.](https://docs.celeryproject.org/en/stable/index.html#)
 - [Django documentation.](https://docs.djangoproject.com/en/4.1/)
 - [DjangoREST documentation.](https://www.django-rest-framework.org/)
-- [Django Jazzmin documentation.](https://django-jazzmin.readthedocs.io/)
+- [Django Jet documentation.](https://django-jet-reboot.readthedocs.io/)
 - [Celery documentation.](https://docs.celeryproject.org/)
 - [RabbitMQ documentation.](https://www.rabbitmq.com/)
 - [Flower documentation.](https://flower.readthedocs.io/en/latest/)
@@ -106,13 +106,13 @@ This project has features such as:
 
 After running the project:
 
-- Django admin will be available on: [http://localhost:8000/admin](http://localhost:8000/admin)
-- Django app will be available on: [http://localhost:8000/](http://localhost:8000/)
-- Flower task monitor will be available on: [http://localhost:5555](http://localhost:5555)
-- Grafana monitor will be available on: [http://localhost:3000](http://localhost:3000)
-- Prometheus dashboard will be available on: [http://localhost:9090](http://localhost:9090)
-- Documentation served by Openapi (Swagger) will be available on: [http://localhost:8000/docs/swagger](http://localhost:8000/docs/swagger/)
-- You can also check the documentation server by Redoc on: [http://localhost:8000/docs/redoc](http://localhost:8000/docs/redoc/)
+- Django admin will be available on: [http://api.localhost/admin](http://api.localhost/admin)
+- Django app will be available on: [http://api.localhost/](http://api.localhost/)
+- Flower task monitor will be available on: [http://flower.localhost/](http://flower.localhost/)
+- Grafana monitor will be available on: [http://grafana.localhost/](http://grafana.localhost/)
+- Prometheus dashboard will be available on: [http://prometheus.localhost/](http://prometheus.localhost/)
+- Documentation served by Openapi (Swagger) will be available on: [http://api.localhost/docs/swagger](http://api.localhost/docs/swagger)
+- You can also check the documentation server by Redoc on: [http://api.localhost/docs/redoc](http://api.localhost/docs/redoc)
 
 <a name="observations"></a>
 

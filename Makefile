@@ -1,15 +1,16 @@
 ## Variables used in target commands
 SHELL := /bin/bash
 ENV ?= Local
+SETTINGS_ENV ?= ${ENV}
 
 ## Variables to make targets more readable
 COMMAND = docker exec -it django-app bash -c
 NON_INTERACTIVE_COMMAND = docker exec -i django-app bash -c
 MANAGE = python manage.py
-DOCKER_ENV_FILE = --env-file ./Envs/${ENV}/docker.variables.env
+DOCKER_ENV_FILE = --env-file ./Envs/${ENV}/variables.env
 DOCKER_COMPOSE_FILE = -f ./Envs/${ENV}/docker-compose.yml
 DOCKER_FILE = docker-compose ${DOCKER_COMPOSE_FILE} ${DOCKER_ENV_FILE}
-SETTINGS_FLAG = --settings=Envs.${ENV}.django_settings
+SETTINGS_FLAG = --settings=Envs.${SETTINGS_ENV}.django_settings
 
 ## Modules settings
 TOML_PATH = ./Project/settings/pyproject.toml
@@ -36,7 +37,7 @@ help:	## Show this help which show all the possible make targets and its descrip
 	@echo ""
 	@awk ' BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / ${STYLE}' $(MAKEFILE_LIST)
 	@echo ""
-	@echo "You can change the environment with the ENV parameter in every target."
+	@echo "* You can change the environment settings with the SETTINGS_ENV."
 	@echo "** You can grep a string with GREP parameter."
 	@echo "*** You can modify the number of instances created with INSTANCES parameter."
 	@echo "**** You can modify the path that will be tested with TEST_PATH parameter."
@@ -110,7 +111,7 @@ check-lint: ## Check for linting errors.
 ifeq (${ENV}, CI)
 	@${INSTALL_FORMAT_MODULES} && black . ${BLACK_SETTINGS} --check
 else
-	@${COMMAND} "isort . ${ISORT_SETTINGS} --check"
+	@${COMMAND} "black . ${BLACK_SETTINGS} --check"
 endif
 
 .PHONY: check-imports
