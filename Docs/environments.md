@@ -140,3 +140,7 @@ services:
   ````
 
 And that would be all. You will be then ready to deploy using docker. You will be able to see a Kubernetes in other documentation file.
+
+⚠️ Warning: Take in mind that your domain has to be pointing to your host, and have a DNS record like this:
+
+![DNS Record configuration](./images/DNS-record-configuration.png "Secret creation")
