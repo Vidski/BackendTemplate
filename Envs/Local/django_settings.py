@@ -1,9 +1,10 @@
+import os
 from datetime import timedelta
 
 from Envs.default_django_settings import *
 
 
-URL: str = "http://localhost:8000"
+URL: str = os.environ.get("PROJECT_URL", "http://localhost:8000")
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY: str = "default-secret-key"

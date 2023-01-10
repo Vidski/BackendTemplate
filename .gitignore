@@ -1,5 +1,8 @@
-app/data/
-!test.env
+# Sensitive environment variables
+Envs/Production/*.env
+Envs/Staging/*.env
+Envs/Dev/*.env
+
 
 # celery beat
 *.bak
@@ -132,3 +135,8 @@ media/
 
 # VSCode
 .vscode/
+
+# Others
+
+app/data/
+!test.env

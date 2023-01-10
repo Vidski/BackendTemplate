@@ -4,7 +4,7 @@ from django.utils.timezone import now
 
 from Emails.models import Email
 from Emails.models import Notification
-from Project.settings.celery_worker.worker import app
+from settings.celery_worker import app
 
 
 SECONDS: float = 10.0
