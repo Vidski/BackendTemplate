@@ -230,10 +230,9 @@ VERIFY_EMAIL_CONTENT: str = _(
 VERIFY_EMAIL_LINK_TEXT: str = _("Verify email")
 VERIFY_EMAIL_URL: str = f"{URL}/api/users"
 
-# Storage
-
+## Storage
 DEFAULT_FILE_STORAGE: str = "django.core.files.storage.FileSystemStorage"
-
+# AWS
 AWS_ACCESS_KEY_ID: str = None
 AWS_STORAGE_DOCUMENT_BUCKET_NAME: str = None
 AWS_STORAGE_IMAGE_BUCKET_NAME: str = None
@@ -249,6 +248,5 @@ GOOGLE_CLIENT_SECRET: str = None
 TWITTER_API_KEY: str = None
 TWITTER_API_SECRET_KEY: str = None
 TWITTER_API_BEARER_TOKEN: str = None
-
-## OAUTH
+# OAUTH SETTINGS
 OAUTH_PASSWORD: str = None
