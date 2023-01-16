@@ -1,4 +1,4 @@
-FROM python:3.10.5-slim
+FROM python:3.11.1-slim
 
 ## ENVS variables
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
