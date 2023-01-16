@@ -282,3 +282,12 @@ START_CELERY_WORKER = celery --app=${CELERY_PATH} worker --concurrency=1 --hostn
 START_CELERY_BEAT = python3 -m celery --app=${CELERY_PATH} beat -l debug -f /var/log/App-celery-beat.log --pidfile=/tmp/celery-beat.pid
 
 ````
+
+
+## Important
+
+⚠️ Don't forget to run this command in any server environment:
+
+`make manage collectstatic ENV=<your_env>`
+
+It is needed in order to allow Django to serve the static files needed for the admin site.
