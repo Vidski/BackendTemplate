@@ -165,3 +165,9 @@ services:
     depends_on:
       database:
         condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.proxy.rule=Host(`${TRAEFIK_URL}`)"
+      - "traefik.http.routers.proxy.entrypoints=web"
+      - "traefik.http.routers.proxy.service=api@internal"
+      - "traefik.http.services.proxy.loadbalancer.server.port=8080"

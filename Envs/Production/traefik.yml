@@ -1,0 +1,37 @@
+# API and dashboard configuration
+api:
+  # Dashboard
+  dashboard: true
+  insecure: false
+
+# Docker configuration backend
+providers:
+  docker:
+    exposedByDefault: false
+
+# Needed for healthy check
+ping: {}
+
+# Traefik Logging
+log:
+  level: ERROR
+
+# Entrypoint
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+
+# Certificates
+certificatesResolvers:
+  apiResolver:
+    acme:
+      email: contact@domain.com
+      storage: acme.json
+      # dnsChallenge:
+      #   provider: digitalocean
+      #   delayBeforeCheck: 0
+      # httpChallenge:
+      #   entryPoint: web
+      # tlsChallenge: true
