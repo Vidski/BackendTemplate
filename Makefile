@@ -72,9 +72,9 @@ shell: ## Open the shell_plus of django. *
 .PHONY: show_urls
 show_urls: ## Show the urls of the app. **
 ifeq (${GREP},)
-	@${COMMAND} "${MANAGE} show_urls"
+	@${COMMAND} "${MANAGE} show_urls ${SETTINGS_FLAG}"
 else
-	@${COMMAND} "${MANAGE} show_urls | grep ${GREP}"
+	@${COMMAND} "${MANAGE} show_urls ${SETTINGS_FLAG}| grep ${GREP}"
 endif
 
 .PHONY: flush
@@ -93,7 +93,7 @@ populate: ## Populates the database with dummy data. ***
 
 .PHONY: test
 test: ## Run the tests. ****
-	@${COMMAND} "${MANAGE} create_test_db"
+	@${COMMAND} "${MANAGE} create_test_db ${SETTINGS_FLAG}"
 ifeq (${TEST_PATH},)
 	@${COMMAND} "pytest . --reuse-db ${PYTEST_SETTINGS}"
 else
@@ -106,12 +106,12 @@ fast-test: ## Run the tests in parallel. ****
 
 .PHONY: test-with-coverage
 test-with-coverage: ## Run the tests with coverage.
-	@${COMMAND} "${MANAGE} create_test_db"
+	@${COMMAND} "${MANAGE} create_test_db ${SETTINGS_FLAG}"
 	@${COMMAND} "pytest . ${PYTEST_SETTINGS} ${COVERAGE_SETTINGS}"
 
 .PHONY: test-with-html
 test-with-html: ## Run the tests with coverage and html report.
-	@${COMMAND} "${MANAGE} create_test_db"
+	@${COMMAND} "${MANAGE} create_test_db ${SETTINGS_FLAG}"
 	@${COMMAND} "pytest . ${PYTEST_SETTINGS} ${HTML_COVERAGE_SETTINGS}"
 
 .PHONY: check-lint
