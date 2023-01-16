@@ -1,0 +1,250 @@
+version: '3.9'
+
+services:
+  traefik:
+    container_name: traefik
+    image: ${TRAEFIK}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.yml:/etc/traefik/traefik.yml
+      - ./letsencrypt:/letsencrypt
+    environment:
+      - "DO_AUTH_TOKEN=${DO_TOKEN}"
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck"]
+      interval: 10s
+      timeout: 2s
+      retries: 3
+      start_period: 5s
+    labels:
+      - "traefik.enable=true"
+      # Routers
+      - "traefik.http.routers.proxy.rule=Host(`${TRAEFIK_URL}`)"
+      - "traefik.http.routers.proxy.entrypoints=websecure"
+      - traefik.http.routers.proxy.tls=true
+      - traefik.http.routers.proxy.tls.certresolver=apiResolver # Resolver in static configuration
+      # Services
+      - "traefik.http.routers.proxy.service=api@internal"
+      - "traefik.http.services.proxy.loadbalancer.server.port=8080"
+      # Middlewares declaration
+      - "traefik.http.routers.proxy.middlewares=redirect,auth,regex"
+      # Redirect Scheme HTTP -> HTTPS
+      - "traefik.http.middlewares.redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.redirect.redirectscheme.permanent=true"
+      # Basic Auth
+      ## Create hash password < echo $(htpasswd -nb userName password) >
+      ## Add < | sed -e s/\\$/\\$\\$/g > to the end of the command if you want to place it here
+      - "traefik.http.middlewares.auth.basicauth.users=${TRAEFIK_USER}:${TRAEFIK_PASSWORD}"
+      # Regex
+      - "traefik.http.middlewares.regex.redirectregex.regex=^http://${TRAEFIK_URL}/(.*)"
+      - "traefik.http.middlewares.regex.redirectregex.replacement=https://${TRAEFIK_URL}/$${*}"
+
+
+  app:
+    container_name: django-app
+    build:
+      context: ../../
+      dockerfile: ${DOCKERFILE_PATH}
+    image: &app app
+    restart: always
+    env_file: &envfile
+      - ../../Envs/Production/variables.env
+    ports:
+      - 8000:8000
+    volumes:
+      - ../../Apps:/App/Apps
+      - ../../staticfiles:/App/staticfiles
+      - ../../Project:/App/Project
+      - ../../Envs/Production/test_django_settings.py:/App/Envs/Production/test_django_settings.py
+      - ../../Envs/Production/django_settings.py:/App/Envs/Production/django_settings.py
+      - ../../Envs/default_django_settings.py:/App/Envs/default_django_settings.py
+    labels:
+      - "traefik.enable=true"
+      # Routers
+      - "traefik.http.routers.api.rule=Host(`${BACKEND_URL}`)"
+      - "traefik.http.routers.api.entrypoints=websecure"
+      - "traefik.http.routers.api.tls=true"
+      - "traefik.http.routers.api.tls.certresolver=apiResolver" # Resolver in static configuration
+      # Services
+      - "traefik.http.routers.api.service=api" # Service declaration
+      - "traefik.http.services.api.loadbalancer.server.port=8000"
+      # Middlewares declaration
+      - "traefik.http.routers.api.middlewares=redirect-app,compressor-app,regex-app"
+      # - "traefik.http.routers.api.middlewares=rateLimit"
+      # Redirect Scheme HTTP -> HTTPS
+      - "traefik.http.middlewares.redirect-app.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.redirect-app.redirectscheme.permanent=true"
+      # Image compressor
+      - "traefik.http.middlewares.compressor-app.compress=true"
+      # Regex
+      - "traefik.http.middlewares.regex-app.redirectregex.regex=^http://${BACKEND_URL}/(.*)"
+      - "traefik.http.middlewares.regex-app.redirectregex.replacement=https://${BACKEND_URL}/$${*}"
+      # Rate Limit Middleware
+      # - "traefik.http.middlewares.rateLimit.ratelimit.average=100"
+    depends_on:
+      traefik:
+        condition: service_healthy
+
+  celery-worker:
+    container_name: celery-worker
+    build:
+      context: ../../
+      dockerfile: ${DOCKERFILE_PATH}
+    image: *app
+    restart: always
+    env_file: *envfile
+    command: ${START_CELERY_WORKER}
+    depends_on:
+      - rabbitmq
+
+  celery-beat:
+    container_name: celery-beat
+    build:
+      context: ../../
+      dockerfile: ${DOCKERFILE_PATH}
+    image: *app
+    env_file: *envfile
+    command: ${START_CELERY_BEAT}
+    depends_on:
+      - celery-worker
+
+  flower:
+    container_name: flower
+    image: ${FLOWER}
+    restart: "no"
+    env_file: *envfile
+    ports:
+      - 5555:5555
+    depends_on:
+      - rabbitmq
+    labels:
+      - "traefik.enable=true"
+      # Routers
+      - "traefik.http.routers.flower.rule=Host(`${FLOWER_URL}`)"
+      - "traefik.http.routers.flower.entrypoints=websecure"
+      - "traefik.http.routers.flower.tls=true"
+      - "traefik.http.routers.flower.tls.certresolver=apiResolver" # Resolver in static configuration
+      # Services
+      - "traefik.http.routers.flower.service=flower" # Service declaration
+      - "traefik.http.services.flower.loadbalancer.server.port=5555"
+      # Middlewares declaration
+      - "traefik.http.routers.flower.middlewares=redirect-flower,regex-flower,auth-flower"
+      # Redirect Scheme HTTP -> HTTPS
+      - "traefik.http.middlewares.redirect-flower.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.redirect-flower.redirectscheme.permanent=true"
+      # Basic Auth
+      ## Create hash password < echo $(htpasswd -nb userName password) >
+      ## Add < | sed -e s/\\$/\\$\\$/g > to the end of the command if you want to place it here
+      - "traefik.http.middlewares.auth-flower.basicauth.users=${TRAEFIK_USER}:${TRAEFIK_PASSWORD}"
+      # Regex
+      - "traefik.http.middlewares.regex-flower.redirectregex.regex=^http://${FLOWER_URL}/(.*)"
+      - "traefik.http.middlewares.regex-flower.redirectregex.replacement=https://${FLOWER_URL}/$${*}"
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: ${RABBIT}
+    env_file: *envfile
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ${DATA_FOLDER}/rabbitmq_data:/data
+    depends_on:
+      traefik:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      # Routers
+      - "traefik.http.routers.rabbit.rule=Host(`${RABBIT_URL}`)"
+      - "traefik.http.routers.rabbit.entrypoints=websecure"
+      - "traefik.http.routers.rabbit.tls=true"
+      - "traefik.http.routers.rabbit.tls.certresolver=apiResolver" # Resolver in static configuration
+      # Services
+      - "traefik.http.routers.rabbit.service=rabbit" # Service declaration
+      - "traefik.http.services.rabbit.loadbalancer.server.port=5672"
+      # Middlewares declaration
+      - "traefik.http.routers.rabbit.middlewares=redirect-rabbit,regex-rabbit,auth-rabbit"
+      # Redirect Scheme HTTP -> HTTPS
+      - "traefik.http.middlewares.redirect-rabbit.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.redirect-rabbit.redirectscheme.permanent=true"
+      # Basic Auth
+      ## Create hash password < echo $(htpasswd -nb userName password) >
+      ## Add < | sed -e s/\\$/\\$\\$/g > to the end of the command if you want to place it here
+      - "traefik.http.middlewares.auth-rabbit.basicauth.users=${TRAEFIK_USER}:${TRAEFIK_PASSWORD}"
+      # Regex
+      - "traefik.http.middlewares.regex-rabbit.redirectregex.regex=^http://${RABBIT_URL}/(.*)"
+      - "traefik.http.middlewares.regex-rabbit.redirectregex.replacement=https://${RABBIT_URL}/$${*}"
+
+  grafana:
+    container_name: grafana
+    image: ${GRAFANA}
+    user: root
+    ports:
+      - 3000:3000
+    volumes:
+      - ${DATA_FOLDER}/grafana_data:/var/lib/grafana
+      - ${DATA_FOLDER}/grafana/provisioning/:/etc/grafana/provisioning/
+    restart: always
+    depends_on:
+      traefik:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      # Routers
+      - "traefik.http.routers.grafana.rule=Host(`${GRAFANA_URL}`)"
+      - "traefik.http.routers.grafana.entrypoints=websecure"
+      - "traefik.http.routers.grafana.tls=true"
+      - "traefik.http.routers.grafana.tls.certresolver=apiResolver" # Resolver in static configuration
+      # Services
+      - "traefik.http.routers.grafana.service=grafana" # Service declaration
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+      # Middlewares declaration
+      - "traefik.http.routers.grafana.middlewares=redirect-grafana,regex-grafana,auth-grafana"
+      # Redirect Scheme HTTP -> HTTPS
+      - "traefik.http.middlewares.redirect-grafana.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.redirect-grafana.redirectscheme.permanent=true"
+      # Basic Auth
+      ## Create hash password < echo $(htpasswd -nb userName password) >
+      ## Add < | sed -e s/\\$/\\$\\$/g > to the end of the command if you want to place it here
+      - "traefik.http.middlewares.auth-grafana.basicauth.users=${TRAEFIK_USER}:${TRAEFIK_PASSWORD}"
+      # Regex
+      - "traefik.http.middlewares.regex-grafana.redirectregex.regex=^http://${GRAFANA_URL}/(.*)"
+      - "traefik.http.middlewares.regex-grafana.redirectregex.replacement=https://${GRAFANA_URL}/$${*}"
+
+  prometheus:
+    container_name: prometheus
+    image: ${PROMETHEUS}
+    volumes:
+      - ${PROMETHEUS_YML}:/etc/prometheus/prometheus.yml
+    command: --config.file=/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    depends_on:
+      traefik:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      # Routers
+      - "traefik.http.routers.prometheus.rule=Host(`${PROMETHEUS_URL}`)"
+      - "traefik.http.routers.prometheus.entrypoints=websecure"
+      - "traefik.http.routers.prometheus.tls=true"
+      - "traefik.http.routers.prometheus.tls.certresolver=apiResolver" # Resolver in static configuration
+      # Services
+      - "traefik.http.routers.prometheus.service=prometheus" # Service declaration
+      - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
+      # Middlewares declaration
+      - "traefik.http.routers.prometheus.middlewares=redirect-prometheus,regex-prometheus,auth-prometheus"
+      # Redirect Scheme HTTP -> HTTPS
+      - "traefik.http.middlewares.redirect-prometheus.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.redirect-prometheus.redirectscheme.permanent=true"
+      # Basic Auth
+      ## Create hash password < echo $(htpasswd -nb userName password) >
+      ## Add < | sed -e s/\\$/\\$\\$/g > to the end of the command if you want to place it here
+      - "traefik.http.middlewares.auth-prometheus.basicauth.users=${TRAEFIK_USER}:${TRAEFIK_PASSWORD}"
+      # Regex
+      - "traefik.http.middlewares.regex-prometheus.redirectregex.regex=^http://${PROMETHEUS_URL}/(.*)"
+      - "traefik.http.middlewares.regex-prometheus.redirectregex.replacement=https://${PROMETHEUS_URL}/$${*}"
