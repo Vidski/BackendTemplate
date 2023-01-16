@@ -53,6 +53,14 @@ endif
 docker: ## Runs docker compose command. Eg: "make docker up FLAGS=-d".
 	@${DOCKER_FILE} $(ARGS) ${FLAGS}
 
+ifeq (manage,$(firstword $(MAKECMDGOALS)))
+  ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  $(eval $(ARGS):;@:)
+endif
+.PHONY: manage
+manage: ## Runs python manage command. Eg: "make manage collectstatic".
+	${COMMAND} "${MANAGE} $(ARGS) ${SETTINGS_FLAG}"
+
 .PHONY: bash
 bash: ## Open a bash shell in the django container.
 	@${DOCKER_FILE} exec app /bin/bash
