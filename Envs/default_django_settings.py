@@ -22,9 +22,10 @@ URL: str = ""
 FRONTEND_URL: str = ""
 
 SPECIAL_APPS: list = [
+    "whitenoise.runserver_nostatic",
     "jet.dashboard",
     "jet",
-]  # Jet needs to charge before the admin app
+]  # Jet and Whitenoise needs to charge before the admin app
 
 DJANGO_APPS: list = [
     "django.contrib.admin",
@@ -61,6 +62,7 @@ MIDDLEWARE: list = [
     "django.middleware.common.CommonMiddleware",
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
