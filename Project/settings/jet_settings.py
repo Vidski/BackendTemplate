@@ -102,17 +102,23 @@ JET_SIDE_MENU_ITEMS: list = [
         "items": [
             {
                 "label": "Grafana",
-                "url": f"http://{os.environ['GRAFANA_URL']}",
+                "url": f"http://{os.environ['GRAFANA_URL']}"
+                if os.environ.setdefault("ENV", "local") == "local"
+                else f"https://{os.environ['GRAFANA_URL']}",
                 "url_blank": True,
             },
             {
                 "label": "Prometheus",
-                "url": f"http://{os.environ['PROMETHEUS_URL']}",
+                "url": f"http://{os.environ['PROMETHEUS_URL']}"
+                if os.environ.setdefault("ENV", "local") == "local"
+                else f"https://{os.environ['PROMETHEUS_URL']}",
                 "url_blank": True,
             },
             {
                 "label": "Flower",
-                "url": f"http://{os.environ['FLOWER_URL']}",
+                "url": f"http://{os.environ['FLOWER_URL']}"
+                if os.environ.setdefault("ENV", "local") == "local"
+                else f"https://{os.environ['FLOWER_URL']}",
                 "url_blank": True,
             },
         ],
