@@ -14,7 +14,7 @@ ping: {}
 
 # Traefik Logging
 log:
-  level: ERROR
+  level: INFO
 
 # Entrypoint
 entryPoints:
@@ -29,9 +29,9 @@ certificatesResolvers:
     acme:
       email: contact@domain.com
       storage: acme.json
-      # dnsChallenge:
-      #   provider: digitalocean
-      #   delayBeforeCheck: 0
+      dnsChallenge:
+        provider: digitalocean
+        delayBeforeCheck: 0
       # httpChallenge:
       #   entryPoint: web
       # tlsChallenge: true

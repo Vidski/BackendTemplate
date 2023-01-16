@@ -52,15 +52,15 @@ services:
     image: &app app
     restart: always
     env_file: &envfile
-      - ../../Envs/Production/variables.env
+      - ../../Envs/Dev/variables.env
     ports:
       - 8000:8000
     volumes:
       - ../../Apps:/App/Apps
       - ../../staticfiles:/App/staticfiles
       - ../../Project:/App/Project
-      - ../../Envs/Production/test_django_settings.py:/App/Envs/Production/test_django_settings.py
-      - ../../Envs/Production/django_settings.py:/App/Envs/Production/django_settings.py
+      - ../../Envs/Dev/test_django_settings.py:/App/Envs/Dev/test_django_settings.py
+      - ../../Envs/Dev/django_settings.py:/App/Envs/Dev/django_settings.py
       - ../../Envs/default_django_settings.py:/App/Envs/default_django_settings.py
     labels:
       - "traefik.enable=true"
