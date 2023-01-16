@@ -1,5 +1,5 @@
-from datetime import timedelta
 import os
+from datetime import timedelta
 
 from Envs.default_django_settings import *
 
@@ -22,7 +22,7 @@ CSRF_TRUSTED_ORIGINS: list = [
     f"http://{os.environ.get('SERVER_IP')}",
 ]
 URL: str = os.environ.get("BACKEND_URL")
-STATIC_ROOT: str = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT: str = os.path.join(BASE_DIR, "staticfiles")
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY: str = os.environ.get("SECRET_KEY")
