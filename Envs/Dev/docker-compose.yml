@@ -61,7 +61,6 @@ services:
       - ../../Project:/App/Project
       - ../../Envs/Dev/test_django_settings.py:/App/Envs/Dev/test_django_settings.py
       - ../../Envs/Dev/django_settings.py:/App/Envs/Dev/django_settings.py
-      - ../../Envs/default_django_settings.py:/App/Envs/default_django_settings.py
     labels:
       - "traefik.enable=true"
       # Routers
