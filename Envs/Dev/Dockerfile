@@ -20,13 +20,12 @@ RUN rm -r -f /tmp/Requirements
 
 ## Project files
 RUN mkdir -p /App/
+COPY ./Project /App/Project
+COPY ./manage.py /App/
 COPY ./Apps /App/Apps
 COPY ./Envs/__init__.py /App/Envs/__init__.py
 COPY ./Envs/Dev/__init__.py /App/Envs/Dev/__init__.py
 COPY ./Envs/Dev/django_settings.py /App/Envs/Dev/django_settings.py
-COPY ./Envs/default_django_settings.py /App/Envs/default_django_settings.py
-COPY ./Project /App/Project
-COPY ./manage.py /App/
 WORKDIR /App
 
 ## Image configuration

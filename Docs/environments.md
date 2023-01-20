@@ -17,14 +17,12 @@ Envs/
 │   ├── traefik.yml
 │   └── variables.env
 ├── __init__.py
-├── default_django_settings.py
 ├── default_requirements.py
 └── format_requirements.html
 ```
 
 In the root folder you will find:
 
-- `default_django_settings.py` : Here you will find the basic Django settings that are reusable across all the environments.
 - `default_requirements.txt`: In this file are described the basics requirements (such as Django for example), that will be used in any kind  of environment.
 - `format_requirements.txt`: These are the requirements to format the code. They are separated from the rest in order to make a job in CI pipeline run faster.
 
