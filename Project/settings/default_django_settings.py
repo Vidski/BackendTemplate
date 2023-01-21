@@ -8,7 +8,7 @@ from Project.settings.jet_settings import *
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR: str = Path(__file__).resolve().parent.parent
+BASE_DIR: str = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, os.path.join(BASE_DIR, "Apps"))
 
 
@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.join(BASE_DIR, "Apps"))
 
 
 # Applications definition
-APP_NAME: str = "APPNAME"
+APP_NAME: str = os.environ.get("APP_NAME", "APPNAME")
 URL: str = ""
 FRONTEND_URL: str = ""
 
