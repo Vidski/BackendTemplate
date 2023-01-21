@@ -12,22 +12,14 @@ from Project.settings.labels_with_svg import redoc_label_with_icon
 from Project.settings.labels_with_svg import suggestion_label_with_icon
 from Project.settings.labels_with_svg import swagger_label_with_icon
 from Project.settings.labels_with_svg import user_label_with_icon
+from Project.utils.services_urls import set_services_urls
 
-
-if not os.environ.get("PROJECT_URL"):
-    os.environ.setdefault("PROJECT_URL", "localhost")
-if not os.environ.get("GRAFANA_URL"):
-    os.environ.setdefault("GRAFANA_URL", f"{os.environ['PROJECT_URL']}:3000/")
-if not os.environ.get("PROMETHEUS_URL"):
-    os.environ.setdefault(
-        "PROMETHEUS_URL", f"{os.environ['PROJECT_URL']}:9090/"
-    )
-if not os.environ.get("FLOWER_URL"):
-    os.environ.setdefault("FLOWER_URL", f"{os.environ['PROJECT_URL']}:5555/")
 
 """
 JET Documentation: https://django-jet-reboot.readthedocs.io/
 """
+
+set_services_urls()
 
 X_FRAME_OPTIONS = "ALLOWALL"
 

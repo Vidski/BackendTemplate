@@ -61,6 +61,14 @@ endif
 manage: ## Runs python manage command. Eg: "make manage collectstatic".
 	${COMMAND} "${MANAGE} $(ARGS) ${SETTINGS_FLAG}"
 
+ifeq (app,$(firstword $(MAKECMDGOALS)))
+  ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  $(eval $(ARGS):;@:)
+endif
+.PHONY: app
+app: ## Creates a new django app. Eg: "make app APP_NAME".
+	${COMMAND} "cd Apps && python ../manage.py startapp $(ARGS)"
+
 .PHONY: bash
 bash: ## Open a bash shell in the django container.
 	@${DOCKER_FILE} exec app /bin/bash
